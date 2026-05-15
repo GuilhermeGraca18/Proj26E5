@@ -4,7 +4,7 @@ out/
 !**/src/test/**/out/
 .kotlin
 /.idea/
-Proj26E5.iml
+*.iml
 
 ### Eclipse ###
 .apt_generated
