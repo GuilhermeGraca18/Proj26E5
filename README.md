@@ -1,4 +1,4 @@
-# PROJETO POO + SI
+# PROJ26E5 - PROJETO POO + SI
 ## Gestão da Cantina
 Descrição do Projeto
 

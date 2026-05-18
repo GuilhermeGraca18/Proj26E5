@@ -4,8 +4,8 @@ public class GerirCantina {
     private ArrayList<Utilizador> utilizadores;
     private Cantina cantina;
 
-    public GerirCantina(ArrayList<Utilizador> utilizadores, Cantina cantina) {
-        this.utilizadores = utilizadores;
-        this.cantina = cantina;
+    public GerirCantina() {
+        this.utilizadores = new ArrayList<>();
+        this.cantina = new Cantina();
     }
 }

@@ -5,9 +5,9 @@ public class Cantina {
     private ArrayList<Item> items;
     private ArrayList<Bebida> bebidas;
 
-    public Cantina(ArrayList<Ementa> ementas, ArrayList<Item> items, ArrayList<Bebida> bebidas) {
-        this.ementas = ementas;
-        this.items = items;
-        this.bebidas = bebidas;
+    public Cantina() {
+        this.ementas = new ArrayList<>();
+        this.items = new ArrayList<>();
+        this.bebidas = new ArrayList<>();
     }
 }
