@@ -7,4 +7,8 @@ public class Cliente extends Utilizador {
         super(codigo, nome, senha);
         this.pedidos = new ArrayList<>();
     }
+
+    public ArrayList<Pedido> getPedidos() {
+        return pedidos;
+    }
 }

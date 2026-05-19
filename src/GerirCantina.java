@@ -22,8 +22,10 @@ public class GerirCantina {
 
 
 
-
-
+    public void criarPedidos(Cliente cliente, Bebida bebida, ArrayList<Item> itemsescolhidos){
+        Pedido novoPedido = new Pedido(bebida, itemsescolhidos);
+        cliente.getPedidos() .addnovoPedido();
+    }
 
     /**
      * Metodo para guardar os dados no ficheiro ("dados.dat") sempre que o projeto fecha
