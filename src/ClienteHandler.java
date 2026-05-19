@@ -1,8 +1,9 @@
 import java.io.*;
 import java.net.*;
+import java.time.LocalDate;
 
 public class ClienteHandler extends Thread {
-    private Socket socket;
+    private final Socket socket;
     private ObjectOutputStream saida;
     private ObjectInputStream entrada;
 
@@ -34,20 +35,21 @@ public class ClienteHandler extends Thread {
                     continue;
                 }
 
-                if (msg.getTipo().equalsIgnoreCase("LOGIN_CLIENTE")) {
-                    tipoUser = "Cliente";
+                if (msg.getTipo().equalsIgnoreCase("LOGIN")) {
                     user = (Utilizador) msg.getDados();
+                    tipoUser = user.getClass().getName();
 
                     saida.writeObject(new Mensagem("INFO", user.getNome() + " - Bem-vindo"));
                     saida.flush();
 
-                    System.out.println(user.getCodigo() + " - LOGIN");
+                    System.out.println(tipoUser.toUpperCase() + " | " + user.getCodigo() + " - LOGIN");
 
                 } else if (msg.getTipo().equalsIgnoreCase("CRIAR_PEDIDO")) {
                     if (user == null) {
                         saida.writeObject(new Mensagem("ERRO", "[ATENÇÃO] Primeiro faça login!"));
                         saida.flush();
                     } else {
+
                         Pedido pedido = (Pedido) msg.getDados();
 
                         synchronized (Servidor.pedidos) {
@@ -56,6 +58,8 @@ public class ClienteHandler extends Thread {
 
                         saida.writeObject(new Mensagem("INFO", "Pedido criado com sucesso."));
                         saida.flush();
+
+                        System.out.println(tipoUser.toUpperCase() + " | " + user.getCodigo() + " - LOGIN");
 
                         Servidor.atualizarMonitores();
                     }
@@ -68,6 +72,68 @@ public class ClienteHandler extends Thread {
                     saida.writeObject(new Mensagem("INFO", "Ligação terminada."));
                     saida.flush();
                     break;
+                } else if (msg.getTipo().equalsIgnoreCase("ENTREGAR_PEDIDO")){
+
+                    int numPedido = (int) msg.getDados();
+                    boolean value = false;
+                    for (Pedido pedido : Servidor.pedidos){
+                        System.out.println("TESTE - " + pedido.getCodigo());
+                        if(pedido.getCodigo() == numPedido && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_FAZER){
+                            value = true;
+                            pedido.entregarPedido();
+                            break;
+                        }
+                    }
+
+                    if(value) {
+                        Servidor.atualizarMonitores();
+                        System.out.println(numPedido + " | A ENTREGAR");
+                        saida.writeObject(new Mensagem("INFO", "True"));
+                        saida.flush();
+
+                    } else {
+
+                        saida.writeObject(new Mensagem("INFO", "[ERRO] Nenhum pedido pendente com esse número!"));
+                        saida.flush();
+                    }
+
+                } else if (msg.getTipo().equalsIgnoreCase("PEDIDO_ENTREGUE")){
+
+                    int numPedido = (int) msg.getDados();
+                    for (Pedido pedido : Servidor.pedidos){
+                        if(pedido.getCodigo() == numPedido && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_ENTREGAR){
+                            pedido.pedidoEntregue();
+                            break;
+                        }
+                    }
+
+                    Servidor.atualizarMonitores();
+
+                    System.out.println("PEDIDO #" + numPedido + " | ENTREGUE");
+
+                    saida.writeObject(new Mensagem("INFO", "Pedido entregue!"));
+                    saida.flush();
+
+                } else if (msg.getTipo().equalsIgnoreCase("PEDIDO_NAO_ENTREGUE")){
+
+                    int numPedido = (int) msg.getDados();
+
+                    for (Pedido pedido : Servidor.pedidos){
+                        if(pedido.getCodigo() == numPedido && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_ENTREGAR){
+                            pedido.pedidoNaoEntregue();
+                            break;
+                        }
+                    }
+
+                    Servidor.atualizarMonitores();
+
+                    System.out.println("PEDIDO #" + numPedido + " | NÃO ENTREGUE");
+
+                    saida.writeObject(new Mensagem("INFO", "Pedido não entregue!"));
+                    saida.flush();
+                } else if (msg.getTipo().equalsIgnoreCase("VER_PEDIDOS")){
+                    saida.writeObject(new Mensagem("INFO", Servidor.pedidos));
+                    saida.flush();
                 }
             }
 
