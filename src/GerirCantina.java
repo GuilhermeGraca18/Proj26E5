@@ -20,11 +20,6 @@ public class GerirCantina {
         this.cantina = new Cantina();
     }
 
-
-
-
-
-
     /**
      * Metodo para guardar os dados no ficheiro ("dados.dat") sempre que o projeto fecha
      */

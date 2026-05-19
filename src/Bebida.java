@@ -1,4 +1,6 @@
-public class Bebida {
+import java.io.Serializable;
+
+public class Bebida implements Serializable {
     private String nome;
     private double preco;
 
