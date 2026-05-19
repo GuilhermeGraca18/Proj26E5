@@ -1,4 +1,6 @@
-public class Item {
+import java.io.Serializable;
+
+public class Item implements Serializable {
     private int codigo;
     private String nome;
     private String descricao;
@@ -11,5 +13,10 @@ public class Item {
         this.descricao = descricao;
         this.preco = preco;
         this.tipo = tipo;
+    }
+
+    @Override
+    public String toString() {
+        return nome + " (" + tipo + ")";
     }
 }
