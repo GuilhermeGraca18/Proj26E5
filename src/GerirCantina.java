@@ -20,6 +20,40 @@ public class GerirCantina {
         this.cantina = new Cantina();
     }
 
+    public void visualizarTodosPedidosPendentes(){
+        System.out.println("Pedidos pendentes:");
+
+        boolean encontrou = false;
+
+        for (Utilizador u: utilizadores){
+            if(u instanceof Cliente){
+                Cliente cliente = (Cliente) u;
+                Pedido pendente = cliente.getPedidosPendentes();
+
+                if (pendente != null){
+                    encontrou = true;
+                    System.out.println("\nCliente: " + getNome() + " (" +
+                            "código: " + getCodigo() + ")" );
+                    System.out.println(pendente);
+                }
+            }
+        }
+        if(!encontrou){
+            System.out.println("Não existem pedidos pendentes.");
+        }
+    }
+
+    public void visualizarPedidoPendenteCliente(){
+        System.out.println("O seu pedido pendente: ");
+        Pedido pendente = cliente.getPedidoPendente();
+
+        if (pendente != null){
+            System.out.println(pendente);
+        }else{
+            System.out.println("Não tem nenhum pedido pendente.");
+        }
+    }
+
 
 
 

@@ -7,4 +7,14 @@ public class Cliente extends Utilizador {
         super(codigo, nome, senha);
         this.pedidos = new ArrayList<>();
     }
+
+
+    public Pedido getPedidosPendentes(){
+        for(Pedido p: pedidos){
+            if(p.getEstado() == EstadoPedido.A_FAZER){
+                return p;
+            }
+        }
+        return null;
+    }
 }

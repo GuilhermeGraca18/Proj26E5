@@ -1,4 +1,4 @@
-public class Prato extends Item{
+public class Prato extends Item {
     private TipoPrato tipoPrato;
 
     public Prato(int codigo, String nome, String descricao, double preco, TipoItem tipo, TipoPrato tipoPrato) {

@@ -3,9 +3,16 @@ public class Utilizador {
     private String nome;
     private String senha;
 
-    public Utilizador(int codigo, String nome, String senha){
+    public Utilizador(int codigo, String nome, String senha) {
         this.codigo = codigo;
         this.nome = nome;
         this.senha = senha;
+    }
+
+    public int getCodigo(){ return codigo;
+    }
+    public String getNome(){ return nome;
+    }
+    public String getSenha(){ return senha;
     }
 }
