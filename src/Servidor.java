@@ -9,7 +9,7 @@ public class Servidor {
     public static final List<ObjectOutputStream> monitores = new ArrayList<>();
     public static final ArrayList<Pedido> pedidos = new ArrayList<>();
 
-    public static void main(String[] args) {
+     static void main() {
         try (ServerSocket serverSocket = new ServerSocket(PORTA)) {
 
             System.out.println("Servidor ligado na porta " + PORTA);
@@ -25,6 +25,8 @@ public class Servidor {
             e.printStackTrace();
         }
     }
+
+    // METODO PARA ATUALIZAR O MONITOR
 
     public static void atualizarMonitores() {
         ArrayList<Pedido> pedidosPendentes = new ArrayList<>();
