@@ -20,12 +20,31 @@ public class GerirCantina {
         this.cantina = new Cantina();
     }
 
-
-
-    public void criarPedidos(Cliente cliente, Bebida bebida, ArrayList<Item> itemsescolhidos){
-        Pedido novoPedido = new Pedido(bebida, itemsescolhidos);
-        cliente.getPedidos() .addnovoPedido();
+    public Utilizador pesquisarCliente(int codigoCliente){
+        for (Utilizador cliente : utilizadores){
+            if(cliente.getCodigo() == codigoCliente){
+                return cliente;
+            }
+        }
+        return null;
     }
+
+    public void criarPedidos(int codigoCliente, Bebida bebida, String notas){
+        Utilizador cliente = pesquisarCliente(codigoCliente);
+        cliente.adicionarPedido(new Pedido(bebida, notas));
+    }
+
+    public void adicionarItemsPedido(int codigoCliente){
+        // TODO: pesquisar se tem pedido realizado na data de hoje se sim colocar la o item, se não enviar mensagem a dizer para criar pedido primeiro
+    }
+
+
+
+
+
+
+
+
 
     /**
      * Metodo para guardar os dados no ficheiro ("dados.dat") sempre que o projeto fecha

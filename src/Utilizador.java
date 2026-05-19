@@ -1,4 +1,4 @@
-public class Utilizador {
+public abstract class Utilizador {
     private final int codigo;
     private String nome;
     private String senha;
@@ -8,4 +8,10 @@ public class Utilizador {
         this.nome = nome;
         this.senha = senha;
     }
+
+    public int getCodigo() {
+        return codigo;
+    }
+
+    public abstract void adicionarPedido(Pedido pedido);
 }

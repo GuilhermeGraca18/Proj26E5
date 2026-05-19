@@ -11,4 +11,8 @@ public class Cliente extends Utilizador {
     public ArrayList<Pedido> getPedidos() {
         return pedidos;
     }
+
+    public void adicionarPedido(Pedido pedido){
+       pedidos.add(pedido);
+    }
 }
