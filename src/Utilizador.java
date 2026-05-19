@@ -8,4 +8,8 @@ public class Utilizador {
         this.nome = nome;
         this.senha = senha;
     }
+
+    public int getCodigo() {
+        return codigo;
+    }
 }
