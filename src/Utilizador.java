@@ -1,4 +1,6 @@
-public class Utilizador {
+import java.io.Serializable;
+
+public class Utilizador implements Serializable {
     private final int codigo;
     private String nome;
     private String senha;
@@ -7,5 +9,13 @@ public class Utilizador {
         this.codigo = codigo;
         this.nome = nome;
         this.senha = senha;
+    }
+
+    public int getCodigo() {
+        return codigo;
+    }
+
+    public String getNome() {
+        return nome;
     }
 }

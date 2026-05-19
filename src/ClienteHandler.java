@@ -3,6 +3,11 @@ import java.net.*;
 
 public class ClienteHandler extends Thread {
     private Socket socket;
+    private ObjectOutputStream saida;
+    private ObjectInputStream entrada;
+
+    private Utilizador user = null;
+    private String tipoUser = null;
 
     public ClienteHandler(Socket socket) {
         this.socket = socket;
@@ -11,44 +16,70 @@ public class ClienteHandler extends Thread {
     @Override
     public void run() {
         try {
-            BufferedReader entrada = new BufferedReader(
-                    new InputStreamReader(socket.getInputStream())
-            );
+            saida = new ObjectOutputStream(socket.getOutputStream());
+            entrada = new ObjectInputStream(socket.getInputStream());
 
-            PrintWriter saida = new PrintWriter(
-                    socket.getOutputStream(), true
-            );
+            while (true) {
+                Mensagem msg = (Mensagem) entrada.readObject();
 
-            saida.println("Ligado ao servidor da cantina!");
+                if (msg.getTipo().equalsIgnoreCase("MONITOR")) {
+                    System.out.println("Monitor ligado.");
 
-            String mensagem;
+                    synchronized (Servidor.monitores) {
+                        Servidor.monitores.add(saida);
+                    }
 
-            while ((mensagem = entrada.readLine()) != null) {
-                System.out.println("Cliente disse: " + mensagem);
-
-                if (mensagem.equalsIgnoreCase("SAIR")) {
-                    saida.println("Ligação terminada.");
-                    break;
+                    saida.writeObject(new Mensagem("INFO", "Monitor ligado com sucesso."));
+                    saida.flush();
+                    continue;
                 }
 
-                if (mensagem.equalsIgnoreCase("LOGIN_CLIENTE")) {
-                    saida.println("Login cliente recebido.");
-                } else if (mensagem.equalsIgnoreCase("LOGIN_FUNCIONARIO")) {
-                    saida.println("Login funcionário recebido.");
-                } else if (mensagem.equalsIgnoreCase("REGISTAR_CLIENTE")) {
-                    saida.println("Registo cliente recebido.");
-                } else if (mensagem.equalsIgnoreCase("CRIAR_PEDIDO")) {
-                    saida.println("Pedido criado com sucesso.");
-                } else {
-                    saida.println("Comando recebido: " + mensagem);
+                if (msg.getTipo().equalsIgnoreCase("LOGIN_CLIENTE")) {
+                    tipoUser = "Cliente";
+                    user = (Utilizador) msg.getDados();
+
+                    saida.writeObject(new Mensagem("INFO", user.getNome() + " - Bem-vindo"));
+                    saida.flush();
+
+                    System.out.println(user.getCodigo() + " - LOGIN");
+
+                } else if (msg.getTipo().equalsIgnoreCase("CRIAR_PEDIDO")) {
+                    if (user == null) {
+                        saida.writeObject(new Mensagem("ERRO", "[ATENÇÃO] Primeiro faça login!"));
+                        saida.flush();
+                    } else {
+                        Pedido pedido = (Pedido) msg.getDados();
+
+                        synchronized (Servidor.pedidos) {
+                            Servidor.pedidos.add(pedido);
+                        }
+
+                        saida.writeObject(new Mensagem("INFO", "Pedido criado com sucesso."));
+                        saida.flush();
+
+                        Servidor.atualizarMonitores();
+                    }
+
+                } else if (msg.getTipo().equalsIgnoreCase("SAIR")) {
+                    if (user != null) {
+                        System.out.println(user.getCodigo() + " - TERMINOU A SESSÃO");
+                    }
+
+                    saida.writeObject(new Mensagem("INFO", "Ligação terminada."));
+                    saida.flush();
+                    break;
                 }
             }
 
             socket.close();
-            System.out.println("Cliente desligado.");
 
-        } catch (IOException e) {
-            System.out.println("Cliente perdeu ligação.");
+        } catch (Exception e) {
+            System.out.println("Cliente/Monitor desligado.");
+            System.out.println("[CONSOLE ERROR] - " + e);
+        } finally {
+            synchronized (Servidor.monitores) {
+                Servidor.monitores.remove(saida);
+            }
         }
     }
 }

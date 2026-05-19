@@ -14,4 +14,9 @@ public class Item implements Serializable {
         this.preco = preco;
         this.tipo = tipo;
     }
+
+    @Override
+    public String toString() {
+        return nome + " (" + tipo + ")";
+    }
 }
