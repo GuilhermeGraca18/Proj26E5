@@ -32,20 +32,19 @@ public class GerirCantina {
         return null;
     }
 
-    public void criarPedidos(int codigoCliente, String notas){
-        Utilizador cliente = pesquisarCliente(codigoCliente);
-        Pedido pedido = new Pedido(codigoCliente, notas);
+    public void criarPedidos(Utilizador cliente, String notas){
+        Pedido pedido = new Pedido(cliente, notas);
         pedidos.add(pedido);
     }
 
     /**
      * Pesquisa se existe um pedido pendente do cliente, pelo codigo do Cliente
-     * @param codigoCliente Código do Cliente a pesquisar o pedido
+     * @param cliente Utilizador (Cliente) a pesquisar o pedido
      * @return Retorna o pedido ou nulo, se não existir
      */
-    public Pedido pesquisarPedidoPendente(int codigoCliente){
+    public Pedido pesquisarPedidoPendente(Utilizador cliente){
         for (Pedido pedido : pedidos){
-            if(pedido.getCodigo() == codigoCliente && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_FAZER){
+            if(pedido.getCliente().equals(cliente) && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_FAZER){
                 return pedido;
             }
         }
@@ -61,9 +60,10 @@ public class GerirCantina {
         return null;
     }
 
-    public void adicionarItemsPedido(int codigoCliente, int codigoItem){
-        Utilizador cliente = pesquisarCliente(codigoCliente);
-        Pedido pedido = pesquisarPedidoPendente(codigoCliente);
+    public void adicionarItemsPedido(Utilizador cliente, int codigoItem){
+        Pedido pedido = pesquisarPedidoPendente(cliente);
+        // ESTE O GUILHERME FAZ!!
+
 
     }
 
