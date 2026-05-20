@@ -1,9 +1,9 @@
 import java.util.ArrayList;
 
 public class Cantina {
-    private ArrayList<Ementa> ementas;
-    private ArrayList<Item> items;
-    private ArrayList<Bebida> bebidas;
+    public ArrayList<Ementa> ementas;
+    public ArrayList<Item> items;
+    public ArrayList<Bebida> bebidas;
 
     public Cantina() {
         this.ementas = new ArrayList<>();

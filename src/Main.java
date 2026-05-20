@@ -32,17 +32,25 @@ public class Main {
 
                 switch (n) {
                     case 1:
-                        System.out.println(" --- LOGIN CLIENTE ");
-                        System.out.print("Número do cliente: ");
-                        int codigo = input.nextInt();
-                        input.nextLine();
-                        System.out.print("Nome do cliente: ");
-                        String nomeCliente = input.nextLine();
-                        System.out.print("Senha: ");
-                        char[] senhaChars = console.readPassword();
-                        String senha = new String(senhaChars);
+                        try {
+                            /**
+                             * EXEMPLO DE TESTE SEM REGISTO - LOGIN FALSO
+                             */
+                            System.out.println(" --- LOGIN CLIENTE ");
+                            System.out.print("Número do cliente: ");
+                            int codigo = input.nextInt();
+                            input.nextLine();
+                            System.out.print("Nome do cliente: ");
+                            String nomeCliente = input.nextLine();
+                            System.out.print("Senha: ");
+                            char[] senhaChars = console.readPassword();
+                            String senha = new String(senhaChars);
 
-                        user = new Cliente(codigo, nomeCliente, senha);
+                            user = new Cliente(codigo, nomeCliente, senha);
+
+                        } catch (Exception e){
+                            System.out.println("[ERRO] Dados introduzido inválidos");
+                        }
 
                         // ENVIOS PARA SERVIDOR
 
@@ -59,21 +67,29 @@ public class Main {
                         System.out.print("\033]0;CANTINA | CLIENTE - " + user.getNome() + "\007");
                         System.out.flush();
 
-                        // Exemplo temporário
                         break;
 
                     case 2:
-                        System.out.println(" --- LOGIN FUNCIONÁRIO ");
-                        System.out.print("Número do Funcionário: ");
-                        codigo = input.nextInt();
-                        input.nextLine();
-                        System.out.print("Nome do Funcionário: ");
-                        String nomeFuncionario = input.nextLine();
-                        System.out.print("Senha: ");
-                        senhaChars = console.readPassword();
-                        senha = new String(senhaChars);
+                        /**
+                         * EXEMPLO DE TESTE SEM REGISTO - LOGIN FALSO
+                         */
 
-                        user = new Utilizador(codigo, nomeFuncionario, senha);
+                        try {
+                            System.out.println(" --- LOGIN FUNCIONÁRIO ");
+                            System.out.print("Número do Funcionário: ");
+                            int codigo = input.nextInt();
+                            input.nextLine();
+                            System.out.print("Nome do Funcionário: ");
+                            String nomeFuncionario = input.nextLine();
+                            System.out.print("Senha: ");
+                            char[] senhaChars = console.readPassword();
+                            String senha = new String(senhaChars);
+
+                            user = new Utilizador(codigo, nomeFuncionario, senha);
+
+                        } catch (Exception e){
+                            System.out.println("[ERRO] Dados introduzido inválidos");
+                        }
 
                         // ENVIOS PARA SERVIDOR
 
@@ -96,7 +112,6 @@ public class Main {
                         saida.flush();
                         System.out.println("A sair...");
                         break;
-
                     default:
                         System.out.println("[ERRO] Ação inválida");
                         break;
@@ -127,6 +142,9 @@ public class Main {
 
                     switch (n){
                         case 1:
+                            /**
+                             * EXEMPLO DE TESTE DE CRIAÇÃO DE PEDIDO
+                             */
                             Pedido pedidoCliente = null;
                             System.out.print("Número do pedido: ");
                             int numPedido = input.nextInt();

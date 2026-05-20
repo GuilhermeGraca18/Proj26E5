@@ -44,7 +44,8 @@ public class ClienteHandler extends Thread {
 
                     System.out.println(tipoUser.toUpperCase() + " | " + user.getCodigo() + " - LOGIN");
 
-                } else if (msg.getTipo().equalsIgnoreCase("CRIAR_PEDIDO")) {
+                }
+                else if (msg.getTipo().equalsIgnoreCase("CRIAR_PEDIDO")) {
                     if (user == null) {
                         saida.writeObject(new Mensagem("ERRO", "[ATENÇÃO] Primeiro faça login!"));
                         saida.flush();
@@ -64,7 +65,8 @@ public class ClienteHandler extends Thread {
                         Servidor.atualizarMonitores();
                     }
 
-                } else if (msg.getTipo().equalsIgnoreCase("SAIR")) {
+                }
+                else if (msg.getTipo().equalsIgnoreCase("SAIR")) {
                     if (user != null) {
                         System.out.println(user.getCodigo() + " - TERMINOU A SESSÃO");
                     }
@@ -72,7 +74,8 @@ public class ClienteHandler extends Thread {
                     saida.writeObject(new Mensagem("INFO", "Ligação terminada."));
                     saida.flush();
                     break;
-                } else if (msg.getTipo().equalsIgnoreCase("ENTREGAR_PEDIDO")){
+                }
+                else if (msg.getTipo().equalsIgnoreCase("ENTREGAR_PEDIDO")){
 
                     int numPedido = (int) msg.getDados();
                     boolean value = false;
@@ -97,7 +100,8 @@ public class ClienteHandler extends Thread {
                         saida.flush();
                     }
 
-                } else if (msg.getTipo().equalsIgnoreCase("PEDIDO_ENTREGUE")){
+                }
+                else if (msg.getTipo().equalsIgnoreCase("PEDIDO_ENTREGUE")){
 
                     int numPedido = (int) msg.getDados();
                     for (Pedido pedido : Servidor.pedidos){
@@ -114,7 +118,8 @@ public class ClienteHandler extends Thread {
                     saida.writeObject(new Mensagem("INFO", "Pedido entregue!"));
                     saida.flush();
 
-                } else if (msg.getTipo().equalsIgnoreCase("PEDIDO_NAO_ENTREGUE")){
+                }
+                else if (msg.getTipo().equalsIgnoreCase("PEDIDO_NAO_ENTREGUE")){
 
                     int numPedido = (int) msg.getDados();
 
@@ -131,7 +136,8 @@ public class ClienteHandler extends Thread {
 
                     saida.writeObject(new Mensagem("INFO", "Pedido não entregue!"));
                     saida.flush();
-                } else if (msg.getTipo().equalsIgnoreCase("VER_PEDIDOS")){
+                }
+                else if (msg.getTipo().equalsIgnoreCase("VER_PEDIDOS")){
                     saida.writeObject(new Mensagem("INFO", Servidor.pedidos));
                     saida.flush();
                 }

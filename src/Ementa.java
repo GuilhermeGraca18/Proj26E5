@@ -3,10 +3,18 @@ import java.util.ArrayList;
 
 public class Ementa {
     private LocalDate data;
-    private ArrayList<Item> items;
+    private ArrayList<ItemDia> itemsDia;
 
-    public Ementa(LocalDate data, ArrayList<Item> items) {
+    public Ementa(LocalDate data) {
         this.data = data;
-        this.items = items;
+        this.itemsDia = new ArrayList<>();
+    }
+
+    public LocalDate getData() {
+        return data;
+    }
+
+    public ArrayList<ItemDia> getItemsDia() {
+        return itemsDia;
     }
 }

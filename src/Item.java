@@ -15,6 +15,14 @@ public class Item implements Serializable {
         this.tipo = tipo;
     }
 
+    public double getPreco() {
+        return preco;
+    }
+
+    public int getCodigo() {
+        return codigo;
+    }
+
     @Override
     public String toString() {
         return nome + " (" + tipo + ")";
