@@ -78,8 +78,8 @@ public class ClienteHandler extends Thread {
                     int numPedido = (int) msg.getDados();
                     boolean value = false;
                     for (Pedido pedido : Servidor.pedidos){
-                        System.out.println("TESTE - " + pedido.getCodigo());
-                        if(pedido.getCodigo() == numPedido && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_FAZER){
+                        System.out.println("TESTE - " + pedido.getCliente().getCodigo());
+                        if(pedido.getCliente().getCodigo() == numPedido && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_FAZER){
                             value = true;
                             pedido.entregarPedido();
                             break;
@@ -103,7 +103,7 @@ public class ClienteHandler extends Thread {
 
                     int numPedido = (int) msg.getDados();
                     for (Pedido pedido : Servidor.pedidos){
-                        if(pedido.getCodigo() == numPedido && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_ENTREGAR){
+                        if(pedido.getCliente().getCodigo() == numPedido && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_ENTREGAR){
                             pedido.pedidoEntregue();
                             break;
                         }
@@ -122,7 +122,7 @@ public class ClienteHandler extends Thread {
                     int numPedido = (int) msg.getDados();
 
                     for (Pedido pedido : Servidor.pedidos){
-                        if(pedido.getCodigo() == numPedido && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_ENTREGAR){
+                        if(pedido.getCliente().getCodigo() == numPedido && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_ENTREGAR){
                             pedido.pedidoNaoEntregue();
                             break;
                         }
