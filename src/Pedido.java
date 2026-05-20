@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.io.Serializable;
 
 public class Pedido implements Serializable{
-    private int codigo;
-    private Bebida bebida;
+    private Utilizador cliente;
     private ArrayList<Item> items; // todo: verificar se tem prato, sobremesa e entrega e quantidades, por causa do preço
     private EstadoPedido estado;
     private String notas;
     private LocalDate data;
 
-    public Pedido(int codigo, Bebida bebida, String notas) {
-        this.codigo = codigo;
-        this.bebida = bebida;
+    public Pedido(Utilizador cliente, String notas) {
+        this.cliente = cliente;
         this.items = new ArrayList<>();
         this.estado = EstadoPedido.A_FAZER;
         this.notas = notas;
@@ -24,8 +22,8 @@ public class Pedido implements Serializable{
         items.add(item);
     }
 
-    public int getCodigo() {
-        return codigo;
+    public Utilizador getCliente() {
+        return cliente;
     }
 
     public EstadoPedido getEstado() {
@@ -56,8 +54,7 @@ public class Pedido implements Serializable{
             listaItems += "\n - " + item;
         }
 
-        return "CODIGO #" + codigo +
-                "\nBebida: " + bebida.getNome() +
+        return "CODIGO #" + cliente.getCodigo() +
                 "\nItems:" + listaItems +
                 "\nNotas: " + notas +
                 "\nEstado: " + estado;

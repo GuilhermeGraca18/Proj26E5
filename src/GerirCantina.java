@@ -32,9 +32,9 @@ public class GerirCantina {
         return null;
     }
 
-    public void criarPedidos(int codigoCliente, Bebida bebida, String notas){
+    public void criarPedidos(int codigoCliente, String notas){
         Utilizador cliente = pesquisarCliente(codigoCliente);
-        Pedido pedido = new Pedido(codigoCliente, bebida, notas);
+        Pedido pedido = new Pedido(codigoCliente, notas);
         pedidos.add(pedido);
     }
 

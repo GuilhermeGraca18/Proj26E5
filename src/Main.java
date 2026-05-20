@@ -46,7 +46,7 @@ public class Main {
                             char[] senhaChars = console.readPassword();
                             String senha = new String(senhaChars);
 
-                            user = new Cliente(codigo, nomeCliente, senha);
+                            user = new Utilizador(codigo, nomeCliente, senha, TipoUtilizador.CLIENTE);
 
                         } catch (Exception e){
                             System.out.println("[ERRO] Dados introduzido inválidos");
@@ -85,7 +85,7 @@ public class Main {
                             char[] senhaChars = console.readPassword();
                             String senha = new String(senhaChars);
 
-                            user = new Utilizador(codigo, nomeFuncionario, senha);
+                            user = new Utilizador(codigo, nomeFuncionario, senha, TipoUtilizador.FUNCIONARIO);
 
                         } catch (Exception e){
                             System.out.println("[ERRO] Dados introduzido inválidos");
@@ -118,7 +118,7 @@ public class Main {
                 }
             }
 
-            if (user.getClass().getName().equalsIgnoreCase("Utilizador")) {
+            if (user.getTipo().equals(TipoUtilizador.FUNCIONARIO)) {
 
                 while (n != 0) {
                     System.out.println(" --- ÁREA DO FUNCIONÁRIO | CANTINA ---");
@@ -202,7 +202,7 @@ public class Main {
 
                 }
 
-            } else if (user.getClass().getName().equalsIgnoreCase("Cliente")) {
+            } else if (user.getTipo().equals(TipoUtilizador.CLIENTE)) {
 
                 while ( n != 0 ) {
                     System.out.println(" --- ÁREA DO CLIENTE | CANTINA ---");
@@ -220,7 +220,14 @@ public class Main {
 
                     switch (n) {
                         case 1:
-                            Bebida bebida = new Bebida("Água", 2);
+
+                            Item bebida = new Item(
+                                    111,
+                                    "Cola",
+                                    "",
+                                    2,
+                                    TipoItem.Entrada
+                            );
 
                             Item entradaPedido = new Item(
                                     111,
@@ -238,7 +245,7 @@ public class Main {
                                     TipoItem.Prato
                             );
 
-                            Pedido pedido = new Pedido(user.getCodigo(), bebida, "NOTAS");
+                            Pedido pedido = new Pedido(user, "NOTAS");
 
                             saida.writeObject(new Mensagem("CRIAR_PEDIDO", pedido));
                             saida.flush();

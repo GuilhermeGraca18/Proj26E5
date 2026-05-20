@@ -8,7 +8,6 @@ public class ClienteHandler extends Thread {
     private ObjectInputStream entrada;
 
     private Utilizador user = null;
-    private String tipoUser = null;
 
     public ClienteHandler(Socket socket) {
         this.socket = socket;
@@ -37,12 +36,11 @@ public class ClienteHandler extends Thread {
 
                 if (msg.getTipo().equalsIgnoreCase("LOGIN")) {
                     user = (Utilizador) msg.getDados();
-                    tipoUser = user.getClass().getName();
 
                     saida.writeObject(new Mensagem("INFO", user.getNome() + " - Bem-vindo"));
                     saida.flush();
 
-                    System.out.println(tipoUser.toUpperCase() + " | " + user.getCodigo() + " - LOGIN");
+                    System.out.println(user.getTipo() + " | " + user.getCodigo() + " - LOGIN");
 
                 }
                 else if (msg.getTipo().equalsIgnoreCase("CRIAR_PEDIDO")) {
@@ -60,7 +58,7 @@ public class ClienteHandler extends Thread {
                         saida.writeObject(new Mensagem("INFO", "Pedido criado com sucesso."));
                         saida.flush();
 
-                        System.out.println(tipoUser.toUpperCase() + " | " + user.getCodigo() + " - LOGIN");
+                        System.out.println(user.getTipo() + " | " + user.getCodigo() + " - LOGIN");
 
                         Servidor.atualizarMonitores();
                     }
