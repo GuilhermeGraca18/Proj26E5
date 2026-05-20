@@ -1,4 +1,6 @@
-public abstract class Utilizador {
+import java.io.Serializable;
+
+public class Utilizador implements Serializable {
     private final int codigo;
     private String nome;
     private String senha;
@@ -13,5 +15,7 @@ public abstract class Utilizador {
         return codigo;
     }
 
-    public abstract void adicionarPedido(Pedido pedido);
+    public String getNome() {
+        return nome;
+    }
 }
