@@ -24,12 +24,24 @@ public class Pedido implements Serializable{
         items.add(item);
     }
 
+    public int getCodigo() {
+        return codigo;
+    }
+
     public EstadoPedido getEstado() {
         return estado;
     }
 
-    public int getCodigo() {
-        return codigo;
+    public void entregarPedido(){
+        estado = EstadoPedido.A_ENTREGAR;
+    }
+
+    public void pedidoEntregue(){
+        estado = EstadoPedido.ENTREGUE;
+    }
+
+    public void pedidoNaoEntregue(){
+        estado = EstadoPedido.NAO_ENTREGUE;
     }
 
     public LocalDate getData() {
