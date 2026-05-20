@@ -12,8 +12,4 @@ public class Cliente extends Utilizador implements Serializable {
     public ArrayList<Pedido> getPedidos() {
         return pedidos;
     }
-
-    public void adicionarPedido(Pedido pedido){
-       pedidos.add(pedido);
-    }
 }

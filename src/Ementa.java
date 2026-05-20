@@ -9,4 +9,12 @@ public class Ementa {
         this.data = data;
         this.itemsDia = new ArrayList<>();
     }
+
+    public LocalDate getData() {
+        return data;
+    }
+
+    public ArrayList<ItemDia> getItemsDia() {
+        return itemsDia;
+    }
 }

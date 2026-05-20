@@ -18,4 +18,5 @@ public class Utilizador implements Serializable {
     public String getNome() {
         return nome;
     }
+
 }

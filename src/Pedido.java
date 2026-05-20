@@ -28,6 +28,14 @@ public class Pedido implements Serializable{
         return estado;
     }
 
+    public int getCodigo() {
+        return codigo;
+    }
+
+    public LocalDate getData() {
+        return data;
+    }
+
     @Override
     public String toString() {
         String listaItems = "";
