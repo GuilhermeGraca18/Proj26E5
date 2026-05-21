@@ -23,6 +23,8 @@ public class GerirCantina {
         this.pedidos = new ArrayList<>();
     }
 
+    // UTILIZADOR - METODOS
+
     public void registarUser(Utilizador user){
         if (user!= null){
             utilizadores.add(user);
@@ -37,8 +39,17 @@ public class GerirCantina {
         return null;
     }
 
-    public void criarPedidos(Utilizador user, String notas){
-        Pedido pedido = new Pedido(user, notas);
+    public boolean verificarPassword(Utilizador user, String pass){
+        if(user.getSenha().equalsIgnoreCase(pass)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // PEDIDOS - METODOS
+
+    public void criarPedidos(Pedido pedido){;
         pedidos.add(pedido);
     }
 
@@ -56,6 +67,26 @@ public class GerirCantina {
 
         return null;
     }
+
+    public boolean adicionarItemsPedido(Utilizador cliente, int codigoItem){
+        Pedido pedido = pesquisarPedidoPendente(cliente);
+        Ementa ementa = pesquisarEmentaHoje();
+        if(pedido != null && ementa != null){
+            ArrayList<ItemDia> itemsDia = ementa.getItemsDia();
+            for (ItemDia itemDia : itemsDia){
+                Item item = itemDia.getItem();
+                if(item.getCodigo() == codigoItem && itemDia.getStock() > 0){
+                    pedido.adicionarItems(item);
+                    itemDia.decrementarStock();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // EMENTA - METODOS
+
     public Ementa pesquisarEmentaHoje(){
         for (Ementa ementa : cantina.ementas){
             if(ementa.getData().equals((LocalDate.now()))){
@@ -65,19 +96,27 @@ public class GerirCantina {
         return null;
     }
 
-    public void adicionarItemsPedido(Utilizador cliente, int codigoItem){
-        Pedido pedido = pesquisarPedidoPendente(cliente);
-        // ESTE O GUILHERME FAZ!!
+    // LISTA DE ITEMS - METODOS
 
-    }
-
-    public boolean verificarPassword(Utilizador user, String pass){
-        if(user.getSenha().equalsIgnoreCase(pass)){
-            return true;
-        } else {
-            return false;
+    public Item pesquisarItem(int codigoItem){
+        ArrayList<Item> items = cantina.items;
+        for (Item item : items){
+            if (item.getCodigo() == codigoItem){
+                return item;
+            }
         }
+        return null;
     }
+
+    public void registarItem(Item item){
+        cantina.registarItem(item);
+    }
+
+    public ArrayList<Item> getListaItems(){
+        return  cantina.getItems();
+    }
+
+    // GETS
 
     public ArrayList<Pedido> getPedidos() {
         return pedidos;
@@ -86,6 +125,8 @@ public class GerirCantina {
     public ArrayList<Utilizador> getUtilizadores() {
         return utilizadores;
     }
+
+    // SAVES DE DADOS
 
     /**
      * Metodo para guardar os dados no ficheiro ("dados.dat") sempre que o projeto fecha
@@ -96,6 +137,7 @@ public class GerirCantina {
 
             out.writeObject(utilizadores);
             out.writeObject(cantina);
+            out.writeObject(pedidos);
 
             out.close();
         } catch (Exception e) {
@@ -110,8 +152,27 @@ public class GerirCantina {
         try {
             ObjectInputStream in = new ObjectInputStream( new FileInputStream("dados.dat"));
 
-            utilizadores = (ArrayList<Utilizador>)  in.readObject();
-            cantina = (Cantina) in.readObject();
+            Object objUtilizadores = in.readObject();
+            Object objCantina = in.readObject();
+            Object objPedidos = in.readObject();
+
+            if (objUtilizadores instanceof ArrayList<?> listaUtilizadores) {
+                utilizadores = new ArrayList<>();
+                for (Object obj : listaUtilizadores) {
+                    utilizadores.add((Utilizador) obj);
+                }
+            }
+
+            if (objCantina instanceof Cantina) {
+                cantina = (Cantina) objCantina;
+            }
+
+            if (objPedidos instanceof ArrayList<?> listaPedidos) {
+                pedidos = new ArrayList<>();
+                for (Object obj : listaPedidos) {
+                    pedidos.add((Pedido) obj);
+                }
+            }
 
             in.close();
         } catch (Exception e) {

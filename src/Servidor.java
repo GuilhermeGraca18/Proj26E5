@@ -7,9 +7,18 @@ public class Servidor {
     private static final int PORTA = 5001;
 
     public static final List<ObjectOutputStream> monitores = new ArrayList<>();
-    public static final GerirCantina gerir = new GerirCantina();
 
-     static void main() {
+    public static final GerirCantina gerir = GerirCantina.getInstance();
+
+     public static void main() {
+        gerir.carregarDados();
+
+         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+             System.out.println("A guardar dados...");
+             gerir.guardarDados();
+         }));
+
+
         try (ServerSocket serverSocket = new ServerSocket(PORTA)) {
 
             System.out.println("Servidor ligado na porta " + PORTA);

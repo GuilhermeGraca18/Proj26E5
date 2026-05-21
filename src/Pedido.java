@@ -54,7 +54,7 @@ public class Pedido implements Serializable{
             listaItems += "\n - " + item;
         }
 
-        return "CODIGO #" + cliente.getCodigo() +
+        return "CODIGO #" + cliente.getCodigo() + " (" + cliente.getNome() + ")" +
                 "\nItems:" + listaItems +
                 "\nNotas: " + notas +
                 "\nEstado: " + estado;

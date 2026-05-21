@@ -11,6 +11,10 @@ public class ItemDia {
         return item;
     }
 
+    public void decrementarStock(){
+        stock = stock - 1;
+    }
+
     public int getStock() {
         return stock;
     }

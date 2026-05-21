@@ -23,8 +23,21 @@ public class Item implements Serializable {
         return codigo;
     }
 
+    public TipoItem getTipo() {
+        return tipo;
+    }
+
     @Override
     public String toString() {
         return nome + " (" + tipo + ")";
+    }
+
+    public String toStringDetalhado() {
+        return "Código: " + codigo +
+                "\nNome: " + nome +
+                "\nDescrição: " + descricao +
+                "\nPreço: " + preco + "€" +
+                "\nTipo: " + tipo +
+                "\n===========\n";
     }
 }

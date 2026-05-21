@@ -40,7 +40,7 @@ public class ClienteHandler extends Thread {
 
                     int codigoUser = (int) dados.get(0);
                     String senha = (String) dados.get(1);
-                    user = Servidor.gerir.pesquisarCliente(codigoUser);
+                    user = Servidor.gerir.pesquisarUtilizador(codigoUser);
                     if(user != null) {
 
                         if (Servidor.gerir.verificarPassword(user, senha)) {
@@ -52,14 +52,14 @@ public class ClienteHandler extends Thread {
                             saida.writeObject(new Mensagem("TRUE", dadosCliente));
                             saida.flush();
 
-                            System.out.println(user.getTipo() + " | " + user.getCodigo() + " - LOGIN");
+                            System.out.println("[" + msg.getTipo() + "] " + user.getTipo() + " | " + user.getCodigo() + "");
                         } else {
 
                             user = null;
                             saida.writeObject(new Mensagem("FALSE", "Login Falhou - Senha errada!"));
                             saida.flush();
 
-                            System.out.println(socket.getInetAddress() + " - LOGIN INVÁLIDO");
+                            System.out.println("[" + msg.getTipo() + "] " + socket.getInetAddress() + " - LOGIN INVÁLIDO");
                         }
                     } else {
                         saida.writeObject(new Mensagem("FALSE", "Login Falhou - Código errado!"));
@@ -72,15 +72,45 @@ public class ClienteHandler extends Thread {
                 else if (msg.getTipo().equalsIgnoreCase("REGISTO")){
                     user = (Utilizador) msg.getDados();
 
-                    Servidor.gerir.getUtilizadores().add(user);
+                    if(Servidor.gerir.pesquisarUtilizador(user.getCodigo()) == null){
+                        Servidor.gerir.registarUser(user);
+                        Servidor.gerir.guardarDados();
 
-                    saida.writeObject(new Mensagem("INFO", user.getNome() + " - Bem-vindo"));
-                    saida.flush();
+                        saida.writeObject(new Mensagem("INFO", user.getNome() + " - Bem-vindo"));
+                        saida.flush();
 
-                    System.out.println(user.getTipo() + " | " + user.getCodigo() + " - REGISTADO");
+                        System.out.println( "[" + msg.getTipo() + "] " + user.getTipo() + " | " + user.getCodigo() + " - CLIENTE REGISTADO COM SUCESSO");
+
+                    } else {
+                        saida.writeObject(new Mensagem("INFO", "Esse código de utilizador já foi registado!"));
+                        saida.flush();
+                    }
+
+
 
                 }
-                else if (msg.getTipo().equalsIgnoreCase("CRIAR_PEDIDO")) {
+                else if (msg.getTipo().equalsIgnoreCase("ADICIONAR_ITEM")) {
+                    Item item = (Item) msg.getDados();
+
+                    if(Servidor.gerir.pesquisarItem(item.getCodigo()) == null){
+                        Servidor.gerir.registarItem(item);
+                        Servidor.gerir.guardarDados();
+
+                        saida.writeObject(new Mensagem("INFO", item.getTipo().name().toUpperCase() + ": ADICIONADO À LISTA DE ITEMS!"));
+                        saida.flush();
+
+                        System.out.println( "[" + msg.getTipo() + "] " + item.getTipo().name().toUpperCase() + " | " + item.getCodigo() + " - ADICIONADO");
+                    } else {
+                        saida.writeObject(new Mensagem("INFO", "Esse item já existe na lista!"));
+                        saida.flush();
+                    }
+                }
+                else if (msg.getTipo().equalsIgnoreCase("VER_LISTA_ITEMS")) {
+                    saida.reset();
+                    saida.writeObject(new Mensagem("INFO", Servidor.gerir.getListaItems()));
+                    saida.flush();
+
+                } else if (msg.getTipo().equalsIgnoreCase("CRIAR_PEDIDO")) {
                     if (user == null) {
                         saida.writeObject(new Mensagem("ERRO", "[ATENÇÃO] Primeiro faça login!"));
                         saida.flush();
@@ -89,13 +119,14 @@ public class ClienteHandler extends Thread {
                         Pedido pedido = (Pedido) msg.getDados();
 
                         synchronized (Servidor.gerir.getPedidos()) {
-                            Servidor.gerir.getPedidos().add(pedido);
+                            Servidor.gerir.criarPedidos(pedido);
+                            Servidor.gerir.guardarDados();
                         }
 
                         saida.writeObject(new Mensagem("INFO", "Pedido criado com sucesso."));
                         saida.flush();
 
-                        System.out.println(user.getTipo() + " | " + user.getCodigo() + " - LOGIN");
+                        System.out.println( "[" + msg.getTipo() + "] " + user.getTipo() + " | " + user.getCodigo() + " - LOGIN");
 
                         Servidor.atualizarMonitores();
                     }
@@ -103,7 +134,7 @@ public class ClienteHandler extends Thread {
                 }
                 else if (msg.getTipo().equalsIgnoreCase("SAIR")) {
                     if (user != null) {
-                        System.out.println(user.getCodigo() + " - TERMINOU A SESSÃO");
+                        System.out.println( "[" + msg.getTipo() + "] " + user.getCodigo() + " - TERMINOU A SESSÃO");
                     }
 
                     saida.writeObject(new Mensagem("INFO", "Ligação terminada."));
@@ -115,17 +146,17 @@ public class ClienteHandler extends Thread {
                     int numPedido = (int) msg.getDados();
                     boolean value = false;
                     for (Pedido pedido : Servidor.gerir.getPedidos()){
-                        System.out.println("TESTE - " + pedido.getCliente().getCodigo());
                         if(pedido.getCliente().getCodigo() == numPedido && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_FAZER){
                             value = true;
                             pedido.entregarPedido();
+                            Servidor.gerir.guardarDados();
                             break;
                         }
                     }
 
                     if(value) {
                         Servidor.atualizarMonitores();
-                        System.out.println(numPedido + " | A ENTREGAR");
+                        System.out.println("PEDIDO #" + numPedido + " | A ENTREGAR");
                         saida.writeObject(new Mensagem("INFO", "True"));
                         saida.flush();
 
@@ -142,6 +173,7 @@ public class ClienteHandler extends Thread {
                     for (Pedido pedido : Servidor.gerir.getPedidos()){
                         if(pedido.getCliente().getCodigo() == numPedido && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_ENTREGAR){
                             pedido.pedidoEntregue();
+                            Servidor.gerir.guardarDados();
                             break;
                         }
                     }
@@ -161,6 +193,7 @@ public class ClienteHandler extends Thread {
                     for (Pedido pedido : Servidor.gerir.getPedidos()){
                         if(pedido.getCliente().getCodigo() == numPedido && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_ENTREGAR){
                             pedido.pedidoNaoEntregue();
+                            Servidor.gerir.guardarDados();
                             break;
                         }
                     }
@@ -173,6 +206,7 @@ public class ClienteHandler extends Thread {
                     saida.flush();
                 }
                 else if (msg.getTipo().equalsIgnoreCase("VER_PEDIDOS")){
+                    saida.reset();
                     saida.writeObject(new Mensagem("INFO", Servidor.gerir.getPedidos()));
                     saida.flush();
                 }
@@ -182,7 +216,7 @@ public class ClienteHandler extends Thread {
 
         } catch (Exception e) {
             System.out.println("Cliente/Monitor desligado.");
-            System.out.println("[CONSOLE ERROR] - " + e);
+            /*System.out.println("[CONSOLE ERROR] - " + e);*/
         } finally {
             synchronized (Servidor.monitores) {
                 Servidor.monitores.remove(saida);
