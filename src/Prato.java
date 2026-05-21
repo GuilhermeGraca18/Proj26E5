@@ -7,4 +7,8 @@ public class Prato extends Item implements Serializable {
         super(codigo, nome, descricao, preco, tipo);
         this.tipoPrato = tipoPrato;
     }
+    
+    public TipoPrato getTipoPrato() {
+    	return tipoPrato;
+    }
 }

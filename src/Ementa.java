@@ -17,4 +17,12 @@ public class Ementa {
     public ArrayList<ItemDia> getItemsDia() {
         return itemsDia;
     }
+    
+    public void setItemDia(ArrayList<ItemDia> itens) {
+    	itemsDia = itens;
+    }
+    
+    public String toString() {
+    	return "Data: " + data + " Itens do Dia: " + itemsDia ;
+    }
 }

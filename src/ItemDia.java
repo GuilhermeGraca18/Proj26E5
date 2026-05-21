@@ -18,5 +18,9 @@ public class ItemDia {
     public int getStock() {
         return stock;
     }
+    
+    public String toString() {
+    	return "Item: " + item + " Stock: " + stock;
+    }
 }
 

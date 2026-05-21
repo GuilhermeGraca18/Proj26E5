@@ -124,7 +124,7 @@ public class GerirCantina {
     		
     		for(Item j : i.getItens()) {
     			
-    			System.out.println(j.getNome() + "\t" + j.getCodigo + "\t" + j.getPreco() + "\t" + i.getData());
+    			System.out.println(j.getNome() + "\t" + j.getCodigo() + "\t" + j.getPreco() + "\t" + i.getData());
     			
     			total = total + j.getPreco();
     			
@@ -206,4 +206,12 @@ public class GerirCantina {
         }
     }
 
+    /**
+     * @author Diana Santos - 53267
+     * Metodo para criar ementa
+     */
+    
+    public void registarEmenta(Ementa ementa, ArrayList<ItemDia> itens)) {
+        ementa.setItemDia(itens);
+    }
 }
