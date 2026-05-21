@@ -25,6 +25,10 @@ public class Pedido implements Serializable{
     public Utilizador getCliente() {
         return cliente;
     }
+    
+    public ArrayList<Item> getItens() {
+    	return items;
+    }
 
     public EstadoPedido getEstado() {
         return estado;

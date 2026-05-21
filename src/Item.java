@@ -14,6 +14,10 @@ public class Item implements Serializable {
         this.preco = preco;
         this.tipo = tipo;
     }
+    
+    public String getNome() {
+    	return nome;
+    }
 
     public double getPreco() {
         return preco;
@@ -25,6 +29,10 @@ public class Item implements Serializable {
 
     public TipoItem getTipo() {
         return tipo;
+    }
+    
+    public String getDescricao() {
+    	return descricao;
     }
 
     @Override

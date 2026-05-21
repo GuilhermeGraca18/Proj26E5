@@ -107,6 +107,32 @@ public class GerirCantina {
         }
         return null;
     }
+    
+    /**
+     * @author Arthur Santana - 53987
+     * Metodo para criar relatorio de vendas de artigos total.
+     */
+    public void criarRelatorio() {
+    	
+    	double total = 0;
+    	
+    	System.out.println("\tArtigos vendidos");
+    	System.out.println("\nNome: \tCódigo: \tPreço: \tData: ");
+    	System.out.println();
+    	
+    	for(Pedido i : pedidos) {
+    		
+    		for(Item j : i.getItens()) {
+    			
+    			System.out.println(j.getNome() + "\t" + j.getCodigo + "\t" + j.getPreco() + "\t" + i.getData());
+    			
+    			total = total + j.getPreco();
+    			
+    		}
+    	}
+    	
+    	System.out.println("Total de Vendas: " + total);
+    }
 
     public void registarItem(Item item){
         cantina.registarItem(item);

@@ -166,6 +166,7 @@ public class Main {
                     System.out.println(" 7 - Ver Pedidos Pendentes");
                     System.out.println(" 8 - Ver Pedidos Geral");
                     System.out.println(" 9 - Ver Utilizadores Geral");
+                    System.out.println(" 10 - Criar Relatório");
 
                     System.out.println(" 0 - Sair");
 
@@ -290,6 +291,10 @@ public class Main {
 
 
                             break;
+                        case 10: // CRIAR RELATORIO
+                        	try {
+                        		
+                        	}
                         case 0:
                             saida.reset();
                             saida.writeObject(new Mensagem("SAIR", null));
