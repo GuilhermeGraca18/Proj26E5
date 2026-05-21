@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.io.*;
 
@@ -14,46 +15,57 @@ public class GerirCantina {
 
     private ArrayList<Utilizador> utilizadores;
     private Cantina cantina;
+    private ArrayList<Pedido> pedidos;
 
     public GerirCantina() {
         this.utilizadores = new ArrayList<>();
         this.cantina = new Cantina();
+        this.pedidos = new ArrayList<>();
     }
 
-    public void visualizarTodosPedidosPendentes(){
-        System.out.println("Pedidos pendentes:");
-
-        boolean encontrou = false;
-
-        for (Utilizador u: utilizadores){
-            if(u instanceof Cliente){
-                Cliente cliente = (Cliente) u;
-                Pedido pendente = cliente.getPedidosPendentes();
-
-                if (pendente != null){
-                    encontrou = true;
-                    System.out.println("\nCliente: " + getNome() + " (" +
-                            "código: " + getCodigo() + ")" );
-                    System.out.println(pendente);
-                }
+    public Utilizador pesquisarCliente(int codigoCliente){
+        for (Utilizador cliente : utilizadores){
+            if(cliente.getCodigo() == codigoCliente){
+                return cliente;
             }
         }
-        if(!encontrou){
-            System.out.println("Não existem pedidos pendentes.");
-        }
+        return null;
     }
 
-    public void visualizarPedidoPendenteCliente(){
-        System.out.println("O seu pedido pendente: ");
-        Pedido pendente = cliente.getPedidoPendente();
-
-        if (pendente != null){
-            System.out.println(pendente);
-        }else{
-            System.out.println("Não tem nenhum pedido pendente.");
-        }
+    public void criarPedidos(Utilizador cliente, String notas){
+        Pedido pedido = new Pedido(cliente, notas);
+        pedidos.add(pedido);
     }
 
+    /**
+     * Pesquisa se existe um pedido pendente do cliente, pelo codigo do Cliente
+     * @param cliente Utilizador (Cliente) a pesquisar o pedido
+     * @return Retorna o pedido ou nulo, se não existir
+     */
+    public Pedido pesquisarPedidoPendente(Utilizador cliente){
+        for (Pedido pedido : pedidos){
+            if(pedido.getCliente().equals(cliente) && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_FAZER){
+                return pedido;
+            }
+        }
+        return null;
+    }
+
+    public Ementa pesquisarEmentaHoje(){
+        for (Ementa ementa : cantina.ementas){
+            if(ementa.getData().equals(LocalDate.now())){
+                return ementa;
+            }
+        }
+        return null;
+    }
+
+    public void adicionarItemsPedido(Utilizador cliente, int codigoItem){
+        Pedido pedido = pesquisarPedidoPendente(cliente);
+        // ESTE O GUILHERME FAZ!!
+
+
+    }
 
 
 

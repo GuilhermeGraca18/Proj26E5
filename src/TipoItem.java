@@ -1,5 +1,7 @@
 public enum TipoItem {
-    Entreda,
+    Bebida,
+    Entrada,
     Prato,
+    Salada,
     Sobremesa,
 }

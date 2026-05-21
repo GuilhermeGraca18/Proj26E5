@@ -1,4 +1,6 @@
-public class Prato extends Item {
+import java.io.Serializable;
+
+public class Prato extends Item implements Serializable {
     private TipoPrato tipoPrato;
 
     public Prato(int codigo, String nome, String descricao, double preco, TipoItem tipo, TipoPrato tipoPrato) {
