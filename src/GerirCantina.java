@@ -48,12 +48,12 @@ public class GerirCantina {
                 return pedido;
             }
         }
+
         return null;
     }
-
     public Ementa pesquisarEmentaHoje(){
         for (Ementa ementa : cantina.ementas){
-            if(ementa.getData().equals(LocalDate.now())){
+            if(ementa.getData().equals((LocalDate.now()))){
                 return ementa;
             }
         }
