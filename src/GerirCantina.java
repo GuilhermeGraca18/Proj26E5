@@ -94,12 +94,23 @@ public class GerirCantina {
         Pedido pedido = pesquisarPedidoPendente(cliente);
         // ESTE O GUILHERME FAZ!!
 
-
     }
 
+    public boolean verificarPassword(Utilizador user, String pass){
+        if(user.getSenha().equalsIgnoreCase(pass)){
+            return true;
+        } else {
+            return false;
+        }
+    }
 
+    public ArrayList<Pedido> getPedidos() {
+        return pedidos;
+    }
 
-
+    public ArrayList<Utilizador> getUtilizadores() {
+        return utilizadores;
+    }
 
     /**
      * Metodo para guardar os dados no ficheiro ("dados.dat") sempre que o projeto fecha

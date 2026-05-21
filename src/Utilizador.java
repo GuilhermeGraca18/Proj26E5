@@ -24,4 +24,8 @@ public class Utilizador implements Serializable {
     public TipoUtilizador getTipo() {
         return tipo;
     }
+
+    public String getSenha() {
+        return senha;
+    }
 }
