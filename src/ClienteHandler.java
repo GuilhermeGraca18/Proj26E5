@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class ClienteHandler extends Thread {
     private final Socket socket;
@@ -35,12 +36,37 @@ public class ClienteHandler extends Thread {
                 }
 
                 if (msg.getTipo().equalsIgnoreCase("LOGIN")) {
-                    user = (Utilizador) msg.getDados();
+                    ArrayList<Object> dados = (ArrayList<Object>) msg.getDados();
 
-                    saida.writeObject(new Mensagem("INFO", user.getNome() + " - Bem-vindo"));
-                    saida.flush();
+                    int codigoUser = (int) dados.get(0);
+                    String senha = (String) dados.get(1);
+                    user = Servidor.gerir.pesquisarCliente(codigoUser);
+                    if(user != null) {
 
-                    System.out.println(user.getTipo() + " | " + user.getCodigo() + " - LOGIN");
+                        if (Servidor.gerir.verificarPassword(user, senha)) {
+
+                            ArrayList<Object> dadosCliente = new ArrayList<>();
+                            String resposta = user.getNome() + " - Bem-vindo";
+                            dadosCliente.add(resposta);
+                            dadosCliente.add(user);
+                            saida.writeObject(new Mensagem("TRUE", dadosCliente));
+                            saida.flush();
+
+                            System.out.println(user.getTipo() + " | " + user.getCodigo() + " - LOGIN");
+                        } else {
+
+                            user = null;
+                            saida.writeObject(new Mensagem("FALSE", "Login Falhou - Senha errada!"));
+                            saida.flush();
+
+                            System.out.println(socket.getInetAddress() + " - LOGIN INVÁLIDO");
+                        }
+                    } else {
+                        saida.writeObject(new Mensagem("FALSE", "Login Falhou - Código errado!"));
+                        saida.flush();
+                    }
+
+
 
                 }
                 else if (msg.getTipo().equalsIgnoreCase("REGISTO")){

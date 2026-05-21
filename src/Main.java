@@ -41,12 +41,12 @@ public class Main {
                             System.out.print("Nome do cliente: ");
                             String nomeCliente = input.nextLine();
                             System.out.print("Senha: ");
-                            char[] senhaChars = console.readPassword();
-                            String senha = new String(senhaChars);
+                            String senha = input.nextLine();
 
                             user = new Utilizador(codigo, nomeCliente, senha, TipoUtilizador.CLIENTE);
                         } catch (Exception e) {
                             System.out.println("[ERRO] Dados introduzido inválidos");
+                            System.out.println(e);
                         }
 
                         // ENVIOS PARA SERVIDOR
@@ -59,11 +59,6 @@ public class Main {
                         Mensagem resposta = (Mensagem) entrada.readObject();
                         System.out.println(resposta.getDados());
 
-                        // TITULO DO TERMINAL
-
-                        System.out.print("\033]0;CANTINA | CLIENTE - " + user.getNome() + "\007");
-                        System.out.flush();
-
                         break;
                     case 2:
                         try {
@@ -74,8 +69,7 @@ public class Main {
                             System.out.print("Nome do Funcionário: ");
                             String nomeCliente = input.nextLine();
                             System.out.print("Senha: ");
-                            char[] senhaChars = console.readPassword();
-                            String senha = new String(senhaChars);
+                            String senha = input.nextLine();
 
                             user = new Utilizador(codigo, nomeCliente, senha, TipoUtilizador.FUNCIONARIO);
                         } catch (Exception e) {
@@ -91,27 +85,23 @@ public class Main {
 
                         resposta = (Mensagem) entrada.readObject();
                         System.out.println(resposta.getDados());
-
-                        // TITULO DO TERMINAL
-
-                        System.out.print("\033]0;CANTINA | " + user.getTipo().name() + " - " + user.getNome() + "\007");
-                        System.out.flush();
+                        break;
                     case 3:
                         int codigo = -1;
+                        ArrayList<Object> dados = new ArrayList<>();
                         try {
-                            /**
-                             * EXEMPLO DE TESTE SEM REGISTO - LOGIN FALSO
-                             */
+
                             System.out.println(" --- LOGIN --- ");
-                            while (Servidor.gerir.pesquisarCliente(codigo) == null){
-                                System.out.print("Número do cliente: ");
-                                codigo = input.nextInt();
-                            }
+                            System.out.print("Número do cliente: ");
+                            codigo = input.nextInt();
                             input.nextLine();
                             System.out.print("Senha: ");
-                            char[] senhaChars = console.readPassword();
-                            String senha = new String(senhaChars);
-                            ArrayList<Object> dados = new ArrayList<>();
+
+                            // PARA ESCONDER A PASS
+                            /*char[] senhaChars = console.readPassword();
+                            String senha = new String(senhaChars);*/
+
+                            String senha = input.nextLine();
                             dados.add(codigo);
                             dados.add(senha);
                         } catch (Exception e){
@@ -120,21 +110,22 @@ public class Main {
 
                         // ENVIOS PARA SERVIDOR
 
-                        saida.writeObject(new Mensagem("LOGIN", user));
+                        saida.writeObject(new Mensagem("LOGIN", dados));
                         saida.flush();
 
                         // MENSAGEM VINDA DO SERVIDOR
 
                         resposta = (Mensagem) entrada.readObject();
-                        System.out.println(resposta.getDados());
 
                         if(resposta.getTipo().equalsIgnoreCase("TRUE")){
-                            // TITULO DO TERMINAL
 
-                            user = Servidor.gerir.pesquisarCliente(codigo);
+                            ArrayList<Object> dadosServidor = (ArrayList<Object>) resposta.getDados();
 
-                            System.out.print("\033]0;CANTINA | CLIENTE - " + user.getNome() + "\007");
-                            System.out.flush();
+                            user = (Utilizador) dadosServidor.get(1);
+
+                            System.out.println((String) dadosServidor.get(0));
+                        } else {
+                            System.out.println(resposta.getDados());
                         }
                         break;
                     case 0:

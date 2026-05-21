@@ -71,6 +71,14 @@ public class GerirCantina {
 
     }
 
+    public boolean verificarPassword(Utilizador user, String pass){
+        if(user.getSenha().equalsIgnoreCase(pass)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public ArrayList<Pedido> getPedidos() {
         return pedidos;
     }
