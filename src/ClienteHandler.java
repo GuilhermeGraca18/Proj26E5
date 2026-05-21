@@ -139,6 +139,27 @@ public class ClienteHandler extends Thread {
                     saida.writeObject(new Mensagem("INFO", Servidor.pedidos));
                     saida.flush();
                 }
+
+                else if(msg.getTipo().equalsIgnoreCase("VER PEDIDOS PENDENTES")){
+                    if (user == null){
+                        saida.writeObject((new Mensagem("ERRO", "ATENÇÃO: Primeiro faça login.")));
+                        saida.flush();
+                    }else if(user.getTipo() != TipoUtilizador.FUNCIONARIO){
+                        saida.writeObject(new Mensagem("ERRO", "ATENÇÃO: Sem permissões para esta operação."));
+                        saida.flush();
+                    }else{
+                        java.util.ArrayList<Pedido> pendentes = new java.util.ArrayList<>();
+                        for (Pedido pedido : Servidor.pedidos){
+                            if (pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_FAZER ){
+                                pendentes.add(pedido);
+                            }
+                        }
+                        saida.writeObject(new Mensagem("LISTA_PEDIDOS_PENDENTES", pendentes));
+                        saida.flush();
+
+                        System.out.println(user.getCodigo() + " | FUNCIONÁRIO CONSULTOU PEDIDOS PENDENTES");
+                    }
+                }
             }
 
             socket.close();
