@@ -43,6 +43,17 @@ public class ClienteHandler extends Thread {
                     System.out.println(user.getTipo() + " | " + user.getCodigo() + " - LOGIN");
 
                 }
+                else if (msg.getTipo().equalsIgnoreCase("REGISTO")){
+                    user = (Utilizador) msg.getDados();
+
+                    Servidor.gerir.getUtilizadores().add(user);
+
+                    saida.writeObject(new Mensagem("INFO", user.getNome() + " - Bem-vindo"));
+                    saida.flush();
+
+                    System.out.println(user.getTipo() + " | " + user.getCodigo() + " - REGISTADO");
+
+                }
                 else if (msg.getTipo().equalsIgnoreCase("CRIAR_PEDIDO")) {
                     if (user == null) {
                         saida.writeObject(new Mensagem("ERRO", "[ATENÇÃO] Primeiro faça login!"));
@@ -51,8 +62,8 @@ public class ClienteHandler extends Thread {
 
                         Pedido pedido = (Pedido) msg.getDados();
 
-                        synchronized (Servidor.pedidos) {
-                            Servidor.pedidos.add(pedido);
+                        synchronized (Servidor.gerir.getPedidos()) {
+                            Servidor.gerir.getPedidos().add(pedido);
                         }
 
                         saida.writeObject(new Mensagem("INFO", "Pedido criado com sucesso."));
@@ -77,7 +88,7 @@ public class ClienteHandler extends Thread {
 
                     int numPedido = (int) msg.getDados();
                     boolean value = false;
-                    for (Pedido pedido : Servidor.pedidos){
+                    for (Pedido pedido : Servidor.gerir.getPedidos()){
                         System.out.println("TESTE - " + pedido.getCliente().getCodigo());
                         if(pedido.getCliente().getCodigo() == numPedido && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_FAZER){
                             value = true;
@@ -102,7 +113,7 @@ public class ClienteHandler extends Thread {
                 else if (msg.getTipo().equalsIgnoreCase("PEDIDO_ENTREGUE")){
 
                     int numPedido = (int) msg.getDados();
-                    for (Pedido pedido : Servidor.pedidos){
+                    for (Pedido pedido : Servidor.gerir.getPedidos()){
                         if(pedido.getCliente().getCodigo() == numPedido && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_ENTREGAR){
                             pedido.pedidoEntregue();
                             break;
@@ -121,7 +132,7 @@ public class ClienteHandler extends Thread {
 
                     int numPedido = (int) msg.getDados();
 
-                    for (Pedido pedido : Servidor.pedidos){
+                    for (Pedido pedido : Servidor.gerir.getPedidos()){
                         if(pedido.getCliente().getCodigo() == numPedido && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_ENTREGAR){
                             pedido.pedidoNaoEntregue();
                             break;
@@ -136,7 +147,7 @@ public class ClienteHandler extends Thread {
                     saida.flush();
                 }
                 else if (msg.getTipo().equalsIgnoreCase("VER_PEDIDOS")){
-                    saida.writeObject(new Mensagem("INFO", Servidor.pedidos));
+                    saida.writeObject(new Mensagem("INFO", Servidor.gerir.getPedidos()));
                     saida.flush();
                 }
             }

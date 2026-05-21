@@ -7,7 +7,7 @@ public class Servidor {
     private static final int PORTA = 5001;
 
     public static final List<ObjectOutputStream> monitores = new ArrayList<>();
-    public static final ArrayList<Pedido> pedidos = new ArrayList<>();
+    public static final GerirCantina gerir = new GerirCantina();
 
      static void main() {
         try (ServerSocket serverSocket = new ServerSocket(PORTA)) {
@@ -31,8 +31,8 @@ public class Servidor {
     public static void atualizarMonitores() {
         ArrayList<Pedido> pedidosPendentes = new ArrayList<>();
 
-        synchronized (pedidos) {
-            for (Pedido pedido : pedidos) {
+        synchronized (gerir.getPedidos()) {
+            for (Pedido pedido : gerir.getPedidos()) {
                 if (pedido.getEstado() == EstadoPedido.A_FAZER ||
                         pedido.getEstado() == EstadoPedido.A_ENTREGAR) {
 

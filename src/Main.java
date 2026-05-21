@@ -22,8 +22,9 @@ public class Main {
             while (n != 0 && user == null) {
 
                 System.out.println(" --- MENU LOGIN/REGISTO | CANTINA ---");
-                System.out.println(" 1 - Login como Cliente");
-                System.out.println(" 2 - Login como Funcionário");
+                System.out.println(" 1 - Registo como Cliente");
+                System.out.println(" 2 - Registo como Funcionário");
+                System.out.println(" 3 - Login");
                 System.out.println(" 0 - Sair");
 
                 System.out.print("\nInsira a ação que deseja: ");
@@ -33,10 +34,7 @@ public class Main {
                 switch (n) {
                     case 1:
                         try {
-                            /**
-                             * EXEMPLO DE TESTE SEM REGISTO - LOGIN FALSO
-                             */
-                            System.out.println(" --- LOGIN CLIENTE ");
+                            System.out.println(" --- REGISTO DO CLIENTE --- ");
                             System.out.print("Número do cliente: ");
                             int codigo = input.nextInt();
                             input.nextLine();
@@ -47,14 +45,13 @@ public class Main {
                             String senha = new String(senhaChars);
 
                             user = new Utilizador(codigo, nomeCliente, senha, TipoUtilizador.CLIENTE);
-
-                        } catch (Exception e){
+                        } catch (Exception e) {
                             System.out.println("[ERRO] Dados introduzido inválidos");
                         }
 
                         // ENVIOS PARA SERVIDOR
 
-                        saida.writeObject(new Mensagem("LOGIN", user));
+                        saida.writeObject(new Mensagem("REGISTO", user));
                         saida.flush();
 
                         // MENSAGEM VINDA DO SERVIDOR
@@ -68,25 +65,55 @@ public class Main {
                         System.out.flush();
 
                         break;
-
                     case 2:
-                        /**
-                         * EXEMPLO DE TESTE SEM REGISTO - LOGIN FALSO
-                         */
-
                         try {
-                            System.out.println(" --- LOGIN FUNCIONÁRIO ");
+                            System.out.println(" --- REGISTO DO FUNCIONÁRIO --- ");
                             System.out.print("Número do Funcionário: ");
                             int codigo = input.nextInt();
                             input.nextLine();
                             System.out.print("Nome do Funcionário: ");
-                            String nomeFuncionario = input.nextLine();
+                            String nomeCliente = input.nextLine();
                             System.out.print("Senha: ");
                             char[] senhaChars = console.readPassword();
                             String senha = new String(senhaChars);
 
-                            user = new Utilizador(codigo, nomeFuncionario, senha, TipoUtilizador.FUNCIONARIO);
+                            user = new Utilizador(codigo, nomeCliente, senha, TipoUtilizador.FUNCIONARIO);
+                        } catch (Exception e) {
+                            System.out.println("[ERRO] Dados introduzido inválidos");
+                        }
 
+                        // ENVIOS PARA SERVIDOR
+
+                        saida.writeObject(new Mensagem("REGISTO", user));
+                        saida.flush();
+
+                        // MENSAGEM VINDA DO SERVIDOR
+
+                        resposta = (Mensagem) entrada.readObject();
+                        System.out.println(resposta.getDados());
+
+                        // TITULO DO TERMINAL
+
+                        System.out.print("\033]0;CANTINA | " + user.getTipo().name() + " - " + user.getNome() + "\007");
+                        System.out.flush();
+                    case 3:
+                        int codigo = -1;
+                        try {
+                            /**
+                             * EXEMPLO DE TESTE SEM REGISTO - LOGIN FALSO
+                             */
+                            System.out.println(" --- LOGIN --- ");
+                            while (Servidor.gerir.pesquisarCliente(codigo) == null){
+                                System.out.print("Número do cliente: ");
+                                codigo = input.nextInt();
+                            }
+                            input.nextLine();
+                            System.out.print("Senha: ");
+                            char[] senhaChars = console.readPassword();
+                            String senha = new String(senhaChars);
+                            ArrayList<Object> dados = new ArrayList<>();
+                            dados.add(codigo);
+                            dados.add(senha);
                         } catch (Exception e){
                             System.out.println("[ERRO] Dados introduzido inválidos");
                         }
@@ -101,11 +128,14 @@ public class Main {
                         resposta = (Mensagem) entrada.readObject();
                         System.out.println(resposta.getDados());
 
-                        // TITULO DO TERMINAL
+                        if(resposta.getTipo().equalsIgnoreCase("TRUE")){
+                            // TITULO DO TERMINAL
 
-                        System.out.print("\033]0;CANTINA | FUNCIONÁRIO - " + user.getNome() + "\007");
-                        System.out.flush();
+                            user = Servidor.gerir.pesquisarCliente(codigo);
 
+                            System.out.print("\033]0;CANTINA | CLIENTE - " + user.getNome() + "\007");
+                            System.out.flush();
+                        }
                         break;
                     case 0:
                         saida.writeObject(new Mensagem("SAIR", null));
@@ -122,19 +152,16 @@ public class Main {
 
                 while (n != 0) {
                     System.out.println(" --- ÁREA DO FUNCIONÁRIO | CANTINA ---");
-                    System.out.println(" 1 - Entregar Pedido");
-                    System.out.println(" 2 - Ver Pedidos Criados");
-                    /*System.out.println(" 1 - Adicionar Item");
-                    System.out.println(" 2 - Adicionar Bebida");
-                    System.out.println(" 3 - Ver Items por Tipo");
-                    System.out.println(" 4 - Criar Ementa");
-                    System.out.println(" 5 - Ver Ementa de Hoje");
-                    System.out.println(" 6 - Ver Ementa Geral");
-                    System.out.println(" 7 - Ver Pedidos pendentes");
+                    System.out.println(" 1 - Adicionar Item");
+                    System.out.println(" 2 - Ver Items por Tipo");
+                    System.out.println(" 3 - Criar Ementa");
+                    System.out.println(" 4 - Ver Ementa de Hoje");
+                    System.out.println(" 5 - Ver Ementa Geral");
+                    System.out.println(" 6 - Ver Pedidos Pendentes");
+                    System.out.println(" 7 - Entregar Pedido");
                     System.out.println(" 8 - Ver Pedidos Geral");
-                    System.out.println(" 9 - Ver Funcionários Registados");
-                    System.out.println(" 10 - Ver Clientes Registados");
-                    */
+                    System.out.println(" 9 - Ver Utilizadores Geral");
+
                     System.out.println(" 0 - Sair");
 
                     System.out.print("\nInsira a ação que deseja: ");
