@@ -23,17 +23,22 @@ public class GerirCantina {
         this.pedidos = new ArrayList<>();
     }
 
-    public Utilizador pesquisarCliente(int codigoCliente){
-        for (Utilizador cliente : utilizadores){
-            if(cliente.getCodigo() == codigoCliente){
-                return cliente;
+    public void registarUser(Utilizador user){
+        if (user!= null){
+            utilizadores.add(user);
+        }
+    }
+    public Utilizador pesquisarUtilizador(int codigoUser){
+        for (Utilizador user : utilizadores){
+            if(user.getCodigo() == codigoUser){
+                return user;
             }
         }
         return null;
     }
 
-    public void criarPedidos(Utilizador cliente, String notas){
-        Pedido pedido = new Pedido(cliente, notas);
+    public void criarPedidos(Utilizador user, String notas){
+        Pedido pedido = new Pedido(user, notas);
         pedidos.add(pedido);
     }
 
