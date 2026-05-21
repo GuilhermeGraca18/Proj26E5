@@ -51,6 +51,21 @@ public class GerirCantina {
 
         return null;
     }
+
+    public void visualizarTodosPedidosPendentes(){
+        System.out.println("Todos os pedidos pendentes: ");
+
+        ArrayList<Pedido> pendentes =  getPedidosPendentesHoje();
+
+        if (pendentes.isEmpty()){
+            System.out.println("Sem pedidos pendentes.");
+        }else{
+            for (Pedido pedido: pendentes){
+                System.out.println(pedido);
+
+            }
+        }
+    }
     public Ementa pesquisarEmentaHoje(){
         for (Ementa ementa : cantina.ementas){
             if(ementa.getData().equals((LocalDate.now()))){
@@ -58,6 +73,16 @@ public class GerirCantina {
             }
         }
         return null;
+    }
+
+    public ArrayList<Pedido> getPedidosPendentesHoje(){
+        ArrayList<Pedido> pendentes = new ArrayList<>();
+        for (Pedido pedido: pedidos){
+            if (pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_FAZER){
+                pendentes.add(pedido);
+            }
+        }
+        return pendentes;
     }
 
     public void adicionarItemsPedido(Utilizador cliente, int codigoItem){
