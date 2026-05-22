@@ -110,6 +110,33 @@ public class GerirCantina {
     
     /**
      * @author Arthur Santana - 53987
+     * Método para consultar todos os utilizadores.
+     */
+    public void consultarUtilizadores() {
+    	
+    	System.out.println("\nCLIENTES: ");
+    	
+    	for(Utilizador i : utilizadores) {
+    		
+    		if(i.getTipo() == TipoUtilizador.CLIENTE) {
+    			
+    			System.out.println(i);
+    		}
+    	}
+    	
+    	System.out.println("\nFUNCIONÁRIOS: ");
+    	
+    	for(Utilizador i : utilizadores) {
+    		
+    		if(i.getTipo() == TipoUtilizador.FUNCIONARIO) {
+    			
+    			System.out.println(i);
+    		}
+    	}
+    }
+    
+    /**
+     * @author Arthur Santana - 53987
      * Metodo para criar relatorio de vendas de artigos total.
      */
     public void criarRelatorio() {

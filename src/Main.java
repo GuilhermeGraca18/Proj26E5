@@ -24,6 +24,9 @@ public class Main {
 
             int n = -1;
             Utilizador user = null;
+            
+            // Cantina a ser gerida
+            GerirCantina gerir = new GerirCantina();
 
             while (n != 0 && user == null) {
 
@@ -40,6 +43,7 @@ public class Main {
                 switch (n) {
                     case 1:
                         try {
+                        	
                             System.out.println(" --- REGISTO DO CLIENTE --- ");
                             System.out.print("Número do cliente: ");
                             int codigo = input.nextInt();
@@ -50,6 +54,10 @@ public class Main {
                             String senha = input.nextLine();
 
                             user = new Utilizador(codigo, nomeCliente, senha, TipoUtilizador.CLIENTE);
+                            
+                            // Registra um cliente na lista de usuarios da cantina.
+                            gerir.registarUser(user);
+                            
                         } catch (Exception e) {
                             System.out.println("[ERRO] Dados introduzido inválidos");
                             System.out.println(e);
@@ -71,6 +79,7 @@ public class Main {
                         break;
                     case 2:
                         try {
+                        	
                             System.out.println(" --- REGISTO DO FUNCIONÁRIO --- ");
                             System.out.print("Número do Funcionário: ");
                             int codigo = input.nextInt();
@@ -81,6 +90,10 @@ public class Main {
                             String senha = input.nextLine();
 
                             user = new Utilizador(codigo, nomeCliente, senha, TipoUtilizador.FUNCIONARIO);
+                            
+                            // Registra um funcionário na lista de usuarios da cantina.
+                            gerir.registarUser(user);
+                            
                         } catch (Exception e) {
                             System.out.println("[ERRO] Dados introduzido inválidos");
                         }
@@ -288,13 +301,21 @@ public class Main {
                             } catch (Exception e){
                                 System.out.println("[ERRO] O Programa não conseguiu ler a lista de Pedidos!");
                             }
-
-
+                            
                             break;
+                            
+                        case 9: // CONSULTAR UTILIZADORES
+                        	
+                        	gerir.consultarUtilizadores();
+                        	
+                        	break;
+                        	
                         case 10: // CRIAR RELATORIO
-                        	try {
-                        		
-                        	}
+                        	
+                        	gerir.criarRelatorio();
+                        	
+                        	break;
+                        	
                         case 0:
                             saida.reset();
                             saida.writeObject(new Mensagem("SAIR", null));
@@ -353,6 +374,9 @@ public class Main {
                             );
 
                             Pedido pedido = new Pedido(user, "NOTAS");
+                            
+                            // Adicionar um pedido a lista de pedidos.
+                            gerir.criarPedidos(pedido);
 
                             pedido.adicionarItems(bebida);
                             pedido.adicionarItems(entradaPedido);
