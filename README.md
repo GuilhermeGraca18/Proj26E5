@@ -23,7 +23,7 @@
 
 ## Como Correr o Projeto
 
-Antes de abrir o Cliente ou o Monitor de Pedidos, o Servidor deve estar em a correr e aberto.
+Antes de abrir o Cliente ou o Monitor de Pedidos, o Servidor deve estar a correr e aberto.
 
 ### Gerar os ficheiros JAR
 
