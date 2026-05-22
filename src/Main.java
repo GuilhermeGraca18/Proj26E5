@@ -483,7 +483,7 @@ public class Main {
                             try {
                                 System.out.println(" === FUNCIONÁRIOS REGISTADOS === ");
                                 saida.reset();
-                                saida.writeObject(new Mensagem("VER_FUNCIONÀRIOS", null));
+                                saida.writeObject(new Mensagem("VER_FUNCIONARIOS", null));
                                 saida.flush();
 
                                 Mensagem resposta = (Mensagem) entrada.readObject();
@@ -491,7 +491,6 @@ public class Main {
 
                                 for (Utilizador funcionario : listaFuncionarios) {
                                     System.out.println(funcionario);
-
                                 }
 
                             } catch (Exception e){
