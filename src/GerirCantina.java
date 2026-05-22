@@ -134,6 +134,26 @@ public class GerirCantina {
     		}
     	}
     }
+
+    public ArrayList<Utilizador> getUtilizadoresClientes(){
+        ArrayList<Utilizador> listaClientes = new ArrayList<>();
+        for (Utilizador cliente : utilizadores){
+            if (cliente.getTipo().equals(TipoUtilizador.CLIENTE)){
+                listaClientes.add(cliente);
+            }
+        }
+        return listaClientes;
+    }
+
+    public ArrayList<Utilizador> getUtilizadoresFuncionarios(){
+        ArrayList<Utilizador> listaFuncionarios = new ArrayList<>();
+        for (Utilizador funcionario : utilizadores){
+            if (funcionario.getTipo().equals(TipoUtilizador.FUNCIONARIO)){
+                listaFuncionarios.add(funcionario);
+            }
+        }
+        return listaFuncionarios;
+    }
     
     /**
      * @author Arthur Santana - 53987
@@ -238,7 +258,18 @@ public class GerirCantina {
      * Metodo para criar ementa
      */
     
-    public void registarEmenta(Ementa ementa, ArrayList<ItemDia> itens)) {
-        ementa.setItemDia(itens);
+    public void criarEmenta(LocalDate data) {
+        if(pesquisarEmenta(data) == null){
+            cantina.ementas.add(new Ementa(data));
+        }
+    }
+
+    public Ementa pesquisarEmenta(LocalDate data){
+        for (Ementa ementa : cantina.ementas){
+            if(ementa.getData().equals(data)){
+                return ementa;
+            }
+        }
+        return null;
     }
 }

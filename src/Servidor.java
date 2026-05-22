@@ -10,7 +10,7 @@ public class Servidor {
 
     public static final GerirCantina gerir = GerirCantina.getInstance();
 
-     public static void main() {
+     public static void main(String[] args) {
         gerir.carregarDados();
 
          Runtime.getRuntime().addShutdownHook(new Thread(() -> {

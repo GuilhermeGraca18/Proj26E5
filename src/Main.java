@@ -1,7 +1,7 @@
-import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.gui2.*;
-import com.googlecode.lanterna.screen.Screen;
-import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
+import org.jline.terminal.Attributes;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
+import org.jline.utils.InfoCmp;
 
 
 import java.util.ArrayList;
@@ -34,6 +34,7 @@ public class Main {
                 System.out.println(" 1 - Registo como Cliente");
                 System.out.println(" 2 - Registo como Funcionário");
                 System.out.println(" 3 - Login");
+                System.out.println(" 4 - Abrir Monitor de Pedidos");
                 System.out.println(" 0 - Sair");
 
                 System.out.print("\nInsira a ação que deseja: ");
@@ -154,6 +155,23 @@ public class Main {
                             System.out.println(resposta.getDados());
                         }
                         break;
+                    case 4:
+                        try {
+                            String classpath = System.getProperty("java.class.path");
+
+                            String comando =
+                                    "java -cp '" + classpath + "' MonitorCliente";
+
+                            new ProcessBuilder(
+                                    "osascript",
+                                    "-e",
+                                    "tell application \"Terminal\" to do script \"" + comando + "\""
+                            ).start();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        break;
                     case 0:
                         saida.reset();
                         saida.writeObject(new Mensagem("SAIR", null));
@@ -170,16 +188,17 @@ public class Main {
 
                 while (n != 0) {
                     System.out.println(" --- ÁREA DO FUNCIONÁRIO | CANTINA ---");
-                    System.out.println(" 1 - Entregar Pedido Pendente");
-                    System.out.println(" 2 - Adicionar Item");
-                    System.out.println(" 3 - Ver Items por Tipo");
-                    System.out.println(" 4 - Criar Ementa");
-                    System.out.println(" 5 - Ver Ementa de Hoje");
-                    System.out.println(" 6 - Ver Ementa Geral");
-                    System.out.println(" 7 - Ver Pedidos Pendentes");
-                    System.out.println(" 8 - Ver Pedidos Geral");
-                    System.out.println(" 9 - Ver Utilizadores Geral");
-                    System.out.println(" 10 - Criar Relatório");
+                    System.out.println(" 1 - Entregar Pedido Pendente"); // FEITO
+                    System.out.println(" 2 - Adicionar Item"); // FEITO
+                    System.out.println(" 3 - Ver Items"); // FEITO
+                    System.out.println(" 4 - Criar Ementa"); // NAO FEITO
+                    System.out.println(" 5 - Ver Ementa de Hoje"); // NAO FEITO
+                    System.out.println(" 6 - Ver Ementas Anteriores"); // NAO FEITO
+                    System.out.println(" 7 - Ver Pedidos Pendentes"); // NAO FEITO
+                    System.out.println(" 8 - Ver Pedidos Geral"); // FEITO
+                    System.out.println(" 9 - Ver Clientes"); // FEITO
+                    System.out.println(" 10 - Ver Funcionários"); // FEITO
+                    System.out.println(" 11 - Criar Relatório"); // NAO FEITO - COMO ESTÁ NAO COMUNICA COM O SERVIDOR, LOGO NAO ATUALIZA PARA NOVOS DADOS
 
                     System.out.println(" 0 - Sair");
 
@@ -254,7 +273,6 @@ public class Main {
                                         preco,
                                         tipo
                                 );
-
                                 saida.reset();
                                 saida.writeObject(new Mensagem("ADICIONAR_ITEM", novoItem));
                                 saida.flush();
@@ -304,13 +322,51 @@ public class Main {
                             
                             break;
                             
-                        case 9: // CONSULTAR UTILIZADORES
-                        	
-                        	gerir.consultarUtilizadores();
+                        case 9: // CONSULTAR CLIENTES
+
+                        	// gerir.consultarUtilizadores(); // ISTO TA SOMENTE A IR Á LISTA LOCAL, NAO ATUALIZA
+                            // NOTA: TEMOS DE FAZER A CHAMADA PARA O SERVIDOR COM UM CODIGO "VER_UTILIZADORES" E ELE RETORNA A LISTA DE UTILIZADORES E NOS FAZEMOS O PRINT AQUI
+                            // OU SEJA
+                            try {
+                                System.out.println(" === CLIENTES REGISTADOS === ");
+                                saida.reset();
+                                saida.writeObject(new Mensagem("VER_CLIENTES", null));
+                                saida.flush();
+
+                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                ArrayList<Utilizador> listaClientes = (ArrayList<Utilizador>) resposta.getDados();
+                                
+                                for (Utilizador cliente : listaClientes) {
+                                    System.out.println(cliente);
+
+                                }
+
+                            } catch (Exception e){
+                                System.out.println("[ERRO] O Programa não conseguiu ler a lista de Pedidos!");
+                            }
                         	
                         	break;
-                        	
-                        case 10: // CRIAR RELATORIO
+                        case 10: // CONSULTAR FUNCIONARIOS
+                            try {
+                                System.out.println(" === FUNCIONÁRIOS REGISTADOS === ");
+                                saida.reset();
+                                saida.writeObject(new Mensagem("VER_FUNCIONÀRIOS", null));
+                                saida.flush();
+
+                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                ArrayList<Utilizador> listaFuncionarios = (ArrayList<Utilizador>) resposta.getDados();
+
+                                for (Utilizador funcionario : listaFuncionarios) {
+                                    System.out.println(funcionario);
+
+                                }
+
+                            } catch (Exception e){
+                                System.out.println("[ERRO] O Programa não conseguiu ler a lista de Pedidos!");
+                            }
+
+                            break;
+                        case 11: // CRIAR RELATORIO
                         	
                         	gerir.criarRelatorio();
                         	
@@ -411,37 +467,52 @@ public class Main {
         }
     }
 
-    public static TipoItem escolherTipo() throws Exception{
-        DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
-        Screen screen = terminalFactory.createScreen();
-        screen.startScreen();
+    public static TipoItem escolherTipo() throws Exception {
+        Terminal terminal = TerminalBuilder.builder()
+                .system(true)
+                .jna(true)
+                .build();
 
-        MultiWindowTextGUI gui = new MultiWindowTextGUI(screen);
+        Attributes original = terminal.enterRawMode();
 
-        BasicWindow window = new BasicWindow("Escolher Tipo");
+        TipoItem[] tipos = TipoItem.values();
+        int selecionado = 0;
 
-        Panel panel = new Panel();
-        panel.setLayoutManager(new LinearLayout(Direction.VERTICAL));
+        try {
+            while (true) {
+                terminal.puts(InfoCmp.Capability.clear_screen);
+                terminal.writer().println("=== ESCOLHER TIPO ===\n");
 
-        ComboBox<TipoItem> comboBox = new ComboBox<>(TipoItem.values());
+                for (int i = 0; i < tipos.length; i++) {
+                    if (i == selecionado) {
+                        terminal.writer().println("> " + tipos[i]);
+                    } else {
+                        terminal.writer().println("  " + tipos[i]);
+                    }
+                }
 
-        final TipoItem[] escolhido = new TipoItem[1];
+                terminal.writer().flush();
 
-        Button confirmar = new Button("Confirmar", () -> {
-            escolhido[0] = comboBox.getSelectedItem();
-            window.close();
-        });
+                int ch = terminal.reader().read();
 
-        panel.addComponent(new Label("Escolha o tipo do item:"));
-        panel.addComponent(comboBox);
-        panel.addComponent(confirmar);
+                if (ch == 27) { // ESC
+                    terminal.reader().read(); // [
+                    int arrow = terminal.reader().read();
 
-        window.setComponent(panel);
+                    if (arrow == 65) { // cima
+                        selecionado = (selecionado - 1 + tipos.length) % tipos.length;
+                    } else if (arrow == 66) { // baixo
+                        selecionado = (selecionado + 1) % tipos.length;
+                    }
 
-        gui.addWindowAndWait(window);
+                } else if (ch == 10 || ch == 13) {
+                    return tipos[selecionado];
+                }
+            }
 
-        screen.stopScreen();
-
-        return escolhido[0];
+        } finally {
+            terminal.setAttributes(original);
+            terminal.close();
+        }
     }
 }

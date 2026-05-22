@@ -89,6 +89,20 @@ public class ClienteHandler extends Thread {
 
 
                 }
+                else if (msg.getTipo().equalsIgnoreCase("VER_CLIENTES")) {
+
+                    saida.reset();
+                    saida.writeObject(new Mensagem("INFO", Servidor.gerir.getUtilizadoresClientes()));
+                    saida.flush();
+
+                }
+                else if (msg.getTipo().equalsIgnoreCase("VER_FUNCIONARIOS")) {
+
+                    saida.reset();
+                    saida.writeObject(new Mensagem("INFO", Servidor.gerir.getUtilizadoresFuncionarios()));
+                    saida.flush();
+
+                }
                 else if (msg.getTipo().equalsIgnoreCase("ADICIONAR_ITEM")) {
                     Item item = (Item) msg.getDados();
 
