@@ -354,9 +354,11 @@ public class Main {
                             }
                             break;
                         case 5: // CRIAR Ementa
-                            LocalDate dataEmeta = null;
-                            input.nextLine();
                             try {
+                                LocalDate dataEmeta = null;
+                                input.nextLine();
+                                Mensagem resposta = null;
+
                                 System.out.println(" === CRIAR EMENTA === ");
                                 System.out.print("Data/Dia (dd/mm/aaaa): ");
                                 String dataString = input.nextLine();
@@ -369,56 +371,52 @@ public class Main {
                                 saida.writeObject(new Mensagem("CRIAR_EMENTA", dataEmeta));
                                 saida.flush();
 
-                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                resposta = (Mensagem) entrada.readObject();
                                 System.out.println(resposta.getDados());
-                            } catch (Exception e ){
-                                System.out.println("[ERRO] Dados inválidos inseridos!");
-                                System.out.println("[CONSOLE] --- " + e);
-                            }
+                                if(resposta.getTipo().equalsIgnoreCase("TRUE")){
+                                    int escolha = -1;
+                                    while (escolha != 0) {
 
-                            try {
-                                int escolha = -1;
-                                while (escolha != 0){
+                                        saida.reset();
+                                        saida.writeObject(new Mensagem("VER_LISTA_ITEMS", null));
+                                        saida.flush();
 
-                                    saida.reset();
-                                    saida.writeObject(new Mensagem("VER_LISTA_ITEMS", null));
-                                    saida.flush();
+                                        resposta = (Mensagem) entrada.readObject();
+                                        ArrayList<Item> listaItems = (ArrayList<Item>) resposta.getDados();
 
-                                    Mensagem resposta = (Mensagem) entrada.readObject();
-                                    ArrayList<Item> listaItems = (ArrayList<Item>) resposta.getDados();
+                                        for (Item item : listaItems) {
+                                            System.out.println(item.toStringLista());
+                                        }
 
-                                    for (Item item : listaItems){
-                                        System.out.println(item.toStringLista());
+                                        System.out.print("Código do Item (0 para fechar ementa): ");
+                                        escolha = input.nextInt();
+
+                                        if (escolha == 0) {
+                                            break;
+                                        }
+                                        System.out.print("Número de Pratos/Stock do dia: ");
+                                        int stock = input.nextInt();
+
+                                        ArrayList<Object> dados = new ArrayList<>();
+
+                                        dados.add(escolha);
+                                        dados.add(stock);
+                                        dados.add(dataEmeta);
+
+                                        saida.reset();
+                                        saida.writeObject(new Mensagem("ADICIONAR_ITEM_EMENTA", dados));
+                                        saida.flush();
+
+                                        resposta = (Mensagem) entrada.readObject();
+                                        System.out.println(resposta.getDados());
                                     }
-
-                                    System.out.print("Código do Item (0 para fechar ementa): ");
-                                    escolha = input.nextInt();
-
-                                    if( escolha == 0){
-                                        break;
-                                    }
-                                    System.out.print("Número de Pratos/Stock do dia: ");
-                                    int stock = input.nextInt();
-
-                                    ArrayList<Object> dados = new ArrayList<>();
-
-                                    dados.add(escolha);
-                                    dados.add(stock);
-                                    dados.add(dataEmeta);
-
-                                    saida.reset();
-                                    saida.writeObject(new Mensagem("ADICIONAR_ITEM_EMENTA", dados));
-                                    saida.flush();
-
-                                    resposta = (Mensagem) entrada.readObject();
-                                    System.out.println(resposta.getDados());
-
+                                    System.out.println("[SUCESSO] Ementa Fechada!");
                                 }
-                                System.out.println("[SUCESSO] Ementa Fechada!");
+
                             } catch (Exception e){
-                                System.out.println("[ERRO] Dados inválidos inseridos!");
-                                System.out.println("[CONSOLE] --- " + e);
+
                             }
+
 
                             break;
                         case 7: // VER EMENTAS GERAL

@@ -149,11 +149,11 @@ public class ClienteHandler extends Thread {
                         Servidor.gerir.criarEmenta(data);
 
                         saida.reset();
-                        saida.writeObject(new Mensagem("INFO", "[SUCESSO] EMENTA CRIADA | DIA: " + data ));
+                        saida.writeObject(new Mensagem("TRUE", "[SUCESSO] EMENTA CRIADA | DIA: " + data ));
                         System.out.println( "[" + msg.getTipo() + "] " + data + " | - CRIADA");
                     } else {
                         saida.reset();
-                        saida.writeObject(new Mensagem("INFO", "[ERRO] EMENTA JÀ CRIADA E FECHADA | DIA: " + data ));
+                        saida.writeObject(new Mensagem("FALSE", "[ERRO] EMENTA JÀ CRIADA E FECHADA | DIA: " + data ));
                         System.out.println( "[" + msg.getTipo() + "] " + data + " | - JÀ CRIADA");
                     }
 
@@ -191,7 +191,7 @@ public class ClienteHandler extends Thread {
                     ArrayList<Ementa> ementas = Servidor.gerir.getEmentas();
 
                     saida.reset();
-                    saida.writeObject(new Mensagem("ERRO", ementas));
+                    saida.writeObject(new Mensagem("INFO", ementas));
                     saida.flush();
 
                 }

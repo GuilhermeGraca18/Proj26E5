@@ -20,9 +20,7 @@ public class Servidor {
 
 
         try (ServerSocket serverSocket = new ServerSocket(PORTA)) {
-            System.out.println("=================================");
-            System.out.println("= Servidor ligado na porta " + PORTA + " =");
-            System.out.println("=================================");
+            mostrarBanner();
 
             while (true) {
                 Socket socketCliente = serverSocket.accept();
@@ -62,5 +60,20 @@ public class Servidor {
                 }
             }
         }
+    }
+
+    public static void mostrarBanner() {
+        System.out.println("""
+    
+     ██████╗ █████╗ ███╗   ██╗████████╗██╗███╗   ██╗ █████╗
+    ██╔════╝██╔══██╗████╗  ██║╚══██╔══╝██║████╗  ██║██╔══██╗
+    ██║     ███████║██╔██╗ ██║   ██║   ██║██╔██╗ ██║███████║
+    ██║     ██╔══██║██║╚██╗██║   ██║   ██║██║╚██╗██║██╔══██║
+    ╚██████╗██║  ██║██║ ╚████║   ██║   ██║██║ ╚████║██║  ██║
+     ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═╝   ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝
+
+              🍽️  SERVIDOR DA CANTINA INICIADO  🍽️
+                   Porta: """ + PORTA + """
+    """);
     }
 }
