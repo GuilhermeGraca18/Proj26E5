@@ -3,6 +3,8 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.InfoCmp;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -191,10 +193,10 @@ public class Main {
                     System.out.println(" 1 - Entregar Pedido Pendente"); // FEITO
                     System.out.println(" 2 - Adicionar Item"); // FEITO
                     System.out.println(" 3 - Ver Items"); // FEITO
-                    System.out.println(" 4 - Criar Ementa"); // NAO FEITO
-                    System.out.println(" 5 - Ver Ementa de Hoje"); // NAO FEITO
-                    System.out.println(" 6 - Ver Ementas Anteriores"); // NAO FEITO
-                    System.out.println(" 7 - Ver Pedidos Pendentes"); // NAO FEITO
+                    System.out.println(" 4 - Eliminar Item"); // FEITO
+                    System.out.println(" 5 - Criar Ementa"); // FEITO
+                    System.out.println(" 6 - Ver Ementa de Hoje"); // NAO FEITO
+                    System.out.println(" 7 - Ver Ementas Anteriores"); // FEITO
                     System.out.println(" 8 - Ver Pedidos Geral"); // FEITO
                     System.out.println(" 9 - Ver Clientes"); // FEITO
                     System.out.println(" 10 - Ver Funcionários"); // FEITO
@@ -251,7 +253,7 @@ public class Main {
 
                             try {
                                 System.out.println(" === CRIAR NOVO ITEM === ");
-                                System.out.print("Código do Item: ");
+                                System.out.print("Código do Item ( >= 1): ");
                                 int codigo = input.nextInt();
                                 System.out.print("Nome: ");
                                 input.nextLine();
@@ -265,14 +267,45 @@ public class Main {
                                 // MENU COM SETAS COM GOOGLE LANTERNA - EXPLICA ISTO À PROFESSORA, SE NAO DER PARA USAR A FUNÇAO escolhertipo() por de forma convencional
                                 // PARA JA NO PRIMEIRO SPRINT POIS DEPOIS TENCIONAMOS FAZER A INTERFACE GRAFICA
                                 TipoItem tipo = escolherTipo();
+                                Item novoItem = null;
+                                if(tipo.equals(TipoItem.Prato)){
+                                    System.out.print("Tipo de Prato (1 - Carne , 2 - Peixe, 3 - Vegetariano): ");
+                                    int ntipoPrato = input.nextInt();
 
-                                Item novoItem = new Item(
-                                        codigo,
-                                        nome,
-                                        descricao,
-                                        preco,
-                                        tipo
-                                );
+                                    while (ntipoPrato > 3 || ntipoPrato < 1){
+                                        System.out.println("[ERRO] Digite um dos números apresentados");
+                                        System.out.print("Tipo de Prato (1 - Carne , 2 - Peixe, 3 - Vegetariano): ");
+                                        ntipoPrato = input.nextInt();
+                                    }
+                                    TipoPrato tipoPrato = null;
+                                    if (ntipoPrato == 1){
+                                        tipoPrato = TipoPrato.Carne;
+                                    } else if (ntipoPrato == 2) {
+                                        tipoPrato = TipoPrato.Peixe;
+                                    } else if (ntipoPrato == 3) {
+                                        tipoPrato = TipoPrato.Vegetariano;
+                                    }
+
+                                    novoItem = new Prato(
+                                            codigo,
+                                            nome,
+                                            descricao,
+                                            preco,
+                                            tipo,
+                                            tipoPrato
+                                    );
+
+                                } else {
+                                    novoItem = new Item(
+                                            codigo,
+                                            nome,
+                                            descricao,
+                                            preco,
+                                            tipo
+                                    );
+                                }
+
+
                                 saida.reset();
                                 saida.writeObject(new Mensagem("ADICIONAR_ITEM", novoItem));
                                 saida.flush();
@@ -303,6 +336,108 @@ public class Main {
                             }
 
                             break;
+                        case 4: // ELIMINAR ITEM
+                            try {
+                                System.out.println(" === ELIMINAR ITEM === ");
+                                System.out.print("Código do Item: ");
+                                int codigoItem = input.nextInt();
+
+                                saida.reset();
+                                saida.writeObject(new Mensagem("ELIMINAR_ITEM", codigoItem));
+                                saida.flush();
+
+                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                System.out.println(resposta.getDados());
+
+                            } catch (Exception e){
+                                System.out.println("[ERRO] Dados inválidos inseridos!");
+                            }
+                            break;
+                        case 5: // CRIAR Ementa
+                            LocalDate dataEmeta = null;
+                            input.nextLine();
+                            try {
+                                System.out.println(" === CRIAR EMENTA === ");
+                                System.out.print("Data/Dia (dd/mm/aaaa): ");
+                                String dataString = input.nextLine();
+
+                                DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                                dataEmeta = LocalDate.parse(dataString, formatador);
+
+                                saida.reset();
+                                saida.writeObject(new Mensagem("CRIAR_EMENTA", dataEmeta));
+                                saida.flush();
+
+                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                System.out.println(resposta.getDados());
+                            } catch (Exception e ){
+                                System.out.println("[ERRO] Dados inválidos inseridos!");
+                                System.out.println("[CONSOLE] --- " + e);
+                            }
+
+                            try {
+                                int escolha = -1;
+                                while (escolha != 0){
+
+                                    saida.reset();
+                                    saida.writeObject(new Mensagem("VER_LISTA_ITEMS", null));
+                                    saida.flush();
+
+                                    Mensagem resposta = (Mensagem) entrada.readObject();
+                                    ArrayList<Item> listaItems = (ArrayList<Item>) resposta.getDados();
+
+                                    for (Item item : listaItems){
+                                        System.out.println(item.toStringLista());
+                                    }
+
+                                    System.out.print("Código do Item (0 para fechar ementa): ");
+                                    escolha = input.nextInt();
+
+                                    if( escolha == 0){
+                                        break;
+                                    }
+                                    System.out.print("Número de Pratos/Stock do dia: ");
+                                    int stock = input.nextInt();
+
+                                    ArrayList<Object> dados = new ArrayList<>();
+
+                                    dados.add(escolha);
+                                    dados.add(stock);
+                                    dados.add(dataEmeta);
+
+                                    saida.reset();
+                                    saida.writeObject(new Mensagem("ADICIONAR_ITEM_EMENTA", dados));
+                                    saida.flush();
+
+                                    resposta = (Mensagem) entrada.readObject();
+                                    System.out.println(resposta.getDados());
+
+                                }
+                                System.out.println("[SUCESSO] Ementa Fechada!");
+                            } catch (Exception e){
+                                System.out.println("[ERRO] Dados inválidos inseridos!");
+                                System.out.println("[CONSOLE] --- " + e);
+                            }
+
+                            break;
+                        case 7: // VER EMENTAS GERAL
+                            try {
+                                saida.reset();
+                                saida.writeObject(new Mensagem("VER_EMENTAS", null));
+                                saida.flush();
+
+                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                ArrayList<Ementa> listaEmenta = (ArrayList<Ementa>) resposta.getDados();
+
+                                for (Ementa ementa : listaEmenta){
+                                    System.out.println(ementa);
+                                }
+                            } catch (Exception e) {
+
+                            }
+
+
                         case 8: // VER PEDIDOS GERAL
                             try {
                                 System.out.println(" === PEDIDOS CRIADOS === ");

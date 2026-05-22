@@ -37,7 +37,11 @@ public class Item implements Serializable {
 
     @Override
     public String toString() {
-        return nome + " (" + tipo + ")";
+        return nome + " (" + tipo + ") - " + preco + "€";
+    }
+
+    public String toStringLista() {
+        return "CODIGO #" + codigo + "| " + nome + " (" + tipo + ")";
     }
 
     public String toStringDetalhado() {

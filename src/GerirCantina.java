@@ -99,13 +99,19 @@ public class GerirCantina {
     // LISTA DE ITEMS - METODOS
 
     public Item pesquisarItem(int codigoItem){
-        ArrayList<Item> items = cantina.items;
-        for (Item item : items){
-            if (item.getCodigo() == codigoItem){
-                return item;
-            }
-        }
-        return null;
+        return cantina.pesquisarItem(codigoItem);
+    }
+
+    public void registarItem(Item item){
+        cantina.registarItem(item);
+    }
+
+    public ArrayList<Item> getListaItems(){
+        return  cantina.getItems();
+    }
+
+    public void eliminarItem(int codigoItem){
+        cantina.eliminarItem(codigoItem);
     }
     
     /**
@@ -179,14 +185,6 @@ public class GerirCantina {
     	}
     	
     	System.out.println("Total de Vendas: " + total);
-    }
-
-    public void registarItem(Item item){
-        cantina.registarItem(item);
-    }
-
-    public ArrayList<Item> getListaItems(){
-        return  cantina.getItems();
     }
 
     // GETS
@@ -271,5 +269,20 @@ public class GerirCantina {
             }
         }
         return null;
+    }
+
+    public void adicionarItemEmenta(LocalDate data, int codigoItem, int stock){
+        Ementa ementa = pesquisarEmenta(data);
+        Item item = pesquisarItem(codigoItem);
+        ementa.adiconarItemDia(item, stock);
+    }
+
+    public Item pesquisarItemEmenta(LocalDate data, int codigoItem){
+        Ementa ementa = pesquisarEmenta(data);
+        return ementa.pesquisarItem(codigoItem);
+    }
+
+    public ArrayList<Ementa> getEmentas(){
+        return  cantina.getEmentas();
     }
 }

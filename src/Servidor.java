@@ -20,12 +20,13 @@ public class Servidor {
 
 
         try (ServerSocket serverSocket = new ServerSocket(PORTA)) {
-
-            System.out.println("Servidor ligado na porta " + PORTA);
+            System.out.println("=================================");
+            System.out.println("= Servidor ligado na porta " + PORTA + " =");
+            System.out.println("=================================");
 
             while (true) {
                 Socket socketCliente = serverSocket.accept();
-                System.out.println("Novo cliente ligado: " + socketCliente.getInetAddress());
+                System.out.println("[SERVIDOR] Novo cliente ligado: " + socketCliente.getInetAddress());
 
                 new ClienteHandler(socketCliente).start();
             }

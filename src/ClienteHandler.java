@@ -2,6 +2,7 @@ import java.io.*;
 import java.net.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ClienteHandler extends Thread {
     private final Socket socket;
@@ -124,7 +125,77 @@ public class ClienteHandler extends Thread {
                     saida.writeObject(new Mensagem("INFO", Servidor.gerir.getListaItems()));
                     saida.flush();
 
-                } else if (msg.getTipo().equalsIgnoreCase("CRIAR_PEDIDO")) {
+                }
+                else if (msg.getTipo().equalsIgnoreCase("ELIMINAR_ITEM")) {
+                    int codigoItem = (int) msg.getDados();
+
+                    if(Servidor.gerir.pesquisarItem(codigoItem) != null){
+                        Servidor.gerir.eliminarItem(codigoItem);
+
+                        saida.reset();
+                        saida.writeObject(new Mensagem("INFO", "[SUCESSO] ITEM " + codigoItem + " eliminado!" ));
+                        System.out.println( "[" + msg.getTipo() + "] " + codigoItem + " | - ELIMINADO");
+                    } else {
+                        saida.reset();
+                        saida.writeObject(new Mensagem("INFO", "[ERRO] ITEM " + codigoItem + " não existe!" ));
+                    }
+                    saida.flush();
+
+                }
+                else if (msg.getTipo().equalsIgnoreCase("CRIAR_EMENTA")) {
+                    LocalDate data = (LocalDate) msg.getDados();
+
+                    if(Servidor.gerir.pesquisarEmenta(data) == null){
+                        Servidor.gerir.criarEmenta(data);
+
+                        saida.reset();
+                        saida.writeObject(new Mensagem("INFO", "[SUCESSO] EMENTA CRIADA | DIA: " + data ));
+                        System.out.println( "[" + msg.getTipo() + "] " + data + " | - CRIADA");
+                    } else {
+                        saida.reset();
+                        saida.writeObject(new Mensagem("INFO", "[ERRO] EMENTA JÀ CRIADA E FECHADA | DIA: " + data ));
+                        System.out.println( "[" + msg.getTipo() + "] " + data + " | - JÀ CRIADA");
+                    }
+
+                    saida.flush();
+                }
+                else if (msg.getTipo().equalsIgnoreCase("ADICIONAR_ITEM_EMENTA")) {
+                    ArrayList<Object> dados = (ArrayList<Object>) msg.getDados();
+
+                    int codigoItem = (int) dados.get(0);
+                    int stock = (int) dados.get(1);
+                    LocalDate dataEmenta = (LocalDate) dados.get(2);
+
+                    if(Servidor.gerir.pesquisarItem(codigoItem) != null){
+
+                        if(Servidor.gerir.pesquisarItemEmenta(dataEmenta, codigoItem) == null){
+
+                            Servidor.gerir.adicionarItemEmenta(dataEmenta, codigoItem, stock);
+
+                            saida.reset();
+                            saida.writeObject(new Mensagem("INFO", "[SUCESSO] ITEM (" + codigoItem + ") ADICIONADO À EMENTA"));
+                            System.out.println( "[" + msg.getTipo() + "] " + codigoItem + " | - ADICIONADO À EMENTA - DIA: " + dataEmenta);
+
+                        } else {
+                            saida.reset();
+                            saida.writeObject(new Mensagem("INFO", "[ERRO] ITEM (" + codigoItem + ") JÀ FOI ADICIONADO À EMENTA"));
+                        }
+
+                    } else {
+                        saida.reset();
+                        saida.writeObject(new Mensagem("INFO", "[ERRO] ITEM (" + codigoItem + ") NÂO EXISTE NA LISTA"));
+                    }
+                    saida.flush();
+                }
+                else if (msg.getTipo().equalsIgnoreCase("VER_EMENTAS")) {
+                    ArrayList<Ementa> ementas = Servidor.gerir.getEmentas();
+
+                    saida.reset();
+                    saida.writeObject(new Mensagem("ERRO", ementas));
+                    saida.flush();
+
+                }
+                else if (msg.getTipo().equalsIgnoreCase("CRIAR_PEDIDO")) {
                     if (user == null) {
                         saida.writeObject(new Mensagem("ERRO", "[ATENÇÃO] Primeiro faça login!"));
                         saida.flush();

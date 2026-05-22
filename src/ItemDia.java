@@ -1,4 +1,6 @@
-public class ItemDia {
+import java.io.Serializable;
+
+public class ItemDia implements Serializable {
     private Item item;
     private int stock;
 
@@ -20,7 +22,7 @@ public class ItemDia {
     }
     
     public String toString() {
-    	return "Item: " + item + " Stock: " + stock;
+    	return item + " Stock: " + stock;
     }
 }
 

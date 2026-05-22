@@ -17,4 +17,22 @@ public class Cantina implements Serializable {
     public ArrayList<Item> getItems() {
         return items;
     }
+
+    public Item pesquisarItem(int codigoItem){
+        for (Item item : items){
+            if(item.getCodigo() == codigoItem){
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public void eliminarItem(int codigoItem){
+        Item item = pesquisarItem(codigoItem);
+        items.remove(item);
+    }
+
+    public ArrayList<Ementa> getEmentas() {
+        return ementas;
+    }
 }
