@@ -1,13 +1,76 @@
-# PROJ26E5 - PROJETO POO + SI
+# PROJ26E5 - Projeto POO + SI
+
 ## Gestão da Cantina
 
-### Como correr o projeto?
-Abrir o Servidor *(Ficheiro: Servidor.java)* e depois abrir o Cliente  *(Ficheiro: Main.java)*. Para abrir o Monitor dos Pedidos em tempo real é necessáario abrir o ficheiro *MonitorCliente.java*.
+### Funcionalidades Disponíveis
 
+- Criar utilizador como Cliente ou Funcionário
+- Efetuar login
+
+#### Como Funcionário
+
+- Entregar pedidos pendentes, alterando o estado do pedido
+- Criar, visualizar e eliminar itens
+- Criar ementas
+- Adicionar itens com stock à ementa
+- Visualizar ementas
+- Ver lista de clientes
+- Ver lista de funcionários
+
+#### Como Cliente
+
+- Criar pedido de teste para visualizar no Monitor de Pedidos
+
+## Como Correr o Projeto
+
+Antes de abrir o Cliente ou o Monitor de Pedidos, o Servidor deve estar em execução.
+
+### Gerar os ficheiros JAR
+
+Na pasta do projeto, correr:
+
+```bash
+mvn clean package
+```
+Depois de gerar os ficheiros JAR, estes ficam disponíveis na pasta target
+
+### macOS / Linux
+Abrir a pasta do projeto no Terminal.
+
+#### Servidor
+```bash
+java -jar target/Servidor.jar
+```
+#### Cliente
+```bash
+java -jar target/Cliente.jar
+```
+#### Monitor de Pedidos
+```bash
+java -jar target/Monitor.jar
+```
+
+### Windows
+Abrir a pasta do projeto no CMD ou PowerShell.
+
+#### Servidor
+```bash
+java -jar target/Servidor.jar
+```
+
+#### Cliente
+```bash
+java -jar target/Cliente.jar
+```
+
+#### Monitor de Pedidos
+```bash
+java -jar target/Monitor.jar
+```
 
 ### Membros do Grupo
-* Guilherme Gomes Graça - 53861
-* Diana
-* Simão
-* Arthur
-* Rafael Calheiros
+- Guilherme Gomes Graça - 53861
+- Diana
+- Simão
+- Arthur
+- Rafael Calheiros
