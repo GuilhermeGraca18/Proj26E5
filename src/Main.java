@@ -26,9 +26,6 @@ public class Main {
 
             int n = -1;
             Utilizador user = null;
-            
-            // Cantina a ser gerida
-            GerirCantina gerir = new GerirCantina();
 
             while (n != 0 && user == null) {
 
@@ -57,9 +54,6 @@ public class Main {
                             String senha = input.nextLine();
 
                             user = new Utilizador(codigo, nomeCliente, senha, TipoUtilizador.CLIENTE);
-                            
-                            // Registra um cliente na lista de usuarios da cantina.
-                            gerir.registarUser(user);
                             
                         } catch (Exception e) {
                             System.out.println("[ERRO] Dados introduzido inválidos");
@@ -93,9 +87,6 @@ public class Main {
                             String senha = input.nextLine();
 
                             user = new Utilizador(codigo, nomeCliente, senha, TipoUtilizador.FUNCIONARIO);
-                            
-                            // Registra um funcionário na lista de usuarios da cantina.
-                            gerir.registarUser(user);
                             
                         } catch (Exception e) {
                             System.out.println("[ERRO] Dados introduzido inválidos");
@@ -200,7 +191,7 @@ public class Main {
                     System.out.println(" 8 - Ver Pedidos Geral"); // FEITO
                     System.out.println(" 9 - Ver Clientes"); // FEITO
                     System.out.println(" 10 - Ver Funcionários"); // FEITO
-                    System.out.println(" 11 - Criar Relatório"); // NAO FEITO - COMO ESTÁ NAO COMUNICA COM O SERVIDOR, LOGO NAO ATUALIZA PARA NOVOS DADOS
+                    System.out.println(" 11 - Criar Relatório"); // FEITO
 
                     System.out.println(" 0 - Sair");
 
@@ -416,9 +407,9 @@ public class Main {
                             } catch (Exception e){
 
                             }
-
-
+                            
                             break;
+                            
                         case 7: // VER EMENTAS GERAL
                             try {
                                 saida.reset();
@@ -457,9 +448,6 @@ public class Main {
                             
                         case 9: // CONSULTAR CLIENTES
 
-                        	// gerir.consultarUtilizadores(); // ISTO TA SOMENTE A IR Á LISTA LOCAL, NAO ATUALIZA
-                            // NOTA: TEMOS DE FAZER A CHAMADA PARA O SERVIDOR COM UM CODIGO "VER_UTILIZADORES" E ELE RETORNA A LISTA DE UTILIZADORES E NOS FAZEMOS O PRINT AQUI
-                            // OU SEJA
                             try {
                                 System.out.println(" === CLIENTES REGISTADOS === ");
                                 saida.reset();
@@ -479,6 +467,7 @@ public class Main {
                             }
                         	
                         	break;
+                        	
                         case 10: // CONSULTAR FUNCIONARIOS
                             try {
                                 System.out.println(" === FUNCIONÁRIOS REGISTADOS === ");
@@ -498,11 +487,37 @@ public class Main {
                             }
 
                             break;
+                            
                         case 11: // CRIAR RELATORIO
                         	
-                        	gerir.criarRelatorio();
-                        	
-                        	break;
+                            saida.reset();
+                            saida.writeObject(new Mensagem("RELATORIO_VENDAS", null));
+                            saida.flush();
+
+                            Mensagem respostaRelatorio = (Mensagem) entrada.readObject();
+                            ArrayList<Object> dadosRelatorio = (ArrayList<Object>) respostaRelatorio.getDados();
+
+                            System.out.println("\n\tArtigos vendidos");
+                            System.out.println("\nNome:\t\tCódigo:\tPreço:\tData:");
+
+                            double totalVendas = 0;
+                            for (int i = 0; i < dadosRelatorio.size() - 1; i++) {
+                            	
+                                ArrayList<Object> linha = (ArrayList<Object>) dadosRelatorio.get(i);
+                                
+                                String nome   = (String)    linha.get(0);
+                                int codigo    = (int)       linha.get(1);
+                                double preco  = (double)    linha.get(2);
+                                Object data   = linha.get(3);
+                                
+                                System.out.println(nome + "\t" + codigo + "\t" + preco + "\t" + data);
+                                totalVendas += preco;
+                                
+                            }
+
+                            System.out.println("Total de Vendas: " + totalVendas);
+                            
+                            break;
                         	
                         case 0:
                             saida.reset();
@@ -521,21 +536,24 @@ public class Main {
             } else if (user.getTipo().equals(TipoUtilizador.CLIENTE)) {
 
                 while ( n != 0 ) {
+                	
                     System.out.println(" --- ÁREA DO CLIENTE | CANTINA ---");
-                    System.out.println(" 1 - Criar Pedido");
-                    System.out.println(" 0 - Sair");
-
-                    /*System.out.println(" 1 - Ver Ementa de Hoje");
+                    System.out.println(" 1 - ver ementa de hoje");
                     System.out.println(" 2 - Criar Pedido");
                     System.out.println(" 3 - Ver estado do meu pedido");
-                    System.out.println(" 4 - Ver pedidos anteriores");
-                    System.out.println(" 0 - Sair");*/
+                    System.out.println(" 4 - Ver pedidos anterirores");
+                    System.out.println(" 0 - Sair");
 
                     System.out.print("\nInsira a ação que deseja: ");
                     n = input.nextInt();
 
                     switch (n) {
-                        case 1:
+                    
+                    	case 1: // VER EMENTA DE HOJE
+                    	
+                    		break;
+                    
+                        case 2: // CRIAR PEDIDO
 
                             Item bebida = new Item(
                                     111,
@@ -562,9 +580,6 @@ public class Main {
                             );
 
                             Pedido pedido = new Pedido(user, "NOTAS");
-                            
-                            // Adicionar um pedido a lista de pedidos.
-                            gerir.criarPedidos(pedido);
 
                             pedido.adicionarItems(bebida);
                             pedido.adicionarItems(entradaPedido);
@@ -577,14 +592,28 @@ public class Main {
                             Mensagem resposta = (Mensagem) entrada.readObject();
                             System.out.println(resposta.getDados());
                             break;
-                        case 0:
+                            
+                        case 3: // VER ESTADO DO PEDIDO
+                        	
+                    		break;
+                    		
+                        case 4: // VER PEDIDOS ANTERIORES
+                        	
+                    		break;
+                    			
+                        case 0: // SAIR
+                        	
                             saida.reset();
                             saida.writeObject(new Mensagem("SAIR", null));
                             saida.flush();
                             System.out.println("A sair...");
+                            
                             break;
+                            
                         default:
+                        	
                             System.out.println("[ERRO] Ação inválida");
+                            
                             break;
 
                     }

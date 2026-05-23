@@ -114,33 +114,7 @@ public class GerirCantina {
         cantina.eliminarItem(codigoItem);
     }
     
-    /**
-     * @author Arthur Santana - 53987
-     * Método para consultar todos os utilizadores.
-     */
-    public void consultarUtilizadores() {
-    	
-    	System.out.println("\nCLIENTES: ");
-    	
-    	for(Utilizador i : utilizadores) {
-    		
-    		if(i.getTipo() == TipoUtilizador.CLIENTE) {
-    			
-    			System.out.println(i);
-    		}
-    	}
-    	
-    	System.out.println("\nFUNCIONÁRIOS: ");
-    	
-    	for(Utilizador i : utilizadores) {
-    		
-    		if(i.getTipo() == TipoUtilizador.FUNCIONARIO) {
-    			
-    			System.out.println(i);
-    		}
-    	}
-    }
-
+    // CONSULTAR CLIENTES
     public ArrayList<Utilizador> getUtilizadoresClientes(){
         ArrayList<Utilizador> listaClientes = new ArrayList<>();
         for (Utilizador cliente : utilizadores){
@@ -151,6 +125,7 @@ public class GerirCantina {
         return listaClientes;
     }
 
+    // CONSULTAR FUNCIONÁRIOS
     public ArrayList<Utilizador> getUtilizadoresFuncionarios(){
         ArrayList<Utilizador> listaFuncionarios = new ArrayList<>();
         for (Utilizador funcionario : utilizadores){
@@ -163,28 +138,32 @@ public class GerirCantina {
     
     /**
      * @author Arthur Santana - 53987
-     * Metodo para criar relatorio de vendas de artigos total.
+     * Métododo para criar relatorio atualizado com comunicação entre cliente e servidor
      */
-    public void criarRelatorio() {
-    	
-    	double total = 0;
-    	
-    	System.out.println("\tArtigos vendidos");
-    	System.out.println("\nNome: \tCódigo: \tPreço: \tData: ");
-    	System.out.println();
-    	
-    	for(Pedido i : pedidos) {
-    		
-    		for(Item j : i.getItens()) {
-    			
-    			System.out.println(j.getNome() + "\t" + j.getCodigo() + "\t" + j.getPreco() + "\t" + i.getData());
-    			
-    			total = total + j.getPreco();
-    			
-    		}
-    	}
-    	
-    	System.out.println("Total de Vendas: " + total);
+    public ArrayList<Object> criarRelatorio() {
+        
+    	ArrayList<Object> relatorio = new ArrayList<>();
+        double total = 0;
+
+        for (Pedido i : pedidos) {
+        	
+            for (Item j : i.getItens()) {
+                
+            	ArrayList<Object> linha = new ArrayList<>();
+            	
+                linha.add(j.getNome());
+                linha.add(j.getCodigo());
+                linha.add(j.getPreco());
+                linha.add(i.getData());
+                relatorio.add(linha);
+                
+                total = total + j.getPreco();
+            }
+        }
+
+        relatorio.add(total);
+        
+        return relatorio;
     }
 
     // GETS

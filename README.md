@@ -70,7 +70,7 @@ java -jar target/Monitor.jar
 
 ### Membros do Grupo
 - Guilherme Gomes Graça - 53861
-- Diana
-- Simão
-- Arthur
-- Rafael Calheiros
+- Diana - 53267
+- Simão - 53570
+- Arthur - 53987
+- Rafael Calheiros - 53828

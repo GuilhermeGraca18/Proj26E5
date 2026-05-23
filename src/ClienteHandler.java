@@ -217,6 +217,14 @@ public class ClienteHandler extends Thread {
                     }
 
                 }
+                else if (msg.getTipo().equalsIgnoreCase("RELATORIO_VENDAS")) // Comunicação Relatorio de vendas.
+                {
+                    saida.reset();
+                    saida.writeObject(new Mensagem("INFO", Servidor.gerir.criarRelatorio()));
+                    saida.flush();
+
+                    System.out.println("[RELATORIO_VENDAS] Relatório enviado ao administrador.");
+                }
                 else if (msg.getTipo().equalsIgnoreCase("SAIR")) {
                     if (user != null) {
                         System.out.println( "[" + msg.getTipo() + "] " + user.getCodigo() + " - TERMINOU A SESSÃO");
