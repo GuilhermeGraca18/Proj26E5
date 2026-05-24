@@ -61,7 +61,8 @@ public class Pedido implements Serializable{
         return "CODIGO #" + cliente.getCodigo() + " (" + cliente.getNome() + ")" +
                 "\nItems:" + listaItems +
                 "\nNotas: " + notas +
-                "\nEstado: " + estado;
+                "\nEstado: " + estado + 
+                "\nData: " + data;
     }
 
 }

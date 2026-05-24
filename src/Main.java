@@ -186,7 +186,7 @@ public class Main {
                     System.out.println(" 3 - Ver Items"); // FEITO
                     System.out.println(" 4 - Eliminar Item"); // FEITO
                     System.out.println(" 5 - Criar Ementa"); // FEITO
-                    System.out.println(" 6 - Ver Ementa de Hoje"); // NAO FEITO
+                    System.out.println(" 6 - Ver Ementa de Hoje"); // FEITO
                     System.out.println(" 7 - Ver Ementas Anteriores"); // FEITO
                     System.out.println(" 8 - Ver Pedidos Geral"); // FEITO
                     System.out.println(" 9 - Ver Clientes"); // FEITO

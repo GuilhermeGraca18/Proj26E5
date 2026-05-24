@@ -40,7 +40,7 @@ public class GerirCantina {
     }
 
     public boolean verificarPassword(Utilizador user, String pass){
-        if(user.getSenha().equalsIgnoreCase(pass)){
+        if(user.getSenha().equals(pass)){
             return true;
         } else {
             return false;
@@ -49,7 +49,7 @@ public class GerirCantina {
 
     // PEDIDOS - METODOS
 
-    public void criarPedidos(Pedido pedido){;
+    public void criarPedidos(Pedido pedido){
         pedidos.add(pedido);
     }
 
@@ -253,11 +253,24 @@ public class GerirCantina {
     public void adicionarItemEmenta(LocalDate data, int codigoItem, int stock){
         Ementa ementa = pesquisarEmenta(data);
         Item item = pesquisarItem(codigoItem);
-        ementa.adiconarItemDia(item, stock);
+        
+        if (ementa == null) {
+            System.out.println("[ERRO] Ementa não encontrada para o dia: " + data);
+            return;
+        }
+
+        if (item == null) {
+            System.out.println("[ERRO] Item não encontrado com código: " + codigoItem);
+            return;
+        }
+        ementa.adicionarItemDia(item, stock);
     }
 
     public Item pesquisarItemEmenta(LocalDate data, int codigoItem){
         Ementa ementa = pesquisarEmenta(data);
+        
+        if (ementa == null) return null;
+        
         return ementa.pesquisarItem(codigoItem);
     }
 

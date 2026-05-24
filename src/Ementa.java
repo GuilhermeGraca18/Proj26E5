@@ -32,7 +32,7 @@ public class Ementa implements Serializable {
         return null;
     }
 
-    public void adiconarItemDia(Item item, int stock){
+    public void adicionarItemDia(Item item, int stock){
         itemsDia.add(new ItemDia(item, stock));
     }
 
