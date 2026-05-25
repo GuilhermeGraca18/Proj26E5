@@ -1,4 +1,6 @@
-public class ItemDia {
+import java.io.Serializable;
+
+public class ItemDia implements Serializable {
     private Item item;
     private int stock;
 
@@ -11,8 +13,16 @@ public class ItemDia {
         return item;
     }
 
+    public void decrementarStock(){
+        stock = stock - 1;
+    }
+
     public int getStock() {
         return stock;
+    }
+    
+    public String toString() {
+    	return item + " Stock: " + stock;
     }
 }
 

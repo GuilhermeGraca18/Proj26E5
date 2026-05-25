@@ -14,6 +14,10 @@ public class Item implements Serializable {
         this.preco = preco;
         this.tipo = tipo;
     }
+    
+    public String getNome() {
+    	return nome;
+    }
 
     public double getPreco() {
         return preco;
@@ -23,8 +27,29 @@ public class Item implements Serializable {
         return codigo;
     }
 
+    public TipoItem getTipo() {
+        return tipo;
+    }
+    
+    public String getDescricao() {
+    	return descricao;
+    }
+
     @Override
     public String toString() {
-        return nome + " (" + tipo + ")";
+        return nome + " (" + tipo + ") - Preço: " + preco + "€";
+    }
+
+    public String toStringLista() {
+        return "CODIGO #" + codigo + "| " + nome + " (" + tipo + ")";
+    }
+
+    public String toStringDetalhado() {
+        return "Código: " + codigo +
+                "\nNome: " + nome +
+                "\nDescrição: " + descricao +
+                "\nPreço: " + preco + "€" +
+                "\nTipo: " + tipo +
+                "\n===========\n";
     }
 }
