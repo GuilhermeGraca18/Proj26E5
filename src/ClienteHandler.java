@@ -188,12 +188,21 @@ public class ClienteHandler extends Thread {
                     saida.flush();
                 }
                 else if (msg.getTipo().equalsIgnoreCase("VER_EMENTAS")) {
+                	
                     ArrayList<Ementa> ementas = Servidor.gerir.getEmentas();
 
                     saida.reset();
                     saida.writeObject(new Mensagem("INFO", ementas));
                     saida.flush();
 
+                }
+                else if (msg.getTipo().equalsIgnoreCase("VER_EMENTA_DIA")) {
+                	
+                	Ementa ementaDia = Servidor.gerir.pesquisarEmentaHoje();
+                	
+                	saida.reset();
+                	saida.writeObject(new Mensagem("INFO", ementaDia));
+                	saida.flush();
                 }
                 else if (msg.getTipo().equalsIgnoreCase("CRIAR_PEDIDO")) {
                     if (user == null) {

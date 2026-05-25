@@ -86,18 +86,22 @@ public class GerirCantina {
     }
 
     // EMENTA - METODOS
-
-    public Ementa pesquisarEmentaHoje(){
-        for (Ementa ementa : cantina.ementas){
+    
+    public Ementa pesquisarEmentaHoje()
+    {
+        for (Ementa ementa : cantina.ementas)
+        {
             if(ementa.getData().equals((LocalDate.now()))){
+            	
                 return ementa;
             }
         }
+        
         return null;
     }
 
     // LISTA DE ITEMS - METODOS
-
+    
     public Item pesquisarItem(int codigoItem){
         return cantina.pesquisarItem(codigoItem);
     }

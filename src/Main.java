@@ -203,7 +203,7 @@ public class Main {
                     System.out.println(" 3 - Ver Items"); // FEITO
                     System.out.println(" 4 - Eliminar Item"); // FEITO
                     System.out.println(" 5 - Criar Ementa"); // FEITO
-                    System.out.println(" 6 - Ver Ementa de Hoje"); // NÃO FEITO
+                    System.out.println(" 6 - Ver Ementa de Hoje"); // FEITO
                     System.out.println(" 7 - Ver Ementa Geral"); // FEITO
                     System.out.println(" 8 - Ver Pedidos Geral"); // FEITO
                     System.out.println(" 9 - Ver Clientes"); // FEITO
@@ -447,9 +447,30 @@ public class Main {
                             
                             break;
                             
+                        case 6: // VER EMENTA DO DIA
+                        	
+                        	try {
+                        		
+                        		saida.reset();
+                        		saida.writeObject(new Mensagem("VER_EMENTA_DIA", null));
+                        		saida.flush();
+                        		
+                        		Mensagem resposta = (Mensagem) entrada.readObject();
+                        		Ementa ementaHoje = (Ementa) resposta.getDados();
+                        		
+                        		System.out.println(ementaHoje);
+                        		
+                        	} catch (Exception e) {
+                        		
+                        		System.out.println("[ERRO] O Programa não conseguiu ler a ementa do dia!");
+                        	}
+                            
+                        	break;
+                        	
                         case 7: // VER EMENTAS GERAL
                         	
                             try {
+                            	
                                 saida.reset();
                                 saida.writeObject(new Mensagem("VER_EMENTAS", null));
                                 saida.flush();
@@ -457,7 +478,8 @@ public class Main {
                                 Mensagem resposta = (Mensagem) entrada.readObject();
                                 ArrayList<Ementa> listaEmenta = (ArrayList<Ementa>) resposta.getDados();
 
-                                for (Ementa ementa : listaEmenta){
+                                for (Ementa ementa : listaEmenta) {
+                                	
                                     System.out.println(ementa);
                                 }
                                 
@@ -595,7 +617,7 @@ public class Main {
                 while ( n != 0 ) {
                 	
                     System.out.println(" --- ÁREA DO CLIENTE | CANTINA ---");
-                    System.out.println(" 1 - ver ementa de hoje");
+                    System.out.println(" 1 - Ver ementa de hoje"); // FEITO
                     System.out.println(" 2 - Criar Pedido");
                     System.out.println(" 3 - Ver estado do meu pedido");
                     System.out.println(" 4 - Ver pedidos anterirores");
@@ -607,7 +629,23 @@ public class Main {
                     switch (n) {
                     
                     	case 1: // VER EMENTA DE HOJE
-                    	
+                    		
+                    		try {
+                        		
+                        		saida.reset();
+                        		saida.writeObject(new Mensagem("VER_EMENTA_DIA", null));
+                        		saida.flush();
+                        		
+                        		Mensagem resposta = (Mensagem) entrada.readObject();
+                        		Ementa ementaHoje = (Ementa) resposta.getDados();
+                        		
+                        		System.out.println(ementaHoje);
+                        		
+                        	} catch (Exception e) {
+                        		
+                        		System.out.println("[ERRO] O Programa não conseguiu ler a ementa do dia!");
+                        	}
+                            
                     		break;
                     
                         case 2: // CRIAR PEDIDO
