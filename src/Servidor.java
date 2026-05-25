@@ -7,16 +7,24 @@ public class Servidor {
     private static final int PORTA = 5001;
 
     public static final List<ObjectOutputStream> monitores = new ArrayList<>();
-    public static final GerirCantina gerir = new GerirCantina();
 
-     static void main() {
+    public static final GerirCantina gerir = GerirCantina.getInstance();
+
+     public static void main(String[] args) {
+        gerir.carregarDados();
+
+         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+             System.out.println("A guardar dados...");
+             gerir.guardarDados();
+         }));
+
+
         try (ServerSocket serverSocket = new ServerSocket(PORTA)) {
-
-            System.out.println("Servidor ligado na porta " + PORTA);
+            mostrarBanner();
 
             while (true) {
                 Socket socketCliente = serverSocket.accept();
-                System.out.println("Novo cliente ligado: " + socketCliente.getInetAddress());
+                System.out.println("[SERVIDOR] Novo cliente ligado: " + socketCliente.getInetAddress());
 
                 new ClienteHandler(socketCliente).start();
             }
@@ -52,5 +60,20 @@ public class Servidor {
                 }
             }
         }
+    }
+
+    public static void mostrarBanner() {
+        System.out.println("""
+    
+     ██████╗ █████╗ ███╗   ██╗████████╗██╗███╗   ██╗ █████╗
+    ██╔════╝██╔══██╗████╗  ██║╚══██╔══╝██║████╗  ██║██╔══██╗
+    ██║     ███████║██╔██╗ ██║   ██║   ██║██╔██╗ ██║███████║
+    ██║     ██╔══██║██║╚██╗██║   ██║   ██║██║╚██╗██║██╔══██║
+    ╚██████╗██║  ██║██║ ╚████║   ██║   ██║██║ ╚████║██║  ██║
+     ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═╝   ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝
+
+              🍽️  SERVIDOR DA CANTINA INICIADO  🍽️
+                   Porta: """ + PORTA + """
+    """);
     }
 }

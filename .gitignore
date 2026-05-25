@@ -12,6 +12,7 @@ out/
 .factorypath
 .project
 .settings
+.metadata/
 .springBeans
 .sts4-cache
 bin/

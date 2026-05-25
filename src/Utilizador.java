@@ -28,4 +28,8 @@ public class Utilizador implements Serializable {
     public String getSenha() {
         return senha;
     }
+    
+    public String toString() {
+    	return "\nNome: " + nome + " Código: " + codigo;
+    }
 }

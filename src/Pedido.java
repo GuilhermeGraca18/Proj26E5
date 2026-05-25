@@ -25,6 +25,10 @@ public class Pedido implements Serializable{
     public Utilizador getCliente() {
         return cliente;
     }
+    
+    public ArrayList<Item> getItens() {
+    	return items;
+    }
 
     public EstadoPedido getEstado() {
         return estado;
@@ -54,10 +58,11 @@ public class Pedido implements Serializable{
             listaItems += "\n - " + item;
         }
 
-        return "CODIGO #" + cliente.getCodigo() +
+        return "CODIGO #" + cliente.getCodigo() + " (" + cliente.getNome() + ")" +
                 "\nItems:" + listaItems +
                 "\nNotas: " + notas +
-                "\nEstado: " + estado;
+                "\nEstado: " + estado + 
+                "\nData: " + data;
     }
 
 }
