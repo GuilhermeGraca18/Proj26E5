@@ -25,7 +25,7 @@
 
 Antes de abrir o Cliente ou o Monitor de Pedidos, o Servidor deve estar a correr e aberto.
 
-### Gerar os ficheiros JAR
+### Criar os ficheiros JAR
 
 Na pasta do projeto, correr:
 
