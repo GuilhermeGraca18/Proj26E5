@@ -41,7 +41,9 @@ public class Main {
                 input.nextLine();
 
                 switch (n) {
-                    case 1:
+                
+                    case 1: // REGISTRO CLIENTE
+                    	
                         try {
                         	
                             System.out.println(" --- REGISTO DO CLIENTE --- ");
@@ -74,7 +76,9 @@ public class Main {
                         System.out.println(resposta.getDados());
 
                         break;
-                    case 2:
+                        
+                    case 2: // REGISTRO FUNCIONÁRIO
+                    	
                         try {
                         	
                             System.out.println(" --- REGISTO DO FUNCIONÁRIO --- ");
@@ -104,8 +108,11 @@ public class Main {
 
                         resposta = (Mensagem) entrada.readObject();
                         System.out.println(resposta.getDados());
+                        
                         break;
-                    case 3:
+                        
+                    case 3: // LOGIN
+                    	
                         int codigo = -1;
                         ArrayList<Object> dados = new ArrayList<>();
                         try {
@@ -123,6 +130,7 @@ public class Main {
                             String senha = input.nextLine();
                             dados.add(codigo);
                             dados.add(senha);
+                            
                         } catch (Exception e){
                             System.out.println("[ERRO] Dados introduzido inválidos");
                         }
@@ -147,9 +155,13 @@ public class Main {
                         } else {
                             System.out.println(resposta.getDados());
                         }
+                        
                         break;
-                    case 4:
+                        
+                    case 4: // MONITOR DE PEDIDOS
+                    	
                         try {
+                        	
                             String classpath = System.getProperty("java.class.path");
 
                             String comando =
@@ -162,15 +174,20 @@ public class Main {
                             ).start();
 
                         } catch (Exception e) {
+                        	
                             e.printStackTrace();
                         }
+                        
                         break;
-                    case 0:
+                        
+                    case 0: // SAIR
+                    	
                         saida.reset();
                         saida.writeObject(new Mensagem("SAIR", null));
                         saida.flush();
                         System.out.println("A sair...");
                         break;
+                        
                     default:
                         System.out.println("[ERRO] Ação inválida");
                         break;
@@ -186,8 +203,8 @@ public class Main {
                     System.out.println(" 3 - Ver Items"); // FEITO
                     System.out.println(" 4 - Eliminar Item"); // FEITO
                     System.out.println(" 5 - Criar Ementa"); // FEITO
-                    System.out.println(" 6 - Ver Ementa de Hoje"); // FEITO
-                    System.out.println(" 7 - Ver Ementas Anteriores"); // FEITO
+                    System.out.println(" 6 - Ver Ementa de Hoje"); // NÃO FEITO
+                    System.out.println(" 7 - Ver Ementa Geral"); // FEITO
                     System.out.println(" 8 - Ver Pedidos Geral"); // FEITO
                     System.out.println(" 9 - Ver Clientes"); // FEITO
                     System.out.println(" 10 - Ver Funcionários"); // FEITO
@@ -196,15 +213,19 @@ public class Main {
                     System.out.println(" 0 - Sair");
 
                     try {
+                    	
                         System.out.print("\nInsira a ação que deseja: ");
                         n = input.nextInt();
+                        
                     } catch (Exception e){
                         System.out.println("[ERRO] Tipo de dados inserido inválido");
                     }
 
 
                     switch (n){
+                    
                         case 1: // ENTREGAR PEDIDO
+                        	
                             Pedido pedidoCliente = null;
                             System.out.println(" === ENTREGAR PEDIDO PENDENTE === ");
                             System.out.print("Número do pedido: ");
@@ -239,10 +260,13 @@ public class Main {
                             } else {
                                 System.out.println(value.getDados());
                             }
+                            
                             break;
+                            
                         case 2: // ADICIONAR ITEM
 
                             try {
+                            	
                                 System.out.println(" === CRIAR NOVO ITEM === ");
                                 System.out.print("Código do Item ( >= 1): ");
                                 int codigo = input.nextInt();
@@ -259,6 +283,7 @@ public class Main {
                                 // PARA JA NO PRIMEIRO SPRINT POIS DEPOIS TENCIONAMOS FAZER A INTERFACE GRAFICA
                                 TipoItem tipo = escolherTipo();
                                 Item novoItem = null;
+                                
                                 if(tipo.equals(TipoItem.Prato)){
                                     System.out.print("Tipo de Prato (1 - Carne , 2 - Peixe, 3 - Vegetariano): ");
                                     int ntipoPrato = input.nextInt();
@@ -308,8 +333,11 @@ public class Main {
                                 System.out.println("[ERRO] Tipo de dados inserido inválido");
                                 input.nextLine();
                             }
+                            
                             break;
+                            
                         case 3: // VER LISTA DE ITEM
+                        	
                             try {
                                 System.out.println(" === LISTA ITEMS === ");
                                 saida.reset();
@@ -327,8 +355,11 @@ public class Main {
                             }
 
                             break;
+                            
                         case 4: // ELIMINAR ITEM
+                        	
                             try {
+                            	
                                 System.out.println(" === ELIMINAR ITEM === ");
                                 System.out.print("Código do Item: ");
                                 int codigoItem = input.nextInt();
@@ -341,11 +372,16 @@ public class Main {
                                 System.out.println(resposta.getDados());
 
                             } catch (Exception e){
+                            	
                                 System.out.println("[ERRO] Dados inválidos inseridos!");
                             }
+                            
                             break;
-                        case 5: // CRIAR Ementa
+                            
+                        case 5: // CRIAR EMENTA
+                        	
                             try {
+                            	
                                 LocalDate dataEmeta = null;
                                 input.nextLine();
                                 Mensagem resposta = null;
@@ -405,12 +441,14 @@ public class Main {
                                 }
 
                             } catch (Exception e){
-
+                            	
+                            	System.out.println("[ERRO] O Programa não conseguiu criar a ementa!");
                             }
                             
                             break;
                             
                         case 7: // VER EMENTAS GERAL
+                        	
                             try {
                                 saida.reset();
                                 saida.writeObject(new Mensagem("VER_EMENTAS", null));
@@ -422,13 +460,18 @@ public class Main {
                                 for (Ementa ementa : listaEmenta){
                                     System.out.println(ementa);
                                 }
+                                
                             } catch (Exception e) {
-
+                            	
+                            	System.out.println("[ERRO] O Programa ler a ementa geral!");
                             }
-
+                            
+                            break;
 
                         case 8: // VER PEDIDOS GERAL
+                        	
                             try {
+                            	
                                 System.out.println(" === PEDIDOS CRIADOS === ");
                                 saida.reset();
                                 saida.writeObject(new Mensagem("VER_PEDIDOS", null));
@@ -441,6 +484,7 @@ public class Main {
                                     System.out.println(pedido);
                                 }
                             } catch (Exception e){
+                            	
                                 System.out.println("[ERRO] O Programa não conseguiu ler a lista de Pedidos!");
                             }
                             
@@ -449,6 +493,7 @@ public class Main {
                         case 9: // CONSULTAR CLIENTES
 
                             try {
+                            	
                                 System.out.println(" === CLIENTES REGISTADOS === ");
                                 saida.reset();
                                 saida.writeObject(new Mensagem("VER_CLIENTES", null));
@@ -463,13 +508,16 @@ public class Main {
                                 }
 
                             } catch (Exception e){
+                            	
                                 System.out.println("[ERRO] O Programa não conseguiu ler a lista de Pedidos!");
                             }
                         	
                         	break;
                         	
                         case 10: // CONSULTAR FUNCIONARIOS
+                        	
                             try {
+                            	
                                 System.out.println(" === FUNCIONÁRIOS REGISTADOS === ");
                                 saida.reset();
                                 saida.writeObject(new Mensagem("VER_FUNCIONARIOS", null));
@@ -490,42 +538,51 @@ public class Main {
                             
                         case 11: // CRIAR RELATORIO
                         	
-                            saida.reset();
-                            saida.writeObject(new Mensagem("RELATORIO_VENDAS", null));
-                            saida.flush();
-
-                            Mensagem respostaRelatorio = (Mensagem) entrada.readObject();
-                            ArrayList<Object> dadosRelatorio = (ArrayList<Object>) respostaRelatorio.getDados();
-
-                            System.out.println("\n\tArtigos vendidos");
-                            System.out.println("\nNome:\t\tCódigo:\tPreço:\tData:");
-
-                            double totalVendas = 0;
-                            for (int i = 0; i < dadosRelatorio.size() - 1; i++) {
-                            	
-                                ArrayList<Object> linha = (ArrayList<Object>) dadosRelatorio.get(i);
-                                
-                                String nome   = (String)    linha.get(0);
-                                int codigo    = (int)       linha.get(1);
-                                double preco  = (double)    linha.get(2);
-                                Object data   = linha.get(3);
-                                
-                                System.out.println(nome + "\t" + codigo + "\t" + preco + "\t" + data);
-                                totalVendas += preco;
-                                
-                            }
-
-                            System.out.println("Total de Vendas: " + totalVendas);
+	                        try {
+	                        	
+                        		saida.reset();
+	                            saida.writeObject(new Mensagem("RELATORIO_VENDAS", null));
+	                            saida.flush();
+	
+	                            Mensagem respostaRelatorio = (Mensagem) entrada.readObject();
+	                            ArrayList<Object> dadosRelatorio = (ArrayList<Object>) respostaRelatorio.getDados();
+	
+	                            System.out.println("\n\tArtigos vendidos");
+	                            System.out.println("\nNome:\t\tCódigo:\tPreço:\tData:");
+	
+	                            double totalVendas = 0;
+	                            for (int i = 0; i < dadosRelatorio.size() - 1; i++) {
+	                            	
+	                                ArrayList<Object> linha = (ArrayList<Object>) dadosRelatorio.get(i);
+	                                
+	                                String nome   = (String)    linha.get(0);
+	                                int codigo    = (int)       linha.get(1);
+	                                double preco  = (double)    linha.get(2);
+	                                Object data   = linha.get(3);
+	                                
+	                                System.out.println(nome + "\t" + codigo + "\t" + preco + "\t" + data);
+	                                totalVendas += preco;
+	                                
+	                            }
+	
+	                            System.out.println("Total de Vendas: " + totalVendas);
                             
+	                        } catch (Exception e) {
+	                        	
+	                        	System.out.println("[ERRO] O Programa não conseguiu criar o relatório!");
+	                        }
                             break;
                         	
-                        case 0:
+                        case 0: // SAIR
+                        	
                             saida.reset();
                             saida.writeObject(new Mensagem("SAIR", null));
                             saida.flush();
                             System.out.println("A sair...");
                             break;
+                            
                         default:
+                        	
                             System.out.println("[ERRO] Ação inválida");
                             break;
 
@@ -542,7 +599,7 @@ public class Main {
                     System.out.println(" 2 - Criar Pedido");
                     System.out.println(" 3 - Ver estado do meu pedido");
                     System.out.println(" 4 - Ver pedidos anterirores");
-                    System.out.println(" 0 - Sair");
+                    System.out.println(" 0 - Sair"); // FEITO
 
                     System.out.print("\nInsira a ação que deseja: ");
                     n = input.nextInt();
