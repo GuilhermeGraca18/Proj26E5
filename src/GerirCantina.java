@@ -60,7 +60,7 @@ public class GerirCantina {
      */
     public Pedido pesquisarPedidoPendente(Utilizador cliente){
         for (Pedido pedido : pedidos){
-            if(pedido.getCliente().equals(cliente) && pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_FAZER){
+            if(pedido.getCliente().getCodigo() == cliente.getCodigo() && pedido.getData().equals(LocalDate.now())){
                 return pedido;
             }
         }

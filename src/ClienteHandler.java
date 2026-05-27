@@ -216,7 +216,8 @@ public class ClienteHandler extends Thread {
                             Servidor.gerir.criarPedidos(pedido);
                             Servidor.gerir.guardarDados();
                         }
-
+                        
+                        saida.reset();
                         saida.writeObject(new Mensagem("INFO", "Pedido criado com sucesso."));
                         saida.flush();
 
@@ -304,8 +305,26 @@ public class ClienteHandler extends Thread {
 
                     System.out.println("PEDIDO #" + numPedido + " | NÃO ENTREGUE");
 
+                    saida.reset();
                     saida.writeObject(new Mensagem("INFO", "Pedido não entregue!"));
                     saida.flush();
+                }
+                else if (msg.getTipo().equalsIgnoreCase("VER_ESTADO_PEDIDO")){
+
+                    Pedido pedido = Servidor.gerir.pesquisarPedidoPendente(user);
+
+                    if(pedido != null){
+
+                        saida.reset();
+                        saida.writeObject(new Mensagem("INFO", "[PEDIDO # " + pedido.getCliente().getCodigo() + "] Estado: " + pedido.getEstado().name()));
+                        saida.flush();
+
+                    } else {
+
+                        saida.reset();
+                        saida.writeObject(new Mensagem("INFO", "Não existe nenhum pedido pendente hoje!"));
+                        saida.flush();
+                    }
                 }
                 else if (msg.getTipo().equalsIgnoreCase("VER_PEDIDOS")){
                     saida.reset();

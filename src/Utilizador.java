@@ -3,7 +3,7 @@ import java.io.Serializable;
 public class Utilizador implements Serializable {
     private final int codigo;
     private String nome;
-    private String senha;
+    private String senha; // todo: hash
     private TipoUtilizador tipo;
 
     public Utilizador(int codigo, String nome, String senha, TipoUtilizador tipo){

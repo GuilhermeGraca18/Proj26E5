@@ -618,8 +618,8 @@ public class Main {
                 	
                     System.out.println(" --- ÁREA DO CLIENTE | CANTINA ---");
                     System.out.println(" 1 - Ver ementa de hoje"); // FEITO
-                    System.out.println(" 2 - Criar Pedido");
-                    System.out.println(" 3 - Ver estado do meu pedido");
+                    System.out.println(" 2 - Criar Pedido"); // TESTE
+                    System.out.println(" 3 - Ver estado do meu pedido"); // FEITO
                     System.out.println(" 4 - Ver pedidos anterirores");
                     System.out.println(" 0 - Sair"); // FEITO
 
@@ -642,54 +642,65 @@ public class Main {
                         		System.out.println(ementaHoje);
                         		
                         	} catch (Exception e) {
-                        		
                         		System.out.println("[ERRO] O Programa não conseguiu ler a ementa do dia!");
                         	}
                             
                     		break;
                     
                         case 2: // CRIAR PEDIDO
+                            try {
+                                Item bebida = new Item(
+                                        111,
+                                        "Cola",
+                                        "",
+                                        2,
+                                        TipoItem.Bebida
+                                );
 
-                            Item bebida = new Item(
-                                    111,
-                                    "Cola",
-                                    "",
-                                    2,
-                                    TipoItem.Bebida
-                            );
+                                Item entradaPedido = new Item(
+                                        111,
+                                        "Sopa",
+                                        "Com feijão",
+                                        2,
+                                        TipoItem.Entrada
+                                );
 
-                            Item entradaPedido = new Item(
-                                    111,
-                                    "Sopa",
-                                    "Com feijão",
-                                    2,
-                                    TipoItem.Entrada
-                            );
+                                Item prato = new Item(
+                                        123,
+                                        "Hambúrguer",
+                                        "Com batatas",
+                                        5,
+                                        TipoItem.Prato
+                                );
 
-                            Item prato = new Item(
-                                    123,
-                                    "Hambúrguer",
-                                    "Com batatas",
-                                    5,
-                                    TipoItem.Prato
-                            );
+                                Pedido pedido = new Pedido(user, "NOTAS");
 
-                            Pedido pedido = new Pedido(user, "NOTAS");
+                                pedido.adicionarItems(bebida);
+                                pedido.adicionarItems(entradaPedido);
+                                pedido.adicionarItems(prato);
 
-                            pedido.adicionarItems(bebida);
-                            pedido.adicionarItems(entradaPedido);
-                            pedido.adicionarItems(prato);
+                                saida.reset();
+                                saida.writeObject(new Mensagem("CRIAR_PEDIDO", pedido));
+                                saida.flush();
 
-                            saida.reset();
-                            saida.writeObject(new Mensagem("CRIAR_PEDIDO", pedido));
-                            saida.flush();
-
-                            Mensagem resposta = (Mensagem) entrada.readObject();
-                            System.out.println(resposta.getDados());
+                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                System.out.println(resposta.getDados());
+                            } catch (Exception e){
+                                System.out.println("[ERRO] O Programa não conseguiu criar o pedido!");
+                            }
                             break;
                             
                         case 3: // VER ESTADO DO PEDIDO
-                        	
+                            try {
+                                saida.reset();
+                                saida.writeObject(new Mensagem("VER_ESTADO_PEDIDO", null));
+                                saida.flush();
+
+                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                System.out.println(resposta.getDados());
+                            } catch (Exception e){
+                                System.out.println("[ERRO] O Programa não conseguiu ler o estado do pedido!");
+                            }
                     		break;
                     		
                         case 4: // VER PEDIDOS ANTERIORES
