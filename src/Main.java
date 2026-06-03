@@ -620,7 +620,7 @@ public class Main {
                     System.out.println(" 1 - Ver ementa de hoje"); // FEITO
                     System.out.println(" 2 - Criar Pedido"); // TESTE
                     System.out.println(" 3 - Ver estado do meu pedido"); // FEITO
-                    System.out.println(" 4 - Ver pedidos anterirores");
+                    System.out.println(" 4 - Ver historico de pedidos"); // FEITO
                     System.out.println(" 0 - Sair"); // FEITO
 
                     System.out.print("\nInsira a ação que deseja: ");
@@ -685,25 +685,46 @@ public class Main {
 
                                 Mensagem resposta = (Mensagem) entrada.readObject();
                                 System.out.println(resposta.getDados());
+                                
                             } catch (Exception e){
                                 System.out.println("[ERRO] O Programa não conseguiu criar o pedido!");
                             }
                             break;
                             
                         case 3: // VER ESTADO DO PEDIDO
+                        	
                             try {
+                            	
                                 saida.reset();
                                 saida.writeObject(new Mensagem("VER_ESTADO_PEDIDO", null));
                                 saida.flush();
 
                                 Mensagem resposta = (Mensagem) entrada.readObject();
                                 System.out.println(resposta.getDados());
+                                
                             } catch (Exception e){
+                            	
                                 System.out.println("[ERRO] O Programa não conseguiu ler o estado do pedido!");
                             }
                     		break;
                     		
-                        case 4: // VER PEDIDOS ANTERIORES
+                        case 4: // VER HISTORICO DE PEDIDOS
+                        	
+                        	try {
+                        		
+                        		saida.reset();
+                        		saida.writeObject(new Mensagem("HISTORICO_PEDIDOS", null));
+                        		saida.flush();
+                        		
+                        		Mensagem resposta = (Mensagem) entrada.readObject();
+                        		Pedido histPedidos = (Pedido) resposta.getDados();
+                        		
+                        		System.out.println(histPedidos);
+                        		
+                        	} catch (Exception e) {
+                        		
+                        		System.out.println("[ERRO] O Programa não conseguiu ler o historico!");
+                        	}
                         	
                     		break;
                     			

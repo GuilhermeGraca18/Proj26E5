@@ -235,6 +235,15 @@ public class ClienteHandler extends Thread {
 
                     System.out.println("[RELATORIO_VENDAS] Relatório enviado ao administrador.");
                 }
+                else if (msg.getTipo().equalsIgnoreCase("HISTORICO_PEDIDOS")) {
+                	
+                	saida.reset();
+                	saida.writeObject(new Mensagem("INFO", Servidor.gerir.getPedidos()));
+                	saida.flush();
+                	
+                	System.out.println("[HISTORICO_PEDIDOS] Historico enviado com sucesso.");
+                	
+                }
                 else if (msg.getTipo().equalsIgnoreCase("SAIR")) {
                     if (user != null) {
                         System.out.println( "[" + msg.getTipo() + "] " + user.getCodigo() + " - TERMINOU A SESSÃO");
