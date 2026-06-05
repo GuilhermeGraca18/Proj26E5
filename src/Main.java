@@ -194,7 +194,7 @@ public class Main {
                 }
             }
 
-            if (user.getTipo().equals(TipoUtilizador.FUNCIONARIO)) {
+            if (user != null && user.getTipo().equals(TipoUtilizador.FUNCIONARIO)) {
 
                 while (n != 0) {
                     System.out.println(" --- ÁREA DO FUNCIONÁRIO | CANTINA ---");
@@ -612,7 +612,7 @@ public class Main {
 
                 }
 
-            } else if (user.getTipo().equals(TipoUtilizador.CLIENTE)) {
+            } else if (user != null && user.getTipo().equals(TipoUtilizador.CLIENTE)) {
 
                 while ( n != 0 ) {
                 	

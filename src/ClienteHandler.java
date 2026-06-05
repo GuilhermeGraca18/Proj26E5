@@ -221,7 +221,7 @@ public class ClienteHandler extends Thread {
                         saida.writeObject(new Mensagem("INFO", "Pedido criado com sucesso."));
                         saida.flush();
 
-                        System.out.println( "[" + msg.getTipo() + "] " + user.getTipo() + " | " + user.getCodigo() + " - LOGIN");
+                        System.out.println( "[" + msg.getTipo() + "] " + user.getTipo() + " | " + user.getCodigo() + " - PEDIDO CRIADO");
 
                         Servidor.atualizarMonitores();
                     }
