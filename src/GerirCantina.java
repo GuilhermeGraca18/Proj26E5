@@ -119,7 +119,7 @@ public class GerirCantina {
         }
         return false;
     }
-s
+    
     /**
      * @author Simão Gonçalves  53570
      * Métododo para pesquisar a ementa do dia
