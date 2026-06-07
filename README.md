@@ -37,10 +37,10 @@ Na pasta do projeto, correr:
 ```bash
 mvn clean package
 ```
-Depois de criar os ficheiros JAR, estes ficam disponíveis na pasta target
+Depois de criar os ficheiros JAR, estes ficam disponíveis na pasta target (as vezes é necessário alterar o nome dos .jar)
 
 ### macOS / Linux
-Abrir a pasta do projeto no Terminal.
+Abrir a pasta do projeto no Terminal. 
 
 #### Servidor
 ```bash
@@ -56,7 +56,7 @@ java -jar target/Monitor.jar
 ```
 
 ### Windows
-Abrir a pasta do projeto no CMD ou PowerShell.
+Abrir a pasta do projeto no CMD ou PowerShell, ou duplo clique no ficheiro que deseja abrir!
 
 #### Servidor
 ```bash
