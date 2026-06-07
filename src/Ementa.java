@@ -23,7 +23,7 @@ public class Ementa implements Serializable {
     	itemsDia = itens;
     }
     /**
-     * @author Simão Gonçalves - 53570
+     * @author Simão Gonçalves  53570
      * Pesquisa um item na ementa pelo seu código
      */
     public Item pesquisarItem(int codigoItem){
@@ -35,7 +35,7 @@ public class Ementa implements Serializable {
         return null;
     }
     /**
-     * @author Simão Gonçalves - 53570
+     * @author Simão Gonçalves  53570
      * Adiciona um item à ementa do dia com o stock definido
      */
     public void adicionarItemDia(Item item, int stock){

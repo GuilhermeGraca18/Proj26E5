@@ -49,7 +49,7 @@ public class GerirCantina {
 
     // PEDIDOS - METODOS
     /**
-     * @author Simão Gonçalves - 53570
+     * @author Simão Gonçalves  53570
      * Métododo para adicionar pedidos 
      */
     public void criarPedidos(Pedido pedido){
@@ -71,7 +71,7 @@ public class GerirCantina {
         return null;
     }
     /**
-     * @author Simão Gonçalves - 53570
+     * @author Simão Gonçalves  53570
      * Adiciona um item ao pedido pendente do cliente, decrementando o stock da ementa
      */
     public boolean adicionarItemsPedido (Utilizador cliente, int codigoItem){
@@ -93,7 +93,7 @@ public class GerirCantina {
 
     // EMENTA - METODOS
     /**
-     * @author Simão Gonçalves - 53570
+     * @author Simão Gonçalves  53570
      * Métododo para pesquisar a ementa do dia
      */
     public Ementa pesquisarEmentaHoje()

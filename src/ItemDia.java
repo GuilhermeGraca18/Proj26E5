@@ -1,6 +1,6 @@
 import java.io.Serializable;
 /**
- * @author Simão Gonçalves - 53570
+ * @author Simão Gonçalves  53570
  * Classe item do dia
  */
 public class ItemDia implements Serializable {
@@ -16,7 +16,7 @@ public class ItemDia implements Serializable {
         return item;
     }
     /**
-     * @author Simão Gonçalves - 53570
+     * @author Simão Gonçalves  53570
      * Decrementa o stock do item disponível na ementa do dia
      */
     public void decrementarStock(){
