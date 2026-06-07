@@ -77,10 +77,10 @@ public class ClienteHandler extends Thread {
                         Servidor.gerir.registarUser(user);
                         Servidor.gerir.guardarDados();
 
-                        saida.writeObject(new Mensagem("INFO", user.getNome() + " - Bem-vindo"));
+                        saida.writeObject(new Mensagem("INFO", user.getNome() + " - REGISTADO"));
                         saida.flush();
 
-                        System.out.println( "[" + msg.getTipo() + "] " + user.getTipo() + " | " + user.getCodigo() + " - CLIENTE REGISTADO COM SUCESSO");
+                        System.out.println( "[" + msg.getTipo() + "] " + user.getTipo() + " | " + user.getCodigo() + " - UTILIZADOR REGISTADO COM SUCESSO");
 
                     } else {
                         saida.writeObject(new Mensagem("INFO", "Esse código de utilizador já foi registado!"));
@@ -239,7 +239,7 @@ public class ClienteHandler extends Thread {
                                     }
 
                                     saida.reset();
-                                    saida.writeObject(new Mensagem("INFO", "Pedido criado com sucesso. Valor do Pedido Atualmente: " + Servidor.gerir.pesquisarPedidoPendente(user).getPreçoTotalAtual() + "€"));
+                                    saida.writeObject(new Mensagem("INFO", "Pedido criado com sucesso."));
                                     saida.flush();
 
                                     Servidor.atualizarMonitores();
@@ -268,7 +268,7 @@ public class ClienteHandler extends Thread {
 
                     if (value) {
                         saida.reset();
-                        saida.writeObject(new Mensagem("INFO", "[SUCESSO] ITEM ADICIONADO AO PEDIDO!"));
+                        saida.writeObject(new Mensagem("INFO", "[SUCESSO] ITEM ADICIONADO AO PEDIDO! VALOR DO PEDIDO ATUALMENTE: " + Servidor.gerir.pesquisarPedidoPendente(user).getPreçoTotalAtual() + "€"));
                         saida.flush();
 
                         Servidor.gerir.guardarDados();
