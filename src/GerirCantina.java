@@ -68,6 +68,7 @@ public class GerirCantina {
         return null;
     }
 
+
     public boolean adicionarItemsPedido(Utilizador cliente, int codigoItem){
         Pedido pedido = pesquisarPedidoPendente(cliente);
         Ementa ementa = pesquisarEmentaHoje();
@@ -280,5 +281,14 @@ public class GerirCantina {
 
     public ArrayList<Ementa> getEmentas(){
         return  cantina.getEmentas();
+    }
+
+    public boolean pesquisarPedidoDia(Utilizador cliente) {
+        for (Pedido pedido : pedidos){
+            if(pedido.getCliente().equals(cliente) && pedido.getData().equals(LocalDate.now())){
+                return false;
+            }
+        }
+        return true;
     }
 }

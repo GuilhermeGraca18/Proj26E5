@@ -618,9 +618,9 @@ public class Main {
                 	
                     System.out.println(" --- ÁREA DO CLIENTE | CANTINA ---");
                     System.out.println(" 1 - Ver ementa de hoje"); // FEITO
-                    System.out.println(" 2 - Criar Pedido"); // TESTE
+                    System.out.println(" 2 - Criar Pedido"); // NAO FEITO
                     System.out.println(" 3 - Ver estado do meu pedido"); // FEITO
-                    System.out.println(" 4 - Ver pedidos anterirores");
+                    System.out.println(" 4 - Ver pedidos anterirores"); // NAO FEITO
                     System.out.println(" 0 - Sair"); // FEITO
 
                     System.out.print("\nInsira a ação que deseja: ");
@@ -649,42 +649,47 @@ public class Main {
                     
                         case 2: // CRIAR PEDIDO
                             try {
-                                Item bebida = new Item(
-                                        111,
-                                        "Cola",
-                                        "",
-                                        2,
-                                        TipoItem.Bebida
-                                );
 
-                                Item entradaPedido = new Item(
-                                        111,
-                                        "Sopa",
-                                        "Com feijão",
-                                        2,
-                                        TipoItem.Entrada
-                                );
+                                System.out.println(" === CRIAR PEDIDO === ");
 
-                                Item prato = new Item(
-                                        123,
-                                        "Hambúrguer",
-                                        "Com batatas",
-                                        5,
-                                        TipoItem.Prato
-                                );
+                                input.nextLine();
 
-                                Pedido pedido = new Pedido(user, "NOTAS");
-
-                                pedido.adicionarItems(bebida);
-                                pedido.adicionarItems(entradaPedido);
-                                pedido.adicionarItems(prato);
+                                System.out.print("Deseja colocar alguma nota no pedido, se sim escreva: ");
+                                String notas = input.nextLine();
 
                                 saida.reset();
-                                saida.writeObject(new Mensagem("CRIAR_PEDIDO", pedido));
+                                saida.writeObject(new Mensagem("CRIAR_PEDIDO", notas));
                                 saida.flush();
 
                                 Mensagem resposta = (Mensagem) entrada.readObject();
                                 System.out.println(resposta.getDados());
+
+                                if (!resposta.getTipo().equalsIgnoreCase("ERRO")){
+
+                                    int nitem = -1;
+
+                                    while (nitem != 0) {
+
+                                        System.out.print("Adicionar item (número do item presente na ementa / 0 para terminar): ");
+                                        nitem = input.nextInt();
+
+                                        if (nitem == 0) {
+                                            break;
+                                        }
+
+                                        saida.reset();
+                                        saida.writeObject(new Mensagem("ADICIONAR_ITEM_PEDIDO", nitem));
+                                        saida.flush();
+
+                                        resposta = (Mensagem) entrada.readObject();
+                                        System.out.println(resposta.getDados());
+
+                                    }
+
+                                    System.out.println("[INFO] Pedido a fazer! Fique atento ao ecrã dos pedidos e ao seu número de cliente!");
+                                }
+
+
                             } catch (Exception e){
                                 System.out.println("[ERRO] O Programa não conseguiu criar o pedido!");
                             }
