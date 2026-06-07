@@ -42,7 +42,7 @@ public class Pedido implements Serializable{
         estado = EstadoPedido.ENTREGUE;
     }
 
-    public double getPreçoTotalAtual(){
+    public double getPrecoTotalAtual(){
         double soma = 0;
         for (Item item : items){
             soma += item.getPreco();

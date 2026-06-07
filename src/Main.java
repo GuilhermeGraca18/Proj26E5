@@ -194,7 +194,7 @@ public class Main {
                 }
             }
 
-            if (user.getTipo().equals(TipoUtilizador.FUNCIONARIO)) {
+            if (user != null && user.getTipo().equals(TipoUtilizador.FUNCIONARIO)) {
 
                 while (n != 0) {
                     System.out.println(" --- ÁREA DO FUNCIONÁRIO | CANTINA ---");
@@ -226,7 +226,6 @@ public class Main {
                     
                         case 1: // ENTREGAR PEDIDO
                         	
-                            Pedido pedidoCliente = null;
                             System.out.println(" === ENTREGAR PEDIDO PENDENTE === ");
                             System.out.print("Número do pedido: ");
                             int numPedido = input.nextInt();

@@ -264,7 +264,7 @@ public class ClienteHandler extends Thread {
 
                     if (value) {
                         saida.reset();
-                        saida.writeObject(new Mensagem("INFO", "[SUCESSO] ITEM ADICIONADO AO PEDIDO! VALOR DO PEDIDO ATUALMENTE: " + Servidor.gerir.pesquisarPedidoPendente(user).getPreçoTotalAtual() + "€"));
+                        saida.writeObject(new Mensagem("INFO", "[SUCESSO] ITEM ADICIONADO AO PEDIDO! VALOR DO PEDIDO ATUALMENTE: " + Servidor.gerir.pesquisarPedidoPendente(user).getPrecoTotalAtual() + "€"));
                         saida.flush();
 
                         Servidor.gerir.guardarDados();
@@ -394,7 +394,7 @@ public class ClienteHandler extends Thread {
                     System.out.println("[HISTORICO_PEDIDOS] Enviado ao utilizador: " + user.getCodigo());
                     
                 }
-                else if(msg.getTipo().equalsIgnoreCase("VER PEDIDOS PENDENTES")){
+                else if(msg.getTipo().equalsIgnoreCase("VER_PEDIDOS_PENDENTES")){
                     if (user == null){
                         saida.writeObject((new Mensagem("ERRO", "ATENÇÃO: Primeiro faça login.")));
                         saida.flush();
