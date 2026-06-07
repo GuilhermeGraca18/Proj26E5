@@ -2,6 +2,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.io.*;
 
+/**
+ * Classe Gerir - Contêm todos os metodos para gerir o programa e os dados/objetos
+ * @author Grupo 5 
+ * @version 07/07/2026
+ */
+
 public class GerirCantina {
 
     private static GerirCantina instance;

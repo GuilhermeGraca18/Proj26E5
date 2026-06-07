@@ -11,6 +11,12 @@ import java.util.Scanner;
 import java.io.*;
 import java.net.*;
 
+/**
+ * Classe Main - Cliente que permite entrar no menu e fazer todas as funcionalidades do programa
+ * @author Grupo 5
+ * @version 07/07/2026
+ */
+
 public class Main {
     public static void main(String[] args) {
         String host = "localhost";
