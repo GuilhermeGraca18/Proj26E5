@@ -197,35 +197,89 @@ public class ClienteHandler extends Thread {
 
                 }
                 else if (msg.getTipo().equalsIgnoreCase("VER_EMENTA_DIA")) {
-                	
-                	Ementa ementaDia = Servidor.gerir.pesquisarEmentaHoje();
-                	
-                	saida.reset();
-                	saida.writeObject(new Mensagem("INFO", ementaDia));
-                	saida.flush();
-                }
-                else if (msg.getTipo().equalsIgnoreCase("CRIAR_PEDIDO")) {
-                    if (user == null) {
-                        saida.writeObject(new Mensagem("ERRO", "[ATENÇÃO] Primeiro faça login!"));
+
+
+                    Ementa ementaDia = Servidor.gerir.pesquisarEmentaHoje();
+
+                    saida.reset();
+                    saida.writeObject(new Mensagem("INFO", ementaDia));
+                    saida.flush();
+
+                    if(ementaDia != null){
+                        saida.reset();
+                        saida.writeObject(new Mensagem("INFO", ementaDia));
                         saida.flush();
                     } else {
-
-                        Pedido pedido = (Pedido) msg.getDados();
-
-                        synchronized (Servidor.gerir.getPedidos()) {
-                            Servidor.gerir.criarPedidos(pedido);
-                            Servidor.gerir.guardarDados();
-                        }
-                        
                         saida.reset();
-                        saida.writeObject(new Mensagem("INFO", "Pedido criado com sucesso."));
+                        saida.writeObject(new Mensagem("ERRO", "[INFO] Nenhum ementa criada para o dia de hoje! ( " + LocalDate.now() + ")"));
                         saida.flush();
-
-                        System.out.println( "[" + msg.getTipo() + "] " + user.getTipo() + " | " + user.getCodigo() + " - LOGIN");
-
-                        Servidor.atualizarMonitores();
                     }
 
+                }
+                else if (msg.getTipo().equalsIgnoreCase("CRIAR_PEDIDO")) {
+                    if(Servidor.gerir.pesquisarEmenta(LocalDate.now()) == null){
+                        saida.reset();
+                        saida.writeObject(new Mensagem("ERRO", "[ATENÇÃO] Ainda não foi criada nenhuma ementa para o dia de hoje!"));
+                        saida.flush();
+                    } else {
+                        if (user == null) {
+                            saida.reset();
+                            saida.writeObject(new Mensagem("ERRO", "[ATENÇÃO] Primeiro faça login!"));
+                            saida.flush();
+                        } else {
+                            String notas = (String) msg.getDados();
+
+                                Pedido pedido = new Pedido(user, notas);
+
+                                if (Servidor.gerir.pesquisarPedidoDia(user)) {
+
+                                    synchronized (Servidor.gerir.getPedidos()) {
+                                        Servidor.gerir.criarPedidos(pedido);
+                                        Servidor.gerir.guardarDados();
+                                    }
+
+                                    saida.reset();
+                                    saida.writeObject(new Mensagem("INFO", "Pedido criado com sucesso. Valor do Pedido Atualmente: " + Servidor.gerir.pesquisarPedidoPendente(user).getPreçoTotalAtual() + "€"));
+                                    saida.flush();
+
+                                    Servidor.atualizarMonitores();
+
+                                } else {
+                                    saida.reset();
+                                    saida.writeObject(new Mensagem("ERRO", "Pedido de hoje já foi criado!"));
+                                    saida.flush();
+                                }
+                            }
+                        }
+
+                }
+                else if (msg.getTipo().equalsIgnoreCase("ADICIONAR_ITEM_PEDIDO")) {
+
+                    if (user == null) {
+                        saida.reset();
+                        saida.writeObject(new Mensagem("ERRO", "[ATENÇÃO] Primeiro faça login!"));
+                        saida.flush();
+                        return;
+                    }
+
+                    int nitem = (int) msg.getDados();
+
+                    boolean value = Servidor.gerir.adicionarItemsPedido(user, nitem);
+
+                    if (value) {
+                        saida.reset();
+                        saida.writeObject(new Mensagem("INFO", "[SUCESSO] ITEM ADICIONADO AO PEDIDO!"));
+                        saida.flush();
+
+                        Servidor.gerir.guardarDados();
+                        Servidor.atualizarMonitores();
+
+                    } else {
+
+                        saida.reset();
+                        saida.writeObject(new Mensagem("ERRO", "[ERRO] ITEM FORA DE STOCK OU NÃO ESTÁ PRESENTE NA EMENTA!"));
+                        saida.flush();
+                    }
                 }
                 else if (msg.getTipo().equalsIgnoreCase("RELATORIO_VENDAS")) // Comunicação Relatorio de vendas.
                 {
