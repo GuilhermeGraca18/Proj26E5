@@ -6,6 +6,7 @@
 
 - Criar utilizador como Cliente ou Funcionário
 - Fazer Login
+- Abrir Monitor de Pedidos
 
 #### Como Funcionário
 
@@ -16,10 +17,14 @@
 - Visualizar ementas
 - Ver lista de clientes
 - Ver lista de funcionários
+- Criar Relatório das Vendas/Pedidos
 
 #### Como Cliente
 
-- Criar pedido de teste para visualizar no Monitor de Pedidos
+- Visualizar Ementa do Dia
+- Criar pedido diário com os itens da ementa do dia
+- Visualizar estado do pedido
+- Ver histórico dos pedidos
 
 ## Como Correr o Projeto
 
@@ -69,8 +74,8 @@ java -jar target/Monitor.jar
 ```
 
 ### Membros do Grupo
-- Guilherme Gomes Graça - 53861
+- Guilherme Graça - 53861
 - Diana - 53267
-- Simão - 53570
+- Simão Gonçalves - 53570
 - Arthur - 53987
 - Rafael Calheiros - 53828
