@@ -394,8 +394,8 @@ public class ClienteHandler extends Thread {
                         saida.writeObject(new Mensagem("ERRO", "ATENÇÃO: Sem permissões para esta operação."));
                         saida.flush();
                     }else{
-                        java.util.ArrayList<Pedido> pendentes = new java.util.ArrayList<>();
-                        for (Pedido pedido : Servidor.pedidos){
+                        ArrayList<Pedido> pendentes = new ArrayList<>();
+                        for (Pedido pedido : Servidor.gerir.getPedidos()){
                             if (pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_FAZER ){
                                 pendentes.add(pedido);
                             }

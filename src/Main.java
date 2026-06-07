@@ -690,6 +690,9 @@ public class Main {
                                     System.out.println("[INFO] Pedido a fazer! Fique atento ao ecrã dos pedidos e ao seu número de cliente!");
                                 }
 
+                                System.out.println("[SUCESSO] Pedido Finalizado!");
+
+
                             } catch (Exception e){
                                 System.out.println("[ERRO] O Programa não conseguiu criar o pedido!");
                             }
