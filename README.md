@@ -38,6 +38,10 @@ Na pasta do projeto, correr:
 mvn clean package
 ```
 Depois de criar os ficheiros JAR, estes ficam disponíveis na pasta target (as vezes é necessário alterar o nome dos .jar)
+Se quiser, mude o nome dos ficheiros jar
+- Proj26E5-1.0-SNAPSHOT-main -> Cliente.jar
+- Proj26E5-1.0-SNAPSHOT-monitor-cliente -> Monitor.jar
+- Proj26E5-1.0-SNAPSHOT.servidor -> Servidor.jar
 
 ### macOS / Linux
 Abrir a pasta do projeto no Terminal. 
