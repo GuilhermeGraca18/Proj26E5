@@ -48,7 +48,10 @@ public class GerirCantina {
     }
 
     // PEDIDOS - METODOS
-
+    /**
+     * @author Simão Gonçalves - 53570
+     * Métododo para adicionar pedidos 
+     */
     public void criarPedidos(Pedido pedido){
         pedidos.add(pedido);
     }
@@ -67,8 +70,11 @@ public class GerirCantina {
 
         return null;
     }
-
-    public boolean adicionarItemsPedido(Utilizador cliente, int codigoItem){
+    /**
+     * @author Simão Gonçalves - 53570
+     * Adiciona um item ao pedido pendente do cliente, decrementando o stock da ementa
+     */
+    public boolean adicionarItemsPedido (Utilizador cliente, int codigoItem){
         Pedido pedido = pesquisarPedidoPendente(cliente);
         Ementa ementa = pesquisarEmentaHoje();
         if(pedido != null && ementa != null){
@@ -86,7 +92,10 @@ public class GerirCantina {
     }
 
     // EMENTA - METODOS
-    
+    /**
+     * @author Simão Gonçalves - 53570
+     * Métododo para pesquisar a ementa do dia
+     */
     public Ementa pesquisarEmentaHoje()
     {
         for (Ementa ementa : cantina.ementas)

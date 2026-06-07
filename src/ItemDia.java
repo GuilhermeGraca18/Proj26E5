@@ -1,5 +1,8 @@
 import java.io.Serializable;
-
+/**
+ * @author Simão Gonçalves - 53570
+ * Classe item do dia
+ */
 public class ItemDia implements Serializable {
     private Item item;
     private int stock;
@@ -12,7 +15,10 @@ public class ItemDia implements Serializable {
     public Item getItem() {
         return item;
     }
-
+    /**
+     * @author Simão Gonçalves - 53570
+     * Decrementa o stock do item disponível na ementa do dia
+     */
     public void decrementarStock(){
         stock = stock - 1;
     }
