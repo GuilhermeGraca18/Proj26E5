@@ -13,6 +13,8 @@ public class MonitorCliente {
             saida.writeObject(new Mensagem("MONITOR", null));
             saida.flush();
 
+            System.out.println("=== PEDIDOS PENDENTES ===");
+
             while (true) {
                 Mensagem msg = (Mensagem) entrada.readObject();
 
@@ -26,15 +28,10 @@ public class MonitorCliente {
                     if (pedidos.isEmpty()) {
                         System.out.println("Sem pedidos pendentes.");
 
-                        System.out.print("\033]0;MONITOR CANTINA | SEM PEDIDOS PENDENTES\007");
-                        System.out.flush();
                     } else {
                         for (Pedido pedido : pedidos) {
                             System.out.println(pedido);
                             System.out.println("----------------------");
-
-                            System.out.print("\033]0;MONITOR CANTINA | " + pedidos.toArray().length  + " PEDIDOS PENDENTES\007");
-                            System.out.flush();
                         }
                     }
                 }
