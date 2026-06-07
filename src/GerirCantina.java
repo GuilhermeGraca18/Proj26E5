@@ -119,8 +119,7 @@ public class GerirCantina {
         }
         return false;
     }
-
-    // EMENTA - METODOS
+s
     /**
      * @author Simão Gonçalves  53570
      * Métododo para pesquisar a ementa do dia
@@ -138,8 +137,6 @@ public class GerirCantina {
         return null;
     }
 
-    // LISTA DE ITEMS - METODOS
-
     /**
      * Metodo para pesquisar Item (ass: Guilherme Graça 53861)
      * @param codigoItem Código do Item
@@ -156,7 +153,11 @@ public class GerirCantina {
     public void registarItem(Item item){
         cantina.registarItem(item);
     }
-
+    
+    /**
+     * Método para retornar lista de itens
+     * @return lista de itens
+     */
     public ArrayList<Item> getListaItems(){
         return  cantina.getItems();
     }
@@ -169,7 +170,10 @@ public class GerirCantina {
         cantina.eliminarItem(codigoItem);
     }
 
-    // CONSULTAR CLIENTES
+    /**
+     * Método para consultar e retornar a lista de utilizadores do tipo cliente.
+     * @return lista de clientes.
+     */
     public ArrayList<Utilizador> getUtilizadoresClientes(){
         ArrayList<Utilizador> listaClientes = new ArrayList<>();
         for (Utilizador cliente : utilizadores){
@@ -180,7 +184,10 @@ public class GerirCantina {
         return listaClientes;
     }
 
-    // CONSULTAR FUNCIONÁRIOS
+    /**
+     * Método para consultar e retornar a lista de utilizadores do tipo funcionário.
+     * @return lista de funcionários.
+     */
     public ArrayList<Utilizador> getUtilizadoresFuncionarios(){
         ArrayList<Utilizador> listaFuncionarios = new ArrayList<>();
         for (Utilizador funcionario : utilizadores){
@@ -220,18 +227,43 @@ public class GerirCantina {
         
         return relatorio;
     }
+    
+    /**
+     * @author Arthur Santana - 53987
+     * 
+     * Método para retornar todos os pedidos de um cliente específico
+     * @param O utilizador cliente
+     * @return Lista de pedidos do cliente
+     */
+    public ArrayList<Pedido> getHistoricoPedidos(Utilizador cliente) {
+    	
+        ArrayList<Pedido> historico = new ArrayList<>();
+        
+        for (Pedido pedido : pedidos) {
+        	
+            if (pedido.getCliente().getCodigo() == cliente.getCodigo()) {
+            	
+                historico.add(pedido);
+            }
+        }
+        return historico;
+    }
 
-    // GETS
-
+    /**
+     * Método para retornar a lista de pedidos da cantina
+     * @return lista de pedidos
+     */
     public ArrayList<Pedido> getPedidos() {
         return pedidos;
     }
 
+    /**
+     * Método para retornar a lista de utilizadores da cantina
+     * @return lista de utilizadores
+     */
     public ArrayList<Utilizador> getUtilizadores() {
         return utilizadores;
     }
-
-    // SAVES DE DADOS
 
     /**
      * Metodo para guardar os dados no ficheiro ("dados.dat") sempre que o projeto fecha
@@ -289,7 +321,6 @@ public class GerirCantina {
      * @author Diana Santos - 53267
      * Metodo para criar ementa
      */
-    
     public void criarEmenta(LocalDate data) {
         if(pesquisarEmenta(data) == null){
             cantina.ementas.add(new Ementa(data));

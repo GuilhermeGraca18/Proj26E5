@@ -531,7 +531,7 @@ public class Main {
 
                             } catch (Exception e){
                             	
-                                System.out.println("[ERRO] O Programa não conseguiu ler a lista de Pedidos!");
+                                System.out.println("[ERRO] O Programa não conseguiu ler a lista de clientes!");
                             }
                         	
                         	break;
@@ -553,7 +553,7 @@ public class Main {
                                 }
 
                             } catch (Exception e){
-                                System.out.println("[ERRO] O Programa não conseguiu ler a lista de Pedidos!");
+                                System.out.println("[ERRO] O Programa não conseguiu ler a lista de funcionários!");
                             }
 
                             break;
@@ -569,20 +569,21 @@ public class Main {
 	                            Mensagem respostaRelatorio = (Mensagem) entrada.readObject();
 	                            ArrayList<Object> dadosRelatorio = (ArrayList<Object>) respostaRelatorio.getDados();
 	
-	                            System.out.println("\n\tArtigos vendidos");
-	                            System.out.println("\nNome:\t\tCódigo:\tPreço:\tData:");
+	                            System.out.println("\n===== RELATÓRIO DE VENDAS =====");
+	                            System.out.printf("%-25s %-10s %-10s %-12s%n", "ARTIGO", "CÓDIGO", "PREÇO", "DATA");
+	                            System.out.println("-".repeat(60));
 	
 	                            double totalVendas = 0;
 	                            for (int i = 0; i < dadosRelatorio.size() - 1; i++) {
 	                            	
 	                                ArrayList<Object> linha = (ArrayList<Object>) dadosRelatorio.get(i);
 	                                
-	                                String nome   = (String)    linha.get(0);
-	                                int codigo    = (int)       linha.get(1);
-	                                double preco  = (double)    linha.get(2);
-	                                Object data   = linha.get(3);
+	                                String nome = (String) linha.get(0);
+	                                int codigo = (int) linha.get(1);
+	                                double preco = (double) linha.get(2);
+	                                Object data = linha.get(3);
 	                                
-	                                System.out.println(nome + "\t" + codigo + "\t" + preco + "\t" + data);
+	                                System.out.printf("%-25s %-10d %-10.2f %-12s%n", nome, codigo, preco, data);
 	                                totalVendas += preco;
 	                                
 	                            }
@@ -618,9 +619,9 @@ public class Main {
                 	
                     System.out.println(" --- ÁREA DO CLIENTE | CANTINA ---");
                     System.out.println(" 1 - Ver ementa de hoje"); // FEITO
-                    System.out.println(" 2 - Criar Pedido"); // TESTE
+                    System.out.println(" 2 - Criar Pedido"); // FEITO
                     System.out.println(" 3 - Ver estado do meu pedido"); // FEITO
-                    System.out.println(" 4 - Ver histórico pedidos"); // ARTHUR QUE FEZ! ASS: GUILHERME
+                    System.out.println(" 4 - Ver histórico pedidos"); // FEITO
                     System.out.println(" 0 - Sair"); // FEITO
 
                     System.out.print("\nInsira a ação que deseja: ");
@@ -714,21 +715,36 @@ public class Main {
                         case 4: // VER HISTORICO DE PEDIDOS
 
                             try {
-
+                            	
                                 saida.reset();
                                 saida.writeObject(new Mensagem("HISTORICO_PEDIDOS", null));
                                 saida.flush();
 
                                 Mensagem resposta = (Mensagem) entrada.readObject();
-                                Pedido histPedidos = (Pedido) resposta.getDados();
+                                ArrayList<Pedido> historico = (ArrayList<Pedido>) resposta.getDados();
 
-                                System.out.println(histPedidos);
+                                if (historico.isEmpty()){
+                                	
+                                    System.out.println("[INFO] Ainda não tem pedidos registrados.");
+                                    
+                                } else {
+                                	
+                                    System.out.println("\n===== HISTÓRICO DE PEDIDOS =====");
+                                    
+                                    for (Pedido pedido : historico) {
+                                    	
+                                        System.out.println("--------------------------------");
+                                        System.out.println(pedido);
+                                    }
+                                    
+                                    System.out.println("================================\n");
+                                }
 
                             } catch (Exception e) {
-
-                                System.out.println("[ERRO] O Programa não conseguiu ler o historico!");
+                            	
+                                System.out.println("[ERRO] O Programa não conseguiu ler o histórico!");
                             }
-                    		break;
+                            break;
                     			
                         case 0: // SAIR
                         	

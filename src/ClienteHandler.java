@@ -66,9 +66,6 @@ public class ClienteHandler extends Thread {
                         saida.writeObject(new Mensagem("FALSE", "Login Falhou - Código errado!"));
                         saida.flush();
                     }
-
-
-
                 }
                 else if (msg.getTipo().equalsIgnoreCase("REGISTO")){
                     user = (Utilizador) msg.getDados();
@@ -201,15 +198,14 @@ public class ClienteHandler extends Thread {
 
                     Ementa ementaDia = Servidor.gerir.pesquisarEmentaHoje();
 
-                    saida.reset();
-                    saida.writeObject(new Mensagem("INFO", ementaDia));
-                    saida.flush();
-
                     if(ementaDia != null){
+                    	
                         saida.reset();
                         saida.writeObject(new Mensagem("INFO", ementaDia));
                         saida.flush();
+                        
                     } else {
+                    	
                         saida.reset();
                         saida.writeObject(new Mensagem("ERRO", "[INFO] Nenhum ementa criada para o dia de hoje! ( " + LocalDate.now() + ")"));
                         saida.flush();
@@ -281,7 +277,7 @@ public class ClienteHandler extends Thread {
                         saida.flush();
                     }
                 }
-                else if (msg.getTipo().equalsIgnoreCase("RELATORIO_VENDAS")) // Comunicação Relatorio de vendas.
+                else if (msg.getTipo().equalsIgnoreCase("RELATORIO_VENDAS"))
                 {
                     saida.reset();
                     saida.writeObject(new Mensagem("INFO", Servidor.gerir.criarRelatorio()));
@@ -381,11 +377,23 @@ public class ClienteHandler extends Thread {
                     }
                 }
                 else if (msg.getTipo().equalsIgnoreCase("VER_PEDIDOS")){
+                	
                     saida.reset();
                     saida.writeObject(new Mensagem("INFO", Servidor.gerir.getPedidos()));
                     saida.flush();
+                    
                 }
+                else if (msg.getTipo().equalsIgnoreCase("HISTORICO_PEDIDOS")){
 
+                    ArrayList<Pedido> historico = Servidor.gerir.getHistoricoPedidos(user);
+
+                    saida.reset();
+                    saida.writeObject(new Mensagem("INFO", historico));
+                    saida.flush();
+
+                    System.out.println("[HISTORICO_PEDIDOS] Enviado ao utilizador: " + user.getCodigo());
+                    
+                }
                 else if(msg.getTipo().equalsIgnoreCase("VER PEDIDOS PENDENTES")){
                     if (user == null){
                         saida.writeObject((new Mensagem("ERRO", "ATENÇÃO: Primeiro faça login.")));
