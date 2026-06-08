@@ -3,6 +3,10 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.InfoCmp;
 
+import java.nio.file.*;
+import java.nio.charset.StandardCharsets;
+import java.awt.Desktop;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -13,6 +17,7 @@ import java.net.*;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
 
 /**
  * Classe Main - Cliente que permite entrar no menu e fazer todas as funcionalidades do programa
@@ -105,7 +110,10 @@ public class Main {
                             
                         } catch (Exception e) {
                             System.out.println("[ERRO] Dados introduzido inválidos");
-                            System.out.println(e);
+
+                            input.nextLine();
+
+                            break;
                         }
 
                         // ENVIOS PARA SERVIDOR
@@ -140,6 +148,10 @@ public class Main {
                             
                         } catch (Exception e) {
                             System.out.println("[ERRO] Dados introduzido inválidos");
+
+                            input.nextLine();
+
+                            break;
                         }
 
                         // ENVIOS PARA SERVIDOR
@@ -172,13 +184,16 @@ public class Main {
                             // PARA ESCONDER A PASS
                             /*char[] senhaChars = console.readPassword();
                             String senha = new String(senhaChars);*/
-
                             String senha = input.nextLine();
                             dados.add(codigo);
                             dados.add(senha);
                             
                         } catch (Exception e){
                             System.out.println("[ERRO] Dados introduzido inválidos");
+
+                            input.nextLine();
+
+                            break;
                         }
 
                         // ENVIOS PARA SERVIDOR
@@ -222,6 +237,7 @@ public class Main {
                         } catch (Exception e) {
                         	
                             e.printStackTrace();
+                            break;
                         }
                         
                         break;
@@ -659,7 +675,7 @@ public class Main {
 
                 }
 
-            } else if (user.getTipo().equals(TipoUtilizador.CLIENTE)) {
+            } else if (user != null && user.getTipo().equals(TipoUtilizador.CLIENTE)) {
 
                 while ( n != 0 ) {
                 	
@@ -668,6 +684,8 @@ public class Main {
                     System.out.println(" 2 - Criar Pedido"); // FEITO
                     System.out.println(" 3 - Ver estado do meu pedido"); // FEITO
                     System.out.println(" 4 - Ver histórico pedidos"); // FEITO
+                    System.out.println(" 5 - Adicionar/Alterar foto de perfil");
+                    System.out.println(" 6 - Abrir foto de perfil");
                     System.out.println(" 0 - Sair"); // FEITO
 
                     System.out.print("\nInsira a ação que deseja: ");
@@ -801,6 +819,74 @@ public class Main {
                             	
                                 System.out.println("[ERRO] O Programa não conseguiu ler o histórico!");
                             }
+                            break;
+
+                        case 5:
+
+                            try{
+                                input.nextLine();
+
+                                System.out.print("Caminho da foto: ");
+                                String caminhoTexto = input.nextLine();
+
+                                Path caminho = Paths.get(caminhoTexto);
+
+                                if (!Files.exists(caminho) || !Files.isRegularFile(caminho)) {
+                                    System.out.println("[ERRO] Ficheiro inválido.");
+                                    break;
+                                }
+
+                                String nomeFicheiro = caminho.getFileName().toString();
+                                long tamanho = Files.size(caminho);
+
+                                saida.reset();
+                                saida.writeObject(new Mensagem("SEND_FOTO_PERFIL", null));
+                                saida.flush();
+
+                                byte[] nameBytes = nomeFicheiro.getBytes(StandardCharsets.UTF_8);
+
+                                saida.writeInt(nameBytes.length);
+                                saida.write(nameBytes);
+
+                                saida.writeLong(tamanho);
+
+                                Files.copy(caminho, saida);
+                                saida.flush();
+
+                                Mensagem resposta = lerResposta(respostasServidor);
+                                System.out.println(resposta.getDados());
+                            } catch (Exception e){
+                                System.out.println("[ERRO] Ocorreu um erro no envio da foto!");
+                            }
+
+                            break;
+
+                        case 6:
+                            try {
+                                saida.reset();
+                                saida.writeObject(new Mensagem("VER_FOTO_PERFIL", null));
+                                saida.flush();
+
+                                Mensagem resposta = lerResposta(respostasServidor);
+
+                                if (resposta.getTipo().equalsIgnoreCase("200")) {
+                                    String caminhoFoto = (String) resposta.getDados();
+                                    Path caminho = Paths.get(caminhoFoto);
+
+                                    if (Files.exists(caminho)) {
+                                        Desktop.getDesktop().open(caminho.toFile());
+                                    } else {
+                                        System.out.println("[ERRO] A foto não existe no computador.");
+                                    }
+
+                                } else {
+                                    System.out.println(resposta.getDados());
+                                }
+
+                            } catch (Exception e) {
+                                System.out.println("[ERRO] Não foi possível abrir a foto de perfil.");
+                            }
+
                             break;
                     			
                         case 0: // SAIR

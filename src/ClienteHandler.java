@@ -2,14 +2,21 @@ import java.io.*;
 import java.net.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Locale;
+
+import java.nio.file.*;
+import java.nio.charset.StandardCharsets;
 
 public class ClienteHandler extends Thread {
     private final Socket socket;
+
     private ObjectOutputStream saida;
     private ObjectInputStream entrada;
 
     private Utilizador user = null;
+
+    // ENVIO DO FICHEIRO
+    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // Tamanho maximo do ficheiro (foto de perfil)
+    private static final int MAX_NAME_SIZE = 255; // tamanho máximo do nome do ficheiro
 
     public ClienteHandler(Socket socket) {
         this.socket = socket;
@@ -18,6 +25,9 @@ public class ClienteHandler extends Thread {
     @Override
     public void run() {
         try {
+
+            socket.setSoTimeout(30000);
+
             saida = new ObjectOutputStream(socket.getOutputStream());
             entrada = new ObjectInputStream(socket.getInputStream());
 
@@ -283,6 +293,24 @@ public class ClienteHandler extends Thread {
                         saida.flush();
                     }
                 }
+                else if (msg.getTipo().equalsIgnoreCase("SEND_FOTO_PERFIL")) {
+                    System.out.println("[SEND_FOTO_PERFIL] A iniciar receção da foto de perfil.");
+                    receberFotoPerfil();
+                    
+                } else if (msg.getTipo().equalsIgnoreCase("VER_FOTO_PERFIL")) {
+                    if (user == null || user.getTipo() != TipoUtilizador.CLIENTE) {
+                        saida.writeObject(new Mensagem("401", "[ATENÇÃO] Primeiro faça login como cliente!"));
+                        saida.flush();
+
+                    } else if (user.getFotoPerfil() == null || user.getFotoPerfil().isBlank()) {
+                        saida.writeObject(new Mensagem("404", "[INFO] Ainda não tem foto de perfil."));
+                        saida.flush();
+
+                    } else {
+                        saida.writeObject(new Mensagem("200", user.getFotoPerfil()));
+                        saida.flush();
+                    }
+                }
                 else if (msg.getTipo().equalsIgnoreCase("RELATORIO_VENDAS"))
                 {
                     saida.reset();
@@ -296,7 +324,7 @@ public class ClienteHandler extends Thread {
                         System.out.println( "[" + msg.getTipo() + "] " + user.getCodigo() + " - TERMINOU A SESSÃO");
                     }
 
-                    saida.writeObject(new Mensagem("INFO", "Ligação terminada."));
+                    saida.writeObject(new Mensagem("408", "Ligação terminada."));
                     saida.flush();
                     break;
                 }
@@ -342,7 +370,7 @@ public class ClienteHandler extends Thread {
 
                     System.out.println("PEDIDO #" + numPedido + " | ENTREGUE");
 
-                    saida.writeObject(new Mensagem("INFO", "Pedido entregue!"));
+                    saida.writeObject(new Mensagem("200", "Pedido entregue!"));
                     saida.flush();
 
                     if (user != null && user.getTipo() == TipoUtilizador.CLIENTE) {
@@ -431,11 +459,102 @@ public class ClienteHandler extends Thread {
 
         } catch (Exception e) {
             System.out.println("Cliente/Monitor desligado.");
-            /*System.out.println("[CONSOLE ERROR] - " + e);*/
+            e.printStackTrace();
         } finally {
             synchronized (Servidor.monitores) {
                 Servidor.monitores.remove(saida);
             }
+        }
+    }
+
+    // METODO PARA RECEBER A FOTO DE PERFIL
+    private void receberFotoPerfil() throws IOException {
+        if (user == null || user.getTipo() != TipoUtilizador.CLIENTE) {
+            System.out.println("[SEND_FOTO_PERFIL] Utilizador sem sessão de cliente.");
+            saida.writeObject(new Mensagem("401", "[ATENÇÃO] Primeiro faça login como cliente!"));
+            saida.flush();
+            return;
+        }
+
+        try {
+            System.out.println("[SEND_FOTO_PERFIL] Cliente #" + user.getCodigo() + " vai enviar uma foto.");
+            int nameLen = entrada.readInt();
+            System.out.println("[SEND_FOTO_PERFIL] Tamanho do nome recebido: " + nameLen);
+
+            if (nameLen <= 0 || nameLen > MAX_NAME_SIZE) {
+                System.out.println("[SEND_FOTO_PERFIL] Nome inválido: tamanho fora dos limites.");
+                saida.writeObject(new Mensagem("400", "[ERRO] Nome invalido"));
+                saida.flush();
+                return;
+            }
+
+            byte[] nameBytes = new byte[nameLen];
+            entrada.readFully(nameBytes);
+
+            String nome = new String(nameBytes, StandardCharsets.UTF_8);
+            System.out.println("[SEND_FOTO_PERFIL] Nome recebido: " + nome);
+
+            Path apenasNome = Paths.get(nome).getFileName();
+
+            if (apenasNome == null || !apenasNome.toString().equals(nome)) {
+                System.out.println("[SEND_FOTO_PERFIL] Nome inválido/path traversal: " + nome);
+                saida.writeObject(new Mensagem("400", "[ERRO] Nome invalido"));
+                saida.flush();
+                return;
+            }
+
+            long fileLen = entrada.readLong();
+            System.out.println("[SEND_FOTO_PERFIL] Tamanho do ficheiro recebido: " + fileLen + " bytes");
+
+            if (fileLen > MAX_FILE_SIZE) {
+                System.out.println("[SEND_FOTO_PERFIL] Ficheiro excede o limite.");
+                saida.writeObject(new Mensagem("400", "[ERRO] Tamanho da foto excede limite"));
+
+                saida.flush();
+                return;
+            }
+
+            if (fileLen == 0) {
+                System.out.println("[SEND_FOTO_PERFIL] Ficheiro vazio.");
+                saida.writeObject(new Mensagem("400", "[ERRO] Ficheiro vazio"));
+                saida.flush();
+                return;
+            }
+
+            byte[] fileBytes = new byte[(int) fileLen];
+            entrada.readFully(fileBytes);
+            System.out.println("[SEND_FOTO_PERFIL] Bytes da foto recebidos com sucesso.");
+
+            Path pasta = Paths.get("uploads");
+            Files.createDirectories(pasta);
+
+            Path destino = pasta.resolve(user.getCodigo() + "_" + nome);
+            Files.write(destino, fileBytes);
+            System.out.println("[SEND_FOTO_PERFIL] Foto guardada em: " + destino);
+
+            user.setFotoPerfil(destino.toString());
+            Servidor.gerir.guardarDados();
+            System.out.println("[SEND_FOTO_PERFIL] Dados do utilizador guardados.");
+
+            saida.writeObject(new Mensagem("200",
+                    "[SUCESSO] ficheiro recebido " + nome + " " + fileLen + " bytes"));
+            saida.flush();
+
+        } catch (EOFException e) {
+            System.out.println("[SEND_FOTO_PERFIL] Fim inesperado da ligação.");
+            e.printStackTrace();
+            saida.writeObject(new Mensagem("400", "[ERRO] Erro na transferencia"));
+            saida.flush();
+        } catch (SocketTimeoutException e) {
+            System.out.println("[SEND_FOTO_PERFIL] Timeout durante a transferência.");
+            e.printStackTrace();
+            saida.writeObject(new Mensagem("408", "[ERRO] Timeout"));
+            saida.flush();
+        } catch (IOException e) {
+            System.out.println("[SEND_FOTO_PERFIL] Erro de IO durante a transferência.");
+            e.printStackTrace();
+            saida.writeObject(new Mensagem("400", "[ERRO] Erro na transferencia"));
+            saida.flush();
         }
     }
 }

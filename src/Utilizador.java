@@ -5,6 +5,7 @@ public class Utilizador implements Serializable {
     private String nome;
     private String senha; // todo: hash
     private TipoUtilizador tipo;
+    private String fotoPerfil;
 
     public Utilizador(int codigo, String nome, String senha, TipoUtilizador tipo){
         this.codigo = codigo;
@@ -15,6 +16,14 @@ public class Utilizador implements Serializable {
 
     public int getCodigo() {
         return codigo;
+    }
+
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
     }
 
     public String getNome() {
