@@ -27,6 +27,8 @@ public class ClienteHandler extends Thread {
                 if (msg.getTipo().equalsIgnoreCase("MONITOR")) {
                     System.out.println("Monitor ligado.");
 
+                    Servidor.atualizarMonitores();
+
                     synchronized (Servidor.monitores) {
                         Servidor.monitores.add(saida);
                     }

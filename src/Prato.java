@@ -14,7 +14,7 @@ public class Prato extends Item implements Serializable {
 
     @Override
     public String toString() {
-        return super.getNome() + " (" + super.getTipo() + " - " + tipoPrato + " ) - Preço: " + super.getPreco() + "€";
+        return "ID: " + super.getCodigo() + " | Nome: " + super.getNome() + " (" + super.getTipo() + " - " + tipoPrato + " ) - Preço: " + super.getPreco() + "€";
     }
 
     public String toStringLista() {
