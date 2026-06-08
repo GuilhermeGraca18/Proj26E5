@@ -3,6 +3,9 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Servidor que conecta todos os clientes entre si e partilha os dados com os mesmos.
  * @author Grupo 5
@@ -11,6 +14,8 @@ import java.util.List;
 
 public class Servidor {
     private static final int PORTA = 5001;
+
+    public static final Map<Integer, ObjectOutputStream> clientesLigados = new ConcurrentHashMap<>(); // UTILIZADORES LIGADOS
 
     public static final List<ObjectOutputStream> monitores = new ArrayList<>();
 
@@ -64,6 +69,23 @@ public class Servidor {
                 } catch (IOException e) {
                     System.out.println("Erro ao avisar monitor.");
                 }
+            }
+        }
+    }
+
+    public static void avisarClientePedidoAEntregar(int codigoCliente) {
+        ObjectOutputStream cliente = clientesLigados.get(codigoCliente);
+
+        if (cliente != null) {
+            try {
+                synchronized (cliente) {
+                    cliente.writeObject(new Mensagem("NOTIFICACAO", "PEDIDO A ENTREGAR"));
+                    cliente.flush();
+                    cliente.reset();
+                }
+            } catch (IOException e) {
+                System.out.println("Erro ao avisar cliente #" + codigoCliente);
+                clientesLigados.remove(codigoCliente);
             }
         }
     }

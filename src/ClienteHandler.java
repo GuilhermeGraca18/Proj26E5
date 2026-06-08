@@ -55,6 +55,10 @@ public class ClienteHandler extends Thread {
                             saida.writeObject(new Mensagem("TRUE", dadosCliente));
                             saida.flush();
 
+                            if (user.getTipo() == TipoUtilizador.CLIENTE) {
+                                Servidor.clientesLigados.put(user.getCodigo(), saida);
+                            }
+
                             System.out.println("[" + msg.getTipo() + "] " + user.getTipo() + " | " + user.getCodigo() + "");
                         } else {
 
@@ -305,6 +309,7 @@ public class ClienteHandler extends Thread {
                             value = true;
                             pedido.entregarPedido();
                             Servidor.gerir.guardarDados();
+                            Servidor.avisarClientePedidoAEntregar(numPedido);
                             break;
                         }
                     }
@@ -339,6 +344,10 @@ public class ClienteHandler extends Thread {
 
                     saida.writeObject(new Mensagem("INFO", "Pedido entregue!"));
                     saida.flush();
+
+                    if (user != null && user.getTipo() == TipoUtilizador.CLIENTE) {
+                        Servidor.clientesLigados.remove(user.getCodigo());
+                    }
 
                 }
                 else if (msg.getTipo().equalsIgnoreCase("PEDIDO_NAO_ENTREGUE")){
