@@ -75,7 +75,7 @@ java -jar target/Monitor.jar
 
 ### Membros do Grupo
 - Guilherme Graça - 53861
-- Diana - 53267
+- Diana Santos - 53267
 - Simão Gonçalves - 53570
-- Arthur - 53987
+- Arthur Santana - 53987
 - Rafael Calheiros - 53828
