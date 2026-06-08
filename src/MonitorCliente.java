@@ -2,7 +2,12 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 
-@SuppressWarnings("unchecked")
+/**
+ * Monitor de Pedidos
+ * @author Grupo 5
+ * @version 07/07/2026
+ */
+
 public class MonitorCliente {
     public static void main(String[] args) {
         try (Socket socket = new Socket("localhost", 5001)) {
@@ -12,6 +17,8 @@ public class MonitorCliente {
 
             saida.writeObject(new Mensagem("MONITOR", null));
             saida.flush();
+
+            System.out.println("=== PEDIDOS PENDENTES ===");
 
             while (true) {
                 Mensagem msg = (Mensagem) entrada.readObject();
@@ -26,15 +33,10 @@ public class MonitorCliente {
                     if (pedidos.isEmpty()) {
                         System.out.println("Sem pedidos pendentes.");
 
-                        System.out.print("\033]0;MONITOR CANTINA | SEM PEDIDOS PENDENTES\007");
-                        System.out.flush();
                     } else {
                         for (Pedido pedido : pedidos) {
                             System.out.println(pedido);
                             System.out.println("----------------------");
-
-                            System.out.print("\033]0;MONITOR CANTINA | " + pedidos.toArray().length  + " PEDIDOS PENDENTES\007");
-                            System.out.flush();
                         }
                     }
                 }

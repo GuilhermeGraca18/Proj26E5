@@ -11,6 +11,12 @@ import java.util.Scanner;
 import java.io.*;
 import java.net.*;
 
+/**
+ * Classe Main - Cliente que permite entrar no menu e fazer todas as funcionalidades do programa
+ * @author Grupo 5
+ * @version 07/07/2026
+ */
+
 public class Main {
     public static void main(String[] args) {
         String host = "localhost";
@@ -194,7 +200,7 @@ public class Main {
                 }
             }
 
-            if (user.getTipo().equals(TipoUtilizador.FUNCIONARIO)) {
+            if (user != null && user.getTipo().equals(TipoUtilizador.FUNCIONARIO)) {
 
                 while (n != 0) {
                     System.out.println(" --- ÁREA DO FUNCIONÁRIO | CANTINA ---");
@@ -226,7 +232,6 @@ public class Main {
                     
                         case 1: // ENTREGAR PEDIDO
                         	
-                            Pedido pedidoCliente = null;
                             System.out.println(" === ENTREGAR PEDIDO PENDENTE === ");
                             System.out.print("Número do pedido: ");
                             int numPedido = input.nextInt();
@@ -531,7 +536,7 @@ public class Main {
 
                             } catch (Exception e){
                             	
-                                System.out.println("[ERRO] O Programa não conseguiu ler a lista de Pedidos!");
+                                System.out.println("[ERRO] O Programa não conseguiu ler a lista de clientes!");
                             }
                         	
                         	break;
@@ -553,7 +558,7 @@ public class Main {
                                 }
 
                             } catch (Exception e){
-                                System.out.println("[ERRO] O Programa não conseguiu ler a lista de Pedidos!");
+                                System.out.println("[ERRO] O Programa não conseguiu ler a lista de funcionários!");
                             }
 
                             break;
@@ -569,20 +574,21 @@ public class Main {
 	                            Mensagem respostaRelatorio = (Mensagem) entrada.readObject();
 	                            ArrayList<Object> dadosRelatorio = (ArrayList<Object>) respostaRelatorio.getDados();
 	
-	                            System.out.println("\n\tArtigos vendidos");
-	                            System.out.println("\nNome:\t\tCódigo:\tPreço:\tData:");
+	                            System.out.println("\n===== RELATÓRIO DE VENDAS =====");
+	                            System.out.printf("%-25s %-10s %-10s %-12s%n", "ARTIGO", "CÓDIGO", "PREÇO", "DATA");
+	                            System.out.println("-".repeat(60));
 	
 	                            double totalVendas = 0;
 	                            for (int i = 0; i < dadosRelatorio.size() - 1; i++) {
 	                            	
 	                                ArrayList<Object> linha = (ArrayList<Object>) dadosRelatorio.get(i);
 	                                
-	                                String nome   = (String)    linha.get(0);
-	                                int codigo    = (int)       linha.get(1);
-	                                double preco  = (double)    linha.get(2);
-	                                Object data   = linha.get(3);
+	                                String nome = (String) linha.get(0);
+	                                int codigo = (int) linha.get(1);
+	                                double preco = (double) linha.get(2);
+	                                Object data = linha.get(3);
 	                                
-	                                System.out.println(nome + "\t" + codigo + "\t" + preco + "\t" + data);
+	                                System.out.printf("%-25s %-10d %-10.2f %-12s%n", nome, codigo, preco, data);
 	                                totalVendas += preco;
 	                                
 	                            }
@@ -618,9 +624,9 @@ public class Main {
                 	
                     System.out.println(" --- ÁREA DO CLIENTE | CANTINA ---");
                     System.out.println(" 1 - Ver ementa de hoje"); // FEITO
-                    System.out.println(" 2 - Criar Pedido"); // TESTE
+                    System.out.println(" 2 - Criar Pedido"); // FEITO
                     System.out.println(" 3 - Ver estado do meu pedido"); // FEITO
-                    System.out.println(" 4 - Ver pedidos anterirores");
+                    System.out.println(" 4 - Ver histórico pedidos"); // FEITO
                     System.out.println(" 0 - Sair"); // FEITO
 
                     System.out.print("\nInsira a ação que deseja: ");
@@ -649,42 +655,50 @@ public class Main {
                     
                         case 2: // CRIAR PEDIDO
                             try {
-                                Item bebida = new Item(
-                                        111,
-                                        "Cola",
-                                        "",
-                                        2,
-                                        TipoItem.Bebida
-                                );
 
-                                Item entradaPedido = new Item(
-                                        111,
-                                        "Sopa",
-                                        "Com feijão",
-                                        2,
-                                        TipoItem.Entrada
-                                );
+                                System.out.println(" === CRIAR PEDIDO === ");
 
-                                Item prato = new Item(
-                                        123,
-                                        "Hambúrguer",
-                                        "Com batatas",
-                                        5,
-                                        TipoItem.Prato
-                                );
+                                input.nextLine();
 
-                                Pedido pedido = new Pedido(user, "NOTAS");
-
-                                pedido.adicionarItems(bebida);
-                                pedido.adicionarItems(entradaPedido);
-                                pedido.adicionarItems(prato);
+                                System.out.print("Deseja colocar alguma nota no pedido, se sim escreva: ");
+                                String notas = input.nextLine();
 
                                 saida.reset();
-                                saida.writeObject(new Mensagem("CRIAR_PEDIDO", pedido));
+                                saida.writeObject(new Mensagem("CRIAR_PEDIDO", notas));
                                 saida.flush();
+
 
                                 Mensagem resposta = (Mensagem) entrada.readObject();
                                 System.out.println(resposta.getDados());
+
+                                if (!resposta.getTipo().equalsIgnoreCase("ERRO")){
+
+                                    int nitem = -1;
+
+                                    while (nitem != 0) {
+
+                                        System.out.print("Adicionar item (número do item presente na ementa / 0 para terminar): ");
+                                        nitem = input.nextInt();
+
+                                        if (nitem == 0) {
+                                            break;
+                                        }
+
+                                        saida.reset();
+                                        saida.writeObject(new Mensagem("ADICIONAR_ITEM_PEDIDO", nitem));
+                                        saida.flush();
+
+                                        resposta = (Mensagem) entrada.readObject();
+                                        System.out.println(resposta.getDados());
+
+                                    }
+
+                                    System.out.println("[INFO] Pedido a fazer! Fique atento ao ecrã dos pedidos e ao seu número de cliente!");
+                                }
+
+                                System.out.println("[SUCESSO] Pedido Finalizado!");
+
+
                             } catch (Exception e){
                                 System.out.println("[ERRO] O Programa não conseguiu criar o pedido!");
                             }
@@ -702,10 +716,40 @@ public class Main {
                                 System.out.println("[ERRO] O Programa não conseguiu ler o estado do pedido!");
                             }
                     		break;
-                    		
-                        case 4: // VER PEDIDOS ANTERIORES
-                        	
-                    		break;
+
+                        case 4: // VER HISTORICO DE PEDIDOS
+
+                            try {
+                            	
+                                saida.reset();
+                                saida.writeObject(new Mensagem("HISTORICO_PEDIDOS", null));
+                                saida.flush();
+
+                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                ArrayList<Pedido> historico = (ArrayList<Pedido>) resposta.getDados();
+
+                                if (historico.isEmpty()){
+                                	
+                                    System.out.println("[INFO] Ainda não tem pedidos registrados.");
+                                    
+                                } else {
+                                	
+                                    System.out.println("\n===== HISTÓRICO DE PEDIDOS =====");
+                                    
+                                    for (Pedido pedido : historico) {
+                                    	
+                                        System.out.println("--------------------------------");
+                                        System.out.println(pedido);
+                                    }
+                                    
+                                    System.out.println("================================\n");
+                                }
+
+                            } catch (Exception e) {
+                            	
+                                System.out.println("[ERRO] O Programa não conseguiu ler o histórico!");
+                            }
+                            break;
                     			
                         case 0: // SAIR
                         	

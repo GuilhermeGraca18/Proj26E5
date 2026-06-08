@@ -66,9 +66,6 @@ public class ClienteHandler extends Thread {
                         saida.writeObject(new Mensagem("FALSE", "Login Falhou - Código errado!"));
                         saida.flush();
                     }
-
-
-
                 }
                 else if (msg.getTipo().equalsIgnoreCase("REGISTO")){
                     user = (Utilizador) msg.getDados();
@@ -77,10 +74,10 @@ public class ClienteHandler extends Thread {
                         Servidor.gerir.registarUser(user);
                         Servidor.gerir.guardarDados();
 
-                        saida.writeObject(new Mensagem("INFO", user.getNome() + " - Bem-vindo"));
+                        saida.writeObject(new Mensagem("INFO", user.getNome() + " - REGISTADO"));
                         saida.flush();
 
-                        System.out.println( "[" + msg.getTipo() + "] " + user.getTipo() + " | " + user.getCodigo() + " - CLIENTE REGISTADO COM SUCESSO");
+                        System.out.println( "[" + msg.getTipo() + "] " + user.getTipo() + " | " + user.getCodigo() + " - UTILIZADOR REGISTADO COM SUCESSO");
 
                     } else {
                         saida.writeObject(new Mensagem("INFO", "Esse código de utilizador já foi registado!"));
@@ -197,37 +194,90 @@ public class ClienteHandler extends Thread {
 
                 }
                 else if (msg.getTipo().equalsIgnoreCase("VER_EMENTA_DIA")) {
-                	
-                	Ementa ementaDia = Servidor.gerir.pesquisarEmentaHoje();
-                	
-                	saida.reset();
-                	saida.writeObject(new Mensagem("INFO", ementaDia));
-                	saida.flush();
-                }
-                else if (msg.getTipo().equalsIgnoreCase("CRIAR_PEDIDO")) {
-                    if (user == null) {
-                        saida.writeObject(new Mensagem("ERRO", "[ATENÇÃO] Primeiro faça login!"));
-                        saida.flush();
-                    } else {
 
-                        Pedido pedido = (Pedido) msg.getDados();
 
-                        synchronized (Servidor.gerir.getPedidos()) {
-                            Servidor.gerir.criarPedidos(pedido);
-                            Servidor.gerir.guardarDados();
-                        }
-                        
+                    Ementa ementaDia = Servidor.gerir.pesquisarEmentaHoje();
+
+                    if(ementaDia != null){
+                    	
                         saida.reset();
-                        saida.writeObject(new Mensagem("INFO", "Pedido criado com sucesso."));
+                        saida.writeObject(new Mensagem("INFO", ementaDia));
                         saida.flush();
-
-                        System.out.println( "[" + msg.getTipo() + "] " + user.getTipo() + " | " + user.getCodigo() + " - LOGIN");
-
-                        Servidor.atualizarMonitores();
+                        
+                    } else {
+                    	
+                        saida.reset();
+                        saida.writeObject(new Mensagem("ERRO", "[INFO] Nenhum ementa criada para o dia de hoje! ( " + LocalDate.now() + ")"));
+                        saida.flush();
                     }
 
                 }
-                else if (msg.getTipo().equalsIgnoreCase("RELATORIO_VENDAS")) // Comunicação Relatorio de vendas.
+                else if (msg.getTipo().equalsIgnoreCase("CRIAR_PEDIDO")) {
+                    if(Servidor.gerir.pesquisarEmenta(LocalDate.now()) == null){
+                        saida.reset();
+                        saida.writeObject(new Mensagem("ERRO", "[ATENÇÃO] Ainda não foi criada nenhuma ementa para o dia de hoje!"));
+                        saida.flush();
+                    } else {
+                        if (user == null) {
+                            saida.reset();
+                            saida.writeObject(new Mensagem("ERRO", "[ATENÇÃO] Primeiro faça login!"));
+                            saida.flush();
+                        } else {
+                            String notas = (String) msg.getDados();
+
+                                Pedido pedido = new Pedido(user, notas);
+
+                                if (Servidor.gerir.pesquisarPedidoDia(user)) {
+
+                                    synchronized (Servidor.gerir.getPedidos()) {
+                                        Servidor.gerir.criarPedidos(pedido);
+                                        Servidor.gerir.guardarDados();
+                                    }
+
+                                    saida.reset();
+                                    saida.writeObject(new Mensagem("INFO", "Pedido criado com sucesso."));
+                                    saida.flush();
+
+                                    Servidor.atualizarMonitores();
+
+                                } else {
+                                    saida.reset();
+                                    saida.writeObject(new Mensagem("ERRO", "Pedido de hoje já foi criado!"));
+                                    saida.flush();
+                                }
+                            }
+                        }
+
+                }
+                else if (msg.getTipo().equalsIgnoreCase("ADICIONAR_ITEM_PEDIDO")) {
+
+                    if (user == null) {
+                        saida.reset();
+                        saida.writeObject(new Mensagem("ERRO", "[ATENÇÃO] Primeiro faça login!"));
+                        saida.flush();
+                        return;
+                    }
+
+                    int nitem = (int) msg.getDados();
+
+                    boolean value = Servidor.gerir.adicionarItemsPedido(user, nitem);
+
+                    if (value) {
+                        saida.reset();
+                        saida.writeObject(new Mensagem("INFO", "[SUCESSO] ITEM ADICIONADO AO PEDIDO! VALOR DO PEDIDO ATUALMENTE: " + Servidor.gerir.pesquisarPedidoPendente(user).getPrecoTotalAtual() + "€"));
+                        saida.flush();
+
+                        Servidor.gerir.guardarDados();
+                        Servidor.atualizarMonitores();
+
+                    } else {
+
+                        saida.reset();
+                        saida.writeObject(new Mensagem("ERRO", "[ERRO] ITEM FORA DE STOCK OU NÃO ESTÁ PRESENTE NA EMENTA!"));
+                        saida.flush();
+                    }
+                }
+                else if (msg.getTipo().equalsIgnoreCase("RELATORIO_VENDAS"))
                 {
                     saida.reset();
                     saida.writeObject(new Mensagem("INFO", Servidor.gerir.criarRelatorio()));
@@ -327,9 +377,42 @@ public class ClienteHandler extends Thread {
                     }
                 }
                 else if (msg.getTipo().equalsIgnoreCase("VER_PEDIDOS")){
+                	
                     saida.reset();
                     saida.writeObject(new Mensagem("INFO", Servidor.gerir.getPedidos()));
                     saida.flush();
+                    
+                }
+                else if (msg.getTipo().equalsIgnoreCase("HISTORICO_PEDIDOS")){
+
+                    ArrayList<Pedido> historico = Servidor.gerir.getHistoricoPedidos(user);
+
+                    saida.reset();
+                    saida.writeObject(new Mensagem("INFO", historico));
+                    saida.flush();
+
+                    System.out.println("[HISTORICO_PEDIDOS] Enviado ao utilizador: " + user.getCodigo());
+                    
+                }
+                else if(msg.getTipo().equalsIgnoreCase("VER_PEDIDOS_PENDENTES")){
+                    if (user == null){
+                        saida.writeObject((new Mensagem("ERRO", "ATENÇÃO: Primeiro faça login.")));
+                        saida.flush();
+                    }else if(user.getTipo() != TipoUtilizador.FUNCIONARIO){
+                        saida.writeObject(new Mensagem("ERRO", "ATENÇÃO: Sem permissões para esta operação."));
+                        saida.flush();
+                    }else{
+                        ArrayList<Pedido> pendentes = new ArrayList<>();
+                        for (Pedido pedido : Servidor.gerir.getPedidos()){
+                            if (pedido.getData().equals(LocalDate.now()) && pedido.getEstado() == EstadoPedido.A_FAZER ){
+                                pendentes.add(pedido);
+                            }
+                        }
+                        saida.writeObject(new Mensagem("LISTA_PEDIDOS_PENDENTES", pendentes));
+                        saida.flush();
+
+                        System.out.println(user.getCodigo() + " | FUNCIONÁRIO CONSULTOU PEDIDOS PENDENTES");
+                    }
                 }
             }
 

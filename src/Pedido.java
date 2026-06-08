@@ -42,6 +42,14 @@ public class Pedido implements Serializable{
         estado = EstadoPedido.ENTREGUE;
     }
 
+    public double getPrecoTotalAtual(){
+        double soma = 0;
+        for (Item item : items){
+            soma += item.getPreco();
+        }
+        return soma;
+    }
+
     public void pedidoNaoEntregue(){
         estado = EstadoPedido.NAO_ENTREGUE;
     }

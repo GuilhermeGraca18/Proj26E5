@@ -6,6 +6,7 @@
 
 - Criar utilizador como Cliente ou Funcionário
 - Fazer Login
+- Abrir Monitor de Pedidos
 
 #### Como Funcionário
 
@@ -16,10 +17,14 @@
 - Visualizar ementas
 - Ver lista de clientes
 - Ver lista de funcionários
+- Criar Relatório das Vendas/Pedidos
 
 #### Como Cliente
 
-- Criar pedido de teste para visualizar no Monitor de Pedidos
+- Visualizar Ementa do Dia
+- Criar pedido diário com os itens da ementa do dia
+- Visualizar estado do pedido
+- Ver histórico dos pedidos
 
 ## Como Correr o Projeto
 
@@ -32,10 +37,14 @@ Na pasta do projeto, correr:
 ```bash
 mvn clean package
 ```
-Depois de criar os ficheiros JAR, estes ficam disponíveis na pasta target
+Depois de criar os ficheiros JAR, estes ficam disponíveis na pasta target (as vezes é necessário alterar o nome dos .jar)
+Se quiser, mude o nome dos ficheiros jar
+- Proj26E5-1.0-SNAPSHOT-main -> Cliente.jar
+- Proj26E5-1.0-SNAPSHOT-monitor-cliente -> Monitor.jar
+- Proj26E5-1.0-SNAPSHOT.servidor -> Servidor.jar
 
 ### macOS / Linux
-Abrir a pasta do projeto no Terminal.
+Abrir a pasta do projeto no Terminal. 
 
 #### Servidor
 ```bash
@@ -51,7 +60,7 @@ java -jar target/Monitor.jar
 ```
 
 ### Windows
-Abrir a pasta do projeto no CMD ou PowerShell.
+Abrir a pasta do projeto no CMD ou PowerShell, ou duplo clique no ficheiro que deseja abrir!
 
 #### Servidor
 ```bash
@@ -69,8 +78,8 @@ java -jar target/Monitor.jar
 ```
 
 ### Membros do Grupo
-- Guilherme Gomes Graça - 53861
+- Guilherme Graça - 53861
 - Diana - 53267
-- Simão - 53570
+- Simão Gonçalves - 53570
 - Arthur - 53987
 - Rafael Calheiros - 53828

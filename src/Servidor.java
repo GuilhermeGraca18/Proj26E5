@@ -3,6 +3,12 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Servidor que conecta todos os clientes entre si e partilha os dados com os mesmos.
+ * @author Grupo 5
+ * @version 07/07/2026
+ */
+
 public class Servidor {
     private static final int PORTA = 5001;
 
