@@ -238,7 +238,6 @@ public class GerirCantina {
      * @author Arthur Santana - 53987
      * 
      * Método para retornar todos os pedidos de um cliente específico
-     * @param O utilizador cliente
      * @return Lista de pedidos do cliente
      */
     public ArrayList<Pedido> getHistoricoPedidos(Utilizador cliente) {

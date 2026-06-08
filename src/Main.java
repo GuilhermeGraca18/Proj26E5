@@ -11,6 +11,9 @@ import java.util.Scanner;
 import java.io.*;
 import java.net.*;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 /**
  * Classe Main - Cliente que permite entrar no menu e fazer todas as funcionalidades do programa
  * @author Grupo 5
@@ -18,6 +21,40 @@ import java.net.*;
  */
 
 public class Main {
+
+    private static void iniciarLeitorServidor(ObjectInputStream entrada, BlockingQueue<Mensagem> respostas) {
+        Thread leitor = new Thread(() -> {
+            try {
+                while (true) {
+                    Mensagem msg = (Mensagem) entrada.readObject();
+
+                    if (msg.getTipo().equalsIgnoreCase("NOTIFICACAO")) {
+                        System.out.println("\n==============================");
+                        System.out.println("        " + msg.getDados());
+                        System.out.println("==============================\n");
+                        System.out.print("Insira a ação que deseja: ");
+                    } else {
+                        respostas.put(msg);
+                    }
+                }
+            } catch (Exception e) {
+                // Ligação fechada
+            }
+        });
+
+        leitor.setDaemon(true);
+        leitor.start();
+    }
+
+    private static Mensagem lerResposta(BlockingQueue<Mensagem> respostas) {
+        try {
+            return respostas.take();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Leitura da resposta interrompida.", e);
+        }
+    }
+
     public static void main(String[] args) {
         String host = "localhost";
         int porta = 5001;
@@ -26,6 +63,9 @@ public class Main {
 
             ObjectOutputStream saida = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream entrada = new ObjectInputStream(socket.getInputStream());
+
+            BlockingQueue<Mensagem> respostasServidor = new LinkedBlockingQueue<>();
+            iniciarLeitorServidor(entrada, respostasServidor);
 
             Scanner input = new Scanner(System.in);
             Console console = System.console();
@@ -78,7 +118,7 @@ public class Main {
 
                         // MENSAGEM VINDA DO SERVIDOR
 
-                        Mensagem resposta = (Mensagem) entrada.readObject();
+                        Mensagem resposta = lerResposta(respostasServidor);
                         System.out.println(resposta.getDados());
 
                         break;
@@ -112,7 +152,7 @@ public class Main {
 
                         // MENSAGEM VINDA DO SERVIDOR
 
-                        resposta = (Mensagem) entrada.readObject();
+                        resposta = lerResposta(respostasServidor);
                         System.out.println(resposta.getDados());
                         
                         break;
@@ -149,9 +189,9 @@ public class Main {
 
                         // MENSAGEM VINDA DO SERVIDOR
 
-                        resposta = (Mensagem) entrada.readObject();
+                        resposta = lerResposta(respostasServidor);
 
-                        if(resposta.getTipo().equalsIgnoreCase("TRUE")){
+                        if(resposta.getTipo().equalsIgnoreCase("200")){
 
                             ArrayList<Object> dadosServidor = (ArrayList<Object>) resposta.getDados();
 
@@ -240,8 +280,9 @@ public class Main {
                             saida.writeObject(new Mensagem("ENTREGAR_PEDIDO", numPedido));
                             saida.flush();
 
-                            Mensagem value = (Mensagem) entrada.readObject();
-                            if(value.getDados().equals("True")){
+                            Mensagem value = lerResposta(respostasServidor);
+                            if(value.getTipo().equals("200")){
+                                System.out.println((String) value.getDados());
                                 System.out.print("Pedido entregue (S/N)? ");
                                 input.nextLine();
                                 String estado = input.nextLine();
@@ -251,7 +292,7 @@ public class Main {
                                         saida.writeObject(new Mensagem("PEDIDO_ENTREGUE", numPedido));
                                         saida.flush();
 
-                                        Mensagem resposta = (Mensagem) entrada.readObject();
+                                        Mensagem resposta = lerResposta(respostasServidor);
                                         System.out.println(resposta.getDados());
                                         break;
                                     case "n":
@@ -259,7 +300,7 @@ public class Main {
                                         saida.writeObject(new Mensagem("PEDIDO_NAO_ENTREGUE", numPedido));
                                         saida.flush();
 
-                                        resposta = (Mensagem) entrada.readObject();
+                                        resposta = lerResposta(respostasServidor);
                                         System.out.println(resposta.getDados());
                                 }
                             } else {
@@ -331,7 +372,7 @@ public class Main {
                                 saida.writeObject(new Mensagem("ADICIONAR_ITEM", novoItem));
                                 saida.flush();
 
-                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                Mensagem resposta = lerResposta(respostasServidor);
                                 System.out.println(resposta.getDados());
 
                             } catch (Exception e) {
@@ -349,7 +390,7 @@ public class Main {
                                 saida.writeObject(new Mensagem("VER_LISTA_ITEMS", null));
                                 saida.flush();
 
-                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                Mensagem resposta = lerResposta(respostasServidor);
                                 ArrayList<Item> listaItems = (ArrayList<Item>) resposta.getDados();
 
                                 for (Item item : listaItems){
@@ -373,7 +414,7 @@ public class Main {
                                 saida.writeObject(new Mensagem("ELIMINAR_ITEM", codigoItem));
                                 saida.flush();
 
-                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                Mensagem resposta = lerResposta(respostasServidor);
                                 System.out.println(resposta.getDados());
 
                             } catch (Exception e){
@@ -403,9 +444,9 @@ public class Main {
                                 saida.writeObject(new Mensagem("CRIAR_EMENTA", dataEmeta));
                                 saida.flush();
 
-                                resposta = (Mensagem) entrada.readObject();
+                                resposta = lerResposta(respostasServidor);
                                 System.out.println(resposta.getDados());
-                                if(resposta.getTipo().equalsIgnoreCase("TRUE")){
+                                if(resposta.getTipo().equalsIgnoreCase("200")){
                                     int escolha = -1;
                                     while (escolha != 0) {
 
@@ -413,7 +454,7 @@ public class Main {
                                         saida.writeObject(new Mensagem("VER_LISTA_ITEMS", null));
                                         saida.flush();
 
-                                        resposta = (Mensagem) entrada.readObject();
+                                        resposta = lerResposta(respostasServidor);
                                         ArrayList<Item> listaItems = (ArrayList<Item>) resposta.getDados();
 
                                         for (Item item : listaItems) {
@@ -439,7 +480,7 @@ public class Main {
                                         saida.writeObject(new Mensagem("ADICIONAR_ITEM_EMENTA", dados));
                                         saida.flush();
 
-                                        resposta = (Mensagem) entrada.readObject();
+                                        resposta = lerResposta(respostasServidor);
                                         System.out.println(resposta.getDados());
                                     }
                                     System.out.println("[SUCESSO] Ementa Fechada!");
@@ -460,7 +501,7 @@ public class Main {
                         		saida.writeObject(new Mensagem("VER_EMENTA_DIA", null));
                         		saida.flush();
                         		
-                        		Mensagem resposta = (Mensagem) entrada.readObject();
+                        		Mensagem resposta = lerResposta(respostasServidor);
                         		Ementa ementaHoje = (Ementa) resposta.getDados();
                         		
                         		System.out.println(ementaHoje);
@@ -480,7 +521,7 @@ public class Main {
                                 saida.writeObject(new Mensagem("VER_EMENTAS", null));
                                 saida.flush();
 
-                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                Mensagem resposta = lerResposta(respostasServidor);
                                 ArrayList<Ementa> listaEmenta = (ArrayList<Ementa>) resposta.getDados();
 
                                 for (Ementa ementa : listaEmenta) {
@@ -504,7 +545,7 @@ public class Main {
                                 saida.writeObject(new Mensagem("VER_PEDIDOS", null));
                                 saida.flush();
 
-                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                Mensagem resposta = lerResposta(respostasServidor);
                                 ArrayList<Pedido> pedidosGeral = (ArrayList<Pedido>) resposta.getDados();
 
                                 for (Pedido pedido : pedidosGeral){
@@ -526,7 +567,7 @@ public class Main {
                                 saida.writeObject(new Mensagem("VER_CLIENTES", null));
                                 saida.flush();
 
-                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                Mensagem resposta = lerResposta(respostasServidor);
                                 ArrayList<Utilizador> listaClientes = (ArrayList<Utilizador>) resposta.getDados();
                                 
                                 for (Utilizador cliente : listaClientes) {
@@ -550,7 +591,7 @@ public class Main {
                                 saida.writeObject(new Mensagem("VER_FUNCIONARIOS", null));
                                 saida.flush();
 
-                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                Mensagem resposta = lerResposta(respostasServidor);
                                 ArrayList<Utilizador> listaFuncionarios = (ArrayList<Utilizador>) resposta.getDados();
 
                                 for (Utilizador funcionario : listaFuncionarios) {
@@ -571,7 +612,7 @@ public class Main {
 	                            saida.writeObject(new Mensagem("RELATORIO_VENDAS", null));
 	                            saida.flush();
 	
-	                            Mensagem respostaRelatorio = (Mensagem) entrada.readObject();
+	                            Mensagem respostaRelatorio = lerResposta(respostasServidor);
 	                            ArrayList<Object> dadosRelatorio = (ArrayList<Object>) respostaRelatorio.getDados();
 	
 	                            System.out.println("\n===== RELATÓRIO DE VENDAS =====");
@@ -642,7 +683,7 @@ public class Main {
                         		saida.writeObject(new Mensagem("VER_EMENTA_DIA", null));
                         		saida.flush();
                         		
-                        		Mensagem resposta = (Mensagem) entrada.readObject();
+                        		Mensagem resposta = lerResposta(respostasServidor);
                         		Ementa ementaHoje = (Ementa) resposta.getDados();
                         		
                         		System.out.println(ementaHoje);
@@ -664,7 +705,7 @@ public class Main {
                                 saida.writeObject(new Mensagem("VER_EMENTA_DIA", null));
                                 saida.flush();
 
-                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                Mensagem resposta = lerResposta(respostasServidor);
                                 Ementa ementaHoje = (Ementa) resposta.getDados();
 
                                 System.out.println(ementaHoje);
@@ -679,10 +720,10 @@ public class Main {
                                 saida.flush();
 
 
-                                resposta = (Mensagem) entrada.readObject();
+                                resposta = lerResposta(respostasServidor);
                                 System.out.println(resposta.getDados());
 
-                                if (!resposta.getTipo().equalsIgnoreCase("ERRO")){
+                                if (!resposta.getTipo().equalsIgnoreCase("400")){
 
                                     int nitem = -1;
 
@@ -699,7 +740,7 @@ public class Main {
                                         saida.writeObject(new Mensagem("ADICIONAR_ITEM_PEDIDO", nitem));
                                         saida.flush();
 
-                                        resposta = (Mensagem) entrada.readObject();
+                                        resposta = lerResposta(respostasServidor);
                                         System.out.println(resposta.getDados());
 
                                     }
@@ -721,7 +762,7 @@ public class Main {
                                 saida.writeObject(new Mensagem("VER_ESTADO_PEDIDO", null));
                                 saida.flush();
 
-                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                Mensagem resposta = lerResposta(respostasServidor);
                                 System.out.println(resposta.getDados());
                             } catch (Exception e){
                                 System.out.println("[ERRO] O Programa não conseguiu ler o estado do pedido!");
@@ -736,7 +777,7 @@ public class Main {
                                 saida.writeObject(new Mensagem("HISTORICO_PEDIDOS", null));
                                 saida.flush();
 
-                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                Mensagem resposta = lerResposta(respostasServidor);
                                 ArrayList<Pedido> historico = (ArrayList<Pedido>) resposta.getDados();
 
                                 if (historico.isEmpty()){
@@ -784,8 +825,6 @@ public class Main {
 
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
     }
 
