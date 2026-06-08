@@ -25,7 +25,7 @@ public class ClienteHandler extends Thread {
                 Mensagem msg = (Mensagem) entrada.readObject();
 
                 if (msg.getTipo().equalsIgnoreCase("MONITOR")) {
-                    System.out.println("Monitor ligado.");
+                    System.out.println("[MONITOR] Monitor ligado.");
 
                     Servidor.atualizarMonitores();
 
@@ -33,7 +33,7 @@ public class ClienteHandler extends Thread {
                         Servidor.monitores.add(saida);
                     }
 
-                    saida.writeObject(new Mensagem("INFO", "Monitor ligado com sucesso."));
+                    saida.writeObject(new Mensagem("200", "[MONITOR] Monitor ligado com sucesso."));
                     saida.flush();
                     continue;
                 }
@@ -52,7 +52,7 @@ public class ClienteHandler extends Thread {
                             String resposta = user.getNome() + " - Bem-vindo";
                             dadosCliente.add(resposta);
                             dadosCliente.add(user);
-                            saida.writeObject(new Mensagem("TRUE", dadosCliente));
+                            saida.writeObject(new Mensagem("200", dadosCliente));
                             saida.flush();
 
                             if (user.getTipo() == TipoUtilizador.CLIENTE) {
@@ -63,13 +63,13 @@ public class ClienteHandler extends Thread {
                         } else {
 
                             user = null;
-                            saida.writeObject(new Mensagem("FALSE", "Login Falhou - Senha errada!"));
+                            saida.writeObject(new Mensagem("400", "Login Falhou - Senha errada!"));
                             saida.flush();
 
                             System.out.println("[" + msg.getTipo() + "] " + socket.getInetAddress() + " - LOGIN INVÁLIDO");
                         }
                     } else {
-                        saida.writeObject(new Mensagem("FALSE", "Login Falhou - Código errado!"));
+                        saida.writeObject(new Mensagem("404", "Login Falhou - Código errado!"));
                         saida.flush();
                     }
                 }
@@ -80,13 +80,13 @@ public class ClienteHandler extends Thread {
                         Servidor.gerir.registarUser(user);
                         Servidor.gerir.guardarDados();
 
-                        saida.writeObject(new Mensagem("INFO", user.getNome() + " - REGISTADO"));
+                        saida.writeObject(new Mensagem("200", user.getNome() + " - REGISTADO"));
                         saida.flush();
 
                         System.out.println( "[" + msg.getTipo() + "] " + user.getTipo() + " | " + user.getCodigo() + " - UTILIZADOR REGISTADO COM SUCESSO");
 
                     } else {
-                        saida.writeObject(new Mensagem("INFO", "Esse código de utilizador já foi registado!"));
+                        saida.writeObject(new Mensagem("409", "[ERRO] Esse código de utilizador já foi registado!"));
                         saida.flush();
                     }
 
@@ -96,14 +96,14 @@ public class ClienteHandler extends Thread {
                 else if (msg.getTipo().equalsIgnoreCase("VER_CLIENTES")) {
 
                     saida.reset();
-                    saida.writeObject(new Mensagem("INFO", Servidor.gerir.getUtilizadoresClientes()));
+                    saida.writeObject(new Mensagem("200", Servidor.gerir.getUtilizadoresClientes()));
                     saida.flush();
 
                 }
                 else if (msg.getTipo().equalsIgnoreCase("VER_FUNCIONARIOS")) {
 
                     saida.reset();
-                    saida.writeObject(new Mensagem("INFO", Servidor.gerir.getUtilizadoresFuncionarios()));
+                    saida.writeObject(new Mensagem("200", Servidor.gerir.getUtilizadoresFuncionarios()));
                     saida.flush();
 
                 }
@@ -114,18 +114,18 @@ public class ClienteHandler extends Thread {
                         Servidor.gerir.registarItem(item);
                         Servidor.gerir.guardarDados();
 
-                        saida.writeObject(new Mensagem("INFO", item.getTipo().name().toUpperCase() + ": ADICIONADO À LISTA DE ITEMS!"));
+                        saida.writeObject(new Mensagem("200", item.getTipo().name().toUpperCase() + ": ADICIONADO À LISTA DE ITEMS!"));
                         saida.flush();
 
                         System.out.println( "[" + msg.getTipo() + "] " + item.getTipo().name().toUpperCase() + " | " + item.getCodigo() + " - ADICIONADO");
                     } else {
-                        saida.writeObject(new Mensagem("INFO", "Esse item já existe na lista!"));
+                        saida.writeObject(new Mensagem("400", "[EROO] Esse item já existe na lista!"));
                         saida.flush();
                     }
                 }
                 else if (msg.getTipo().equalsIgnoreCase("VER_LISTA_ITEMS")) {
                     saida.reset();
-                    saida.writeObject(new Mensagem("INFO", Servidor.gerir.getListaItems()));
+                    saida.writeObject(new Mensagem("200", Servidor.gerir.getListaItems()));
                     saida.flush();
 
                 }
@@ -136,11 +136,11 @@ public class ClienteHandler extends Thread {
                         Servidor.gerir.eliminarItem(codigoItem);
 
                         saida.reset();
-                        saida.writeObject(new Mensagem("INFO", "[SUCESSO] ITEM " + codigoItem + " eliminado!" ));
+                        saida.writeObject(new Mensagem("200", "[SUCESSO] ITEM " + codigoItem + " eliminado!" ));
                         System.out.println( "[" + msg.getTipo() + "] " + codigoItem + " | - ELIMINADO");
                     } else {
                         saida.reset();
-                        saida.writeObject(new Mensagem("INFO", "[ERRO] ITEM " + codigoItem + " não existe!" ));
+                        saida.writeObject(new Mensagem("404", "[ERRO] ITEM " + codigoItem + " não existe!" ));
                     }
                     saida.flush();
 
@@ -152,11 +152,11 @@ public class ClienteHandler extends Thread {
                         Servidor.gerir.criarEmenta(data);
 
                         saida.reset();
-                        saida.writeObject(new Mensagem("TRUE", "[SUCESSO] EMENTA CRIADA | DIA: " + data ));
+                        saida.writeObject(new Mensagem("200", "[SUCESSO] EMENTA CRIADA | DIA: " + data ));
                         System.out.println( "[" + msg.getTipo() + "] " + data + " | - CRIADA");
                     } else {
                         saida.reset();
-                        saida.writeObject(new Mensagem("FALSE", "[ERRO] EMENTA JÀ CRIADA E FECHADA | DIA: " + data ));
+                        saida.writeObject(new Mensagem("400", "[ERRO] EMENTA JÀ CRIADA E FECHADA | DIA: " + data ));
                         System.out.println( "[" + msg.getTipo() + "] " + data + " | - JÀ CRIADA");
                     }
 
@@ -176,17 +176,17 @@ public class ClienteHandler extends Thread {
                             Servidor.gerir.adicionarItemEmenta(dataEmenta, codigoItem, stock);
 
                             saida.reset();
-                            saida.writeObject(new Mensagem("INFO", "[SUCESSO] ITEM (" + codigoItem + ") ADICIONADO À EMENTA"));
+                            saida.writeObject(new Mensagem("200", "[SUCESSO] ITEM (" + codigoItem + ") ADICIONADO À EMENTA"));
                             System.out.println( "[" + msg.getTipo() + "] " + codigoItem + " | - ADICIONADO À EMENTA - DIA: " + dataEmenta);
 
                         } else {
                             saida.reset();
-                            saida.writeObject(new Mensagem("INFO", "[ERRO] ITEM (" + codigoItem + ") JÀ FOI ADICIONADO À EMENTA"));
+                            saida.writeObject(new Mensagem("400", "[ERRO] ITEM (" + codigoItem + ") JÀ FOI ADICIONADO À EMENTA"));
                         }
 
                     } else {
                         saida.reset();
-                        saida.writeObject(new Mensagem("INFO", "[ERRO] ITEM (" + codigoItem + ") NÂO EXISTE NA LISTA"));
+                        saida.writeObject(new Mensagem("404", "[ERRO] ITEM (" + codigoItem + ") NÂO EXISTE NA LISTA"));
                     }
                     saida.flush();
                 }
@@ -195,7 +195,7 @@ public class ClienteHandler extends Thread {
                     ArrayList<Ementa> ementas = Servidor.gerir.getEmentas();
 
                     saida.reset();
-                    saida.writeObject(new Mensagem("INFO", ementas));
+                    saida.writeObject(new Mensagem("200", ementas));
                     saida.flush();
 
                 }
@@ -207,13 +207,13 @@ public class ClienteHandler extends Thread {
                     if(ementaDia != null){
                     	
                         saida.reset();
-                        saida.writeObject(new Mensagem("INFO", ementaDia));
+                        saida.writeObject(new Mensagem("200", ementaDia));
                         saida.flush();
                         
                     } else {
                     	
                         saida.reset();
-                        saida.writeObject(new Mensagem("ERRO", "[INFO] Nenhum ementa criada para o dia de hoje! ( " + LocalDate.now() + ")"));
+                        saida.writeObject(new Mensagem("404", "[INFO] Nenhum ementa criada para o dia de hoje! ( " + LocalDate.now() + ")"));
                         saida.flush();
                     }
 
@@ -221,12 +221,12 @@ public class ClienteHandler extends Thread {
                 else if (msg.getTipo().equalsIgnoreCase("CRIAR_PEDIDO")) {
                     if(Servidor.gerir.pesquisarEmenta(LocalDate.now()) == null){
                         saida.reset();
-                        saida.writeObject(new Mensagem("ERRO", "[ATENÇÃO] Ainda não foi criada nenhuma ementa para o dia de hoje!"));
+                        saida.writeObject(new Mensagem("404", "[ATENÇÃO] Ainda não foi criada nenhuma ementa para o dia de hoje!"));
                         saida.flush();
                     } else {
                         if (user == null) {
                             saida.reset();
-                            saida.writeObject(new Mensagem("ERRO", "[ATENÇÃO] Primeiro faça login!"));
+                            saida.writeObject(new Mensagem("401", "[ATENÇÃO] Primeiro faça login!"));
                             saida.flush();
                         } else {
                             String notas = (String) msg.getDados();
@@ -241,14 +241,14 @@ public class ClienteHandler extends Thread {
                                     }
 
                                     saida.reset();
-                                    saida.writeObject(new Mensagem("INFO", "Pedido criado com sucesso."));
+                                    saida.writeObject(new Mensagem("200", "Pedido criado com sucesso."));
                                     saida.flush();
 
                                     Servidor.atualizarMonitores();
 
                                 } else {
                                     saida.reset();
-                                    saida.writeObject(new Mensagem("ERRO", "Pedido de hoje já foi criado!"));
+                                    saida.writeObject(new Mensagem("400", "Pedido de hoje já foi criado!"));
                                     saida.flush();
                                 }
                             }
@@ -259,7 +259,7 @@ public class ClienteHandler extends Thread {
 
                     if (user == null) {
                         saida.reset();
-                        saida.writeObject(new Mensagem("ERRO", "[ATENÇÃO] Primeiro faça login!"));
+                        saida.writeObject(new Mensagem("401", "[ATENÇÃO] Primeiro faça login!"));
                         saida.flush();
                         return;
                     }
@@ -270,7 +270,7 @@ public class ClienteHandler extends Thread {
 
                     if (value) {
                         saida.reset();
-                        saida.writeObject(new Mensagem("INFO", "[SUCESSO] ITEM ADICIONADO AO PEDIDO! VALOR DO PEDIDO ATUALMENTE: " + Servidor.gerir.pesquisarPedidoPendente(user).getPrecoTotalAtual() + "€"));
+                        saida.writeObject(new Mensagem("200", "[SUCESSO] ITEM ADICIONADO AO PEDIDO! VALOR DO PEDIDO ATUALMENTE: " + Servidor.gerir.pesquisarPedidoPendente(user).getPrecoTotalAtual() + "€"));
                         saida.flush();
 
                         Servidor.gerir.guardarDados();
@@ -279,7 +279,7 @@ public class ClienteHandler extends Thread {
                     } else {
 
                         saida.reset();
-                        saida.writeObject(new Mensagem("ERRO", "[ERRO] ITEM FORA DE STOCK OU NÃO ESTÁ PRESENTE NA EMENTA!"));
+                        saida.writeObject(new Mensagem("400", "[ERRO] ITEM FORA DE STOCK OU NÃO ESTÁ PRESENTE NA EMENTA!"));
                         saida.flush();
                     }
                 }
@@ -317,12 +317,12 @@ public class ClienteHandler extends Thread {
                     if(value) {
                         Servidor.atualizarMonitores();
                         System.out.println("PEDIDO #" + numPedido + " | A ENTREGAR");
-                        saida.writeObject(new Mensagem("INFO", "True"));
+                        saida.writeObject(new Mensagem("200", "[ATENÇÃO] Entregue o pedido ao cliente! Se o cliente não aparecer, defina o pedido como Não Entregue (n) !"));
                         saida.flush();
 
                     } else {
 
-                        saida.writeObject(new Mensagem("INFO", "[ERRO] Nenhum pedido pendente com esse número!"));
+                        saida.writeObject(new Mensagem("404", "[ERRO] Nenhum pedido pendente com esse número!"));
                         saida.flush();
                     }
 
@@ -377,20 +377,20 @@ public class ClienteHandler extends Thread {
                     if(pedido != null){
 
                         saida.reset();
-                        saida.writeObject(new Mensagem("INFO", "[PEDIDO # " + pedido.getCliente().getCodigo() + "] Estado: " + pedido.getEstado().name()));
+                        saida.writeObject(new Mensagem("200", "[PEDIDO # " + pedido.getCliente().getCodigo() + "] Estado: " + pedido.getEstado().name()));
                         saida.flush();
 
                     } else {
 
                         saida.reset();
-                        saida.writeObject(new Mensagem("INFO", "Não existe nenhum pedido pendente hoje!"));
+                        saida.writeObject(new Mensagem("404", "Não existe nenhum pedido pendente hoje!"));
                         saida.flush();
                     }
                 }
                 else if (msg.getTipo().equalsIgnoreCase("VER_PEDIDOS")){
                 	
                     saida.reset();
-                    saida.writeObject(new Mensagem("INFO", Servidor.gerir.getPedidos()));
+                    saida.writeObject(new Mensagem("200", Servidor.gerir.getPedidos()));
                     saida.flush();
                     
                 }
@@ -399,7 +399,7 @@ public class ClienteHandler extends Thread {
                     ArrayList<Pedido> historico = Servidor.gerir.getHistoricoPedidos(user);
 
                     saida.reset();
-                    saida.writeObject(new Mensagem("INFO", historico));
+                    saida.writeObject(new Mensagem("200", historico));
                     saida.flush();
 
                     System.out.println("[HISTORICO_PEDIDOS] Enviado ao utilizador: " + user.getCodigo());
@@ -407,10 +407,10 @@ public class ClienteHandler extends Thread {
                 }
                 else if(msg.getTipo().equalsIgnoreCase("VER_PEDIDOS_PENDENTES")){
                     if (user == null){
-                        saida.writeObject((new Mensagem("ERRO", "ATENÇÃO: Primeiro faça login.")));
+                        saida.writeObject((new Mensagem("401", "ATENÇÃO: Primeiro faça login.")));
                         saida.flush();
                     }else if(user.getTipo() != TipoUtilizador.FUNCIONARIO){
-                        saida.writeObject(new Mensagem("ERRO", "ATENÇÃO: Sem permissões para esta operação."));
+                        saida.writeObject(new Mensagem("200", "ATENÇÃO: Sem permissões para esta operação."));
                         saida.flush();
                     }else{
                         ArrayList<Pedido> pendentes = new ArrayList<>();

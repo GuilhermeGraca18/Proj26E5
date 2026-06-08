@@ -191,7 +191,7 @@ public class Main {
 
                         resposta = lerResposta(respostasServidor);
 
-                        if(resposta.getTipo().equalsIgnoreCase("TRUE")){
+                        if(resposta.getTipo().equalsIgnoreCase("200")){
 
                             ArrayList<Object> dadosServidor = (ArrayList<Object>) resposta.getDados();
 
@@ -281,7 +281,8 @@ public class Main {
                             saida.flush();
 
                             Mensagem value = lerResposta(respostasServidor);
-                            if(value.getDados().equals("True")){
+                            if(value.getTipo().equals("200")){
+                                System.out.println((String) value.getDados());
                                 System.out.print("Pedido entregue (S/N)? ");
                                 input.nextLine();
                                 String estado = input.nextLine();
@@ -445,7 +446,7 @@ public class Main {
 
                                 resposta = lerResposta(respostasServidor);
                                 System.out.println(resposta.getDados());
-                                if(resposta.getTipo().equalsIgnoreCase("TRUE")){
+                                if(resposta.getTipo().equalsIgnoreCase("200")){
                                     int escolha = -1;
                                     while (escolha != 0) {
 
@@ -722,7 +723,7 @@ public class Main {
                                 resposta = lerResposta(respostasServidor);
                                 System.out.println(resposta.getDados());
 
-                                if (!resposta.getTipo().equalsIgnoreCase("ERRO")){
+                                if (!resposta.getTipo().equalsIgnoreCase("400")){
 
                                     int nitem = -1;
 
