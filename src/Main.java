@@ -658,6 +658,17 @@ public class Main {
 
                                 System.out.println(" === CRIAR PEDIDO === ");
 
+                                System.out.println(" --- EMENTA DO DIA --- ");
+
+                                saida.reset();
+                                saida.writeObject(new Mensagem("VER_EMENTA_DIA", null));
+                                saida.flush();
+
+                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                Ementa ementaHoje = (Ementa) resposta.getDados();
+
+                                System.out.println(ementaHoje);
+
                                 input.nextLine();
 
                                 System.out.print("Deseja colocar alguma nota no pedido, se sim escreva: ");
@@ -668,7 +679,7 @@ public class Main {
                                 saida.flush();
 
 
-                                Mensagem resposta = (Mensagem) entrada.readObject();
+                                resposta = (Mensagem) entrada.readObject();
                                 System.out.println(resposta.getDados());
 
                                 if (!resposta.getTipo().equalsIgnoreCase("ERRO")){
@@ -696,7 +707,7 @@ public class Main {
                                     System.out.println("[INFO] Pedido a fazer! Fique atento ao ecrã dos pedidos e ao seu número de cliente!");
                                 }
 
-                                System.out.println("[SUCESSO] Pedido Finalizado!");
+
 
 
                             } catch (Exception e){
